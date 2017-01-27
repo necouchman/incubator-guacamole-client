@@ -1,0 +1,16 @@
+{
+
+    "guacamoleVersion" : "0.9.11-incubating",
+
+    "name"      : "Hostname Authentication",
+    "namespace" : "guac-hostname",
+
+    "authProviders" : [
+        "org.apache.guacamole.auth.hostname.HostnameAuthenticationProvider"
+    ],
+
+    "translations" : [
+        "translations/en.json"
+    ]
+
+}
