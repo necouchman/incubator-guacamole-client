@@ -105,20 +105,7 @@ public class HostnameAuthenticationProvider extends SimpleAuthenticationProvider
     private HostMapping getHostMapping() {
 
         // Get host mapping file GUACAMOLE_HOME/host-mapping.xml
-        File hostMappingFile;
-        try {
-
-            if (hostMappingFile == null)
-                hostMappingFile = new File(environment.getGuacamoleHome(), HOST_MAPPING_FILENAME);
-
-        }
-
-        // Abort if property cannot be parsed
-        catch (GuacamoleException e) {
-            logger.warn("Unable to read host mapping filename from properties: {}", e.getMessage());
-            logger.debug("Error parsing host mapping property.", e);
-            return null;
-        }
+        File hostMappingFile = new File(environment.getGuacamoleHome(), HOST_MAPPING_FILENAME);
 
         // Abort if host mapping does not exist
         if (!hostMappingFile.exists()) {
@@ -188,11 +175,18 @@ public class HostnameAuthenticationProvider extends SimpleAuthenticationProvider
         if (hostMapping == null)
             return null;
 
-	URL myURL = new URL(credentials.getRequest().getRequestURL());
+        try {
+	URL myURL = new URL(credentials.getRequest().getRequestURL().toString());
         Authorization auth = hostMapping.getAuthorization(myURL.getHost());
 	if(auth != null)
             return auth.getConfigurations();
 
+        }
+        catch (Exception e) {
+            logger.warn("Cannot parse the URL: {}", e.getMessage());
+            logger.debug("Error parsing URL.", e);
+            return null;
+       }
         // Unauthorized
         return null;
 

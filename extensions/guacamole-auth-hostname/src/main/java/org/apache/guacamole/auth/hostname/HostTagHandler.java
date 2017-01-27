@@ -50,13 +50,13 @@ public class HostTagHandler implements TagHandler {
     private HostMapping parent;
 
     /**
-     * Creates a new AuthorizeTagHandler that parses an Authorization owned
+     * Creates a new HostTagHandler that parses an Authorization owned
      * by the given HostMapping.
      *
      * @param parent The HostMapping that owns the Authorization this handler
      *               will parse.
      */
-    public AuthorizeTagHandler(HostMapping parent) {
+    public HostTagHandler(HostMapping parent) {
         this.parent = parent;
     }
 

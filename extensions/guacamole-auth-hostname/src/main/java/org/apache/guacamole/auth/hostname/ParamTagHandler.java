@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.guacamole.auth.file;
+package org.apache.guacamole.auth.hostname;
 
 import org.apache.guacamole.xml.TagHandler;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
