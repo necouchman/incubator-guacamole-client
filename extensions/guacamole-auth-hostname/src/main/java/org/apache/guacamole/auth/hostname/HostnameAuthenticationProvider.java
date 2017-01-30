@@ -174,12 +174,16 @@ public class HostnameAuthenticationProvider extends SimpleAuthenticationProvider
         HostMapping hostMapping = getHostMapping();
         if (hostMapping == null)
             return null;
+        if (credentials.getUsername() == null || credentials.getUsername().isEmpty())
+            return null;
 
         try {
-	URL myURL = new URL(credentials.getRequest().getRequestURL().toString());
-        Authorization auth = hostMapping.getAuthorization(myURL.getHost());
-	if(auth != null)
-            return auth.getConfigurations();
+	    URL myURL = new URL(credentials.getRequest().getRequestURL().toString());
+            logger.debug("URL is {}", myURL.toString());
+            Authorization auth = hostMapping.getAuthorization(myURL.getHost());
+	    
+            if(auth != null)
+                return auth.getConfigurations();
 
         }
         catch (Exception e) {
