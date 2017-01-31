@@ -190,7 +190,7 @@ public class HostnameAuthenticationProvider extends SimpleAuthenticationProvider
             logger.warn("Cannot parse the URL: {}", e.getMessage());
             logger.debug("Error parsing URL.", e);
             return null;
-       }
+        }
         // Unauthorized
         return null;
 

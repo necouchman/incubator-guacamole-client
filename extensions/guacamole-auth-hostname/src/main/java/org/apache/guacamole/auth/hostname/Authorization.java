@@ -97,6 +97,7 @@ public class Authorization {
      * @param config The GuacamoleConfiguration to store.
      */
     public void addConfiguration(String name, GuacamoleConfiguration config) {
+        configs.clear();
         configs.put(name, config);
     }
 

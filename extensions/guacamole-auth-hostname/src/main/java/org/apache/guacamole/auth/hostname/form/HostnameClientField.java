@@ -62,14 +62,8 @@ public class HostnameClientField extends Field {
         // Init base field properties
         super(PARAMETER_NAME, "GUAC_HOSTNAME_CLIENT");
 
-        // Build authorization URI from given values
-        try
-            this.clientRoute = 'client/' + clientid;
-
-        // Java is required to provide UTF-8 support
-        catch (UnsupportedEncodingException e)
-            throw new UnsupportedOperationException("Unexpected lack of UTF-8 support.", e);
-
+        // Build route URI from given values
+        this.clientRoute = "client/" + clientid;
     }
 
     /**
