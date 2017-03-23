@@ -116,6 +116,13 @@ angular.module('rest').factory('Error', [function defineError() {
         INTERNAL_ERROR : 'INTERNAL_ERROR',
 
         /**
+         * An error where more information is required.
+         *
+         * @type String
+         */
+        INSUFFICIENT_PARAMETERS : 'INSUFFICIENT_PARAMETERS',
+
+        /**
          * An object related to the request does not exist.
          *
          * @type String

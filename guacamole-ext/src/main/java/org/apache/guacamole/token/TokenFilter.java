@@ -19,10 +19,15 @@
 
 package org.apache.guacamole.token;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.guacamole.form.Field;
+import org.apache.guacamole.GuacamoleException;
 
 /**
  * Filtering object which replaces tokens of the form "${TOKEN_NAME}" with
@@ -31,6 +36,11 @@ import java.util.regex.Pattern;
  * "$${TOKEN_NAME}".
  */
 public class TokenFilter {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(TokenFilter.class);
 
     /**
      * Regular expression which matches individual tokens, with additional
@@ -81,6 +91,7 @@ public class TokenFilter {
      *     The value to set the token to.
      */
     public void setToken(String name, String value) {
+        logger.debug("Setting token {}", name);
         tokenValues.put(name, value);
     }
 
@@ -96,6 +107,7 @@ public class TokenFilter {
      *     token exists.
      */
     public String getToken(String name) {
+        logger.debug("Getting token {}", name);
         return tokenValues.get(name);
     }
 
@@ -107,6 +119,7 @@ public class TokenFilter {
      *     The name of the token whose value should be removed.
      */
     public void unsetToken(String name) {
+        logger.debug("Unsetting token {}", name);
         tokenValues.remove(name);
     }
 
@@ -119,6 +132,7 @@ public class TokenFilter {
      *     A map of all token names and their corresponding values.
      */
     public Map<String, String> getTokens() {
+        logger.debug("Getting all tokens.");
         return tokenValues;
     }
 
@@ -132,6 +146,7 @@ public class TokenFilter {
      *     assign.
      */
     public void setTokens(Map<String, String> tokens) {
+        logger.debug("Clearing out all tokens and setting up a bunch.");
         tokenValues.clear();
         tokenValues.putAll(tokens);
     }
@@ -147,7 +162,9 @@ public class TokenFilter {
      *     A copy of the input string, with any tokens replaced with their
      *     corresponding values.
      */
-    public String filter(String input) {
+    public String filter(String field, String input) throws GuacamoleException {
+
+        logger.debug("Filtering field {} for {}", field, input);
 
         StringBuilder output = new StringBuilder();
         Matcher tokenMatcher = tokenPattern.matcher(input);
@@ -179,10 +196,18 @@ public class TokenFilter {
 
                 // Pull token value
                 String tokenName = tokenMatcher.group(TOKEN_NAME_GROUP);
+                if(tokenName.equals(StandardTokens.PROMPT_TOKEN)) {
+                    logger.debug("We should prompt for a value, here.");
+                    Field promptField = new TokenParameterField(field);
+                    ParametersInfo expectedParameters = new ParametersInfo(Arrays.asList(promptField));
+                    throw new GuacamoleClientInsufficientParametersException("Please enter a value for " + field, expectedParameters);
+                }
+                logger.debug("Pulling token value for {}", tokenName);
                 String tokenValue = getToken(tokenName);
 
                 // If token is unknown, interpret as literal
                 if (tokenValue == null) {
+                    logger.debug("Token value is null, must not be a token.");
                     String notToken = tokenMatcher.group(TOKEN_GROUP);
                     output.append(notToken);
                 }
@@ -212,15 +237,18 @@ public class TokenFilter {
      * @param map
      *     The map whose values should be filtered.
      */
-    public void filterValues(Map<?, String> map) {
+    public void filterValues(Map<?, String> map) throws GuacamoleException {
 
         // For each map entry
         for (Map.Entry<?, String> entry : map.entrySet()) {
 
+            logger.debug("On map entry {}", entry.getKey());
+            logger.debug("Class of key is {}", entry.getKey().getClass());
             // If value is non-null, filter value through this TokenFilter
+            String field = entry.getKey().toString();
             String value = entry.getValue();
             if (value != null)
-                entry.setValue(filter(value));
+                entry.setValue(filter(field,value));
             
         }
         

@@ -166,6 +166,7 @@ public abstract class GuacamoleHTTPTunnelServlet extends HttpServlet {
 
             // If response not committed, send error code and message
             if (!response.isCommitted()) {
+                response.setContentType("application/json");
                 response.addHeader("Guacamole-Status-Code", Integer.toString(guacStatus.getGuacamoleStatusCode()));
                 response.addHeader("Guacamole-Error-Message", message);
                 response.sendError(guacStatus.getHttpStatusCode());
@@ -330,6 +331,7 @@ public abstract class GuacamoleHTTPTunnelServlet extends HttpServlet {
             // Note that although we are sending text, Webkit browsers will
             // buffer 1024 bytes before starting a normal stream if we use
             // anything but application/octet-stream.
+            logger.debug("Setting content type to octet-stream, and disabling cache!");
             response.setContentType("application/octet-stream");
             response.setHeader("Cache-Control", "no-cache");
 
@@ -452,6 +454,7 @@ public abstract class GuacamoleHTTPTunnelServlet extends HttpServlet {
         // text/html, as such a content type would cause some browsers to
         // attempt to parse the result, even though the JavaScript client
         // does not explicitly request such parsing.
+        logger.debug("Setting content-type to octet-stream and disabling cache.");
         response.setContentType("application/octet-stream");
         response.setHeader("Cache-Control", "no-cache");
         response.setContentLength(0);

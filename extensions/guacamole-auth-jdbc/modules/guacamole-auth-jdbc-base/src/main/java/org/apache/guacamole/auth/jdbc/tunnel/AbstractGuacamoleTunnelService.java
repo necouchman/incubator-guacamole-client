@@ -241,7 +241,12 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
         StandardTokens.addStandardTokens(tokenFilter, user.getCredentials());
 
         // Filter the configuration
-        tokenFilter.filterValues(config.getParameters());
+        try {
+            tokenFilter.filterValues(config.getParameters());
+        }
+        catch (GuacamoleException e) {
+            return null;
+        }
 
         return config;
         
@@ -287,7 +292,12 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
         StandardTokens.addStandardTokens(tokenFilter, user.getCredentials());
 
         // Filter the configuration
-        tokenFilter.filterValues(config.getParameters());
+        try {
+            tokenFilter.filterValues(config.getParameters());
+        }
+        catch (GuacamoleException e) {
+            return null;
+        }
 
         return config;
 

@@ -318,6 +318,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
 
         // Fire events for tunnel errors
         tunnel.onerror = function tunnelError(status) {
+            console.log('Tunnel error - status code ' + status.code);
             $rootScope.$apply(function handleTunnelError() {
                 ManagedClientState.setConnectionState(managedClient.clientState,
                     ManagedClientState.ConnectionState.TUNNEL_ERROR,

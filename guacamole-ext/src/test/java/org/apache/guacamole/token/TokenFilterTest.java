@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.apache.guacamole.GuacamoleException;
 
 /**
  * Test which verifies the filtering functionality of TokenFilter.
@@ -33,7 +34,7 @@ public class TokenFilterTest {
      * Verifies that token replacement via filter() functions as specified.
      */
     @Test
-    public void testFilter() {
+    public void testFilter() throws GuacamoleException {
 
         // Create token filter
         TokenFilter tokenFilter = new TokenFilter();
@@ -43,13 +44,13 @@ public class TokenFilterTest {
         // Test basic substitution and escaping
         assertEquals(
             "$${NOPE}hellovalue-of-aworldvalue-of-b${NOT_A_TOKEN}",
-            tokenFilter.filter("$$${NOPE}hello${TOKEN_A}world${TOKEN_B}$${NOT_A_TOKEN}")
+            tokenFilter.filter("test","$$${NOPE}hello${TOKEN_A}world${TOKEN_B}$${NOT_A_TOKEN}")
         );
         
         // Unknown tokens must be interpreted as literals
         assertEquals(
             "${NOPE}hellovalue-of-aworld${TOKEN_C}",
-            tokenFilter.filter("${NOPE}hello${TOKEN_A}world${TOKEN_C}")
+            tokenFilter.filter("test","${NOPE}hello${TOKEN_A}world${TOKEN_C}")
         );
         
     }
@@ -59,7 +60,7 @@ public class TokenFilterTest {
      * specified.
      */
     @Test
-    public void testFilterValues() {
+    public void testFilterValues() throws GuacamoleException {
 
         // Create token filter
         TokenFilter tokenFilter = new TokenFilter();

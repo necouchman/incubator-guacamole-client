@@ -22,12 +22,19 @@ package org.apache.guacamole.token;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.guacamole.net.auth.Credentials;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class which provides access to standardized token names, as well as
  * facilities for generating those tokens from common objects.
  */
 public class StandardTokens {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(StandardTokens.class);
 
     /**
      * The name of the username token added via addStandardTokens().
@@ -38,6 +45,8 @@ public class StandardTokens {
      * The name of the password token added via addStandardTokens().
      */
     public static final String PASSWORD_TOKEN = "GUAC_PASSWORD";
+
+    public static final String PROMPT_TOKEN = "GUAC_PROMPT";
 
     /**
      * The name of the client hostname token added via addStandardTokens().
@@ -91,7 +100,9 @@ public class StandardTokens {
         // Add date/time tokens (server-local time)
         Date currentTime = new Date();
         filter.setToken(DATE_TOKEN, new SimpleDateFormat(DATE_FORMAT).format(currentTime));
+        logger.debug("Added date token: {}", new SimpleDateFormat(DATE_FORMAT).format(currentTime));
         filter.setToken(TIME_TOKEN, new SimpleDateFormat(TIME_FORMAT).format(currentTime));
+        logger.debug("Added time token: {}", new SimpleDateFormat(TIME_FORMAT).format(currentTime));
 
     }
 
@@ -115,23 +126,32 @@ public class StandardTokens {
 
         // Add username token
         String username = credentials.getUsername();
-        if (username != null)
+        if (username != null) {
             filter.setToken(USERNAME_TOKEN, username);
+            logger.debug("Added username token: {}.", username);
+        }
+
 
         // Add password token
         String password = credentials.getPassword();
-        if (password != null)
+        if (password != null) {
             filter.setToken(PASSWORD_TOKEN, password);
+            logger.debug("Added password token: (hidden)");
+        }
 
         // Add client hostname token
         String hostname = credentials.getRemoteHostname();
-        if (hostname != null)
+        if (hostname != null) {
             filter.setToken(CLIENT_HOSTNAME_TOKEN, hostname);
+            logger.debug("Added client hostname token: {}.", hostname);
+        }
 
         // Add client address token
         String address = credentials.getRemoteAddress();
-        if (address != null)
+        if (address != null) {
             filter.setToken(CLIENT_ADDRESS_TOKEN, address);
+            logger.debug("Added client address token: {}.", address);
+        }
 
         // Add any tokens which do not require credentials
         addStandardTokens(filter);

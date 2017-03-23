@@ -30,6 +30,7 @@ import org.apache.guacamole.language.TranslatableMessage;
 import org.apache.guacamole.net.auth.credentials.GuacamoleCredentialsException;
 import org.apache.guacamole.net.auth.credentials.GuacamoleInsufficientCredentialsException;
 import org.apache.guacamole.net.auth.credentials.GuacamoleInvalidCredentialsException;
+import org.apache.guacamole.token.GuacamoleClientInsufficientParametersException;
 import org.apache.guacamole.tunnel.GuacamoleStreamException;
 
 /**
@@ -85,6 +86,11 @@ public class APIError {
         INSUFFICIENT_CREDENTIALS,
 
         /**
+         * The connection does not have sufficient parameters to complete.
+         */
+        INSUFFICIENT_PARAMETERS,
+
+        /**
          * An internal server error has occurred.
          */
         INTERNAL_ERROR,
@@ -135,6 +141,10 @@ public class APIError {
             if (exception instanceof GuacamoleResourceNotFoundException)
                 return NOT_FOUND;
 
+            // Need more connection information
+            if (exception instanceof GuacamoleClientInsufficientParametersException)
+                return INSUFFICIENT_PARAMETERS;
+
             // Arbitrary bad requests
             if (exception instanceof GuacamoleClientException)
                 return BAD_REQUEST;
@@ -170,6 +180,10 @@ public class APIError {
         if (exception instanceof GuacamoleCredentialsException) {
             GuacamoleCredentialsException credentialsException = (GuacamoleCredentialsException) exception;
             this.expected = credentialsException.getCredentialsInfo().getFields();
+        }
+        else if (exception instanceof GuacamoleClientInsufficientParametersException) {
+            GuacamoleClientInsufficientParametersException parameterException = (GuacamoleClientInsufficientParametersException) exception;
+            this.expected = parameterException.getParametersInfo().getFields();
         }
         else
             this.expected = null;

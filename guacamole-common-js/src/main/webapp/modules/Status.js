@@ -224,6 +224,13 @@ Guacamole.Status.Code = {
     "CLIENT_BAD_TYPE": 0x030F,
 
     /**
+     * The client needs to provide further parameters
+     *
+     * @type {Number}
+     */
+    "CLIENT_INSUFFICIENT_PARAMETERS": 0x031A,
+
+    /**
      * The operation failed because the current client is already using too
      * many resources.
      *

@@ -139,6 +139,11 @@ public enum GuacamoleStatus {
     CLIENT_BAD_TYPE(415, 1003, 0x030F),
 
     /**
+     * The request sent by the client could not be processed.
+     */
+    CLIENT_INSUFFICIENT_PARAMETERS(400, 1011, 0x031A),
+
+    /**
      * The operation failed because the current client is already using too
      * many resources.
      */

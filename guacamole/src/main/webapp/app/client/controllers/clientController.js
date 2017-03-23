@@ -91,6 +91,7 @@ angular.module('client').controller('clientController', ['$scope', '$routeParams
         0x0301: true,
         0x0303: true,
         0x0308: true,
+        0x031A: true,
         0x031D: true
     };
 
@@ -124,6 +125,7 @@ angular.module('client').controller('clientController', ['$scope', '$routeParams
         0x0301: true,
         0x0303: true,
         0x0308: true,
+        0x031A: true,
         0x031D: true
     };
  
@@ -603,6 +605,8 @@ angular.module('client').controller('clientController', ['$scope', '$routeParams
         // Client error
         else if (connectionState === ManagedClientState.ConnectionState.CLIENT_ERROR) {
 
+            console.log('***CLIENT ERROR DETECTED***');
+
             // Determine translation name of error
             var errorName = (status in CLIENT_ERRORS) ? status.toString(16).toUpperCase() : "DEFAULT";
 
@@ -624,6 +628,8 @@ angular.module('client').controller('clientController', ['$scope', '$routeParams
 
         // Tunnel error
         else if (connectionState === ManagedClientState.ConnectionState.TUNNEL_ERROR) {
+
+            console.log('***TUNNEL ERROR DETECTED***');
 
             // Determine translation name of error
             var errorName = (status in TUNNEL_ERRORS) ? status.toString(16).toUpperCase() : "DEFAULT";
