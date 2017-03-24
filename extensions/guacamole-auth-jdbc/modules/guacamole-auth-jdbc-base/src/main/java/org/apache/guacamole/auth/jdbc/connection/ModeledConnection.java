@@ -21,6 +21,7 @@ package org.apache.guacamole.auth.jdbc.connection;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -187,6 +188,27 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
         attributes.put(MAX_CONNECTIONS_PER_USER_NAME, NumericField.format(getModel().getMaxConnectionsPerUser()));
 
         return attributes;
+    }
+
+    @Override
+    public List<String> getParameterPrompts() {
+
+        logger.debug("Getting all parameters that should be prompted.");
+        List<String> prompts = new ArrayList<String>();
+
+        // Set parameters from associated data
+        Map<String, String> parameters = config.getParameters();
+        for (Map.Entry<String, String> parameter : parameters.entrySet()) {
+            if(parameter.getValue().equals("${GUAC_PROMPT}")) {
+                prompts.add(parameter.getKey());
+                logger.debug("Added parameter {}", parameter.getKey());
+            }
+        }
+
+        logger.debug("Got {} prompts.", prompts.size());
+        
+        return prompts;
+
     }
 
     @Override

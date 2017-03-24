@@ -19,7 +19,9 @@
 
 package org.apache.guacamole.rest.connection;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -59,6 +61,11 @@ public class APIConnection {
      * Map of all associated parameter values, indexed by parameter name.
      */
     private Map<String, String> parameters;
+
+    /**
+     * Map of all parameters that will be prompted for, indexed by parameter name.
+     */
+    private List<String> parameterPrompts;
     
     /**
      * Map of all associated attributes by attribute identifier.
@@ -104,6 +111,17 @@ public class APIConnection {
 
         // Associate any attributes
         this.attributes = connection.getAttributes();
+
+        // Get Parameter Prompts
+        this.parameterPrompts = new ArrayList<String>();
+
+        // Set parameters from associated data
+        Map<String, String> parameters = configuration.getParameters();
+        for (Map.Entry<String, String> parameter : parameters.entrySet()) {
+            if(parameter.getValue().equals("${GUAC_PROMPT}")) {
+                this.parameterPrompts.add(parameter.getKey());
+            }
+        }
 
     }
 
@@ -170,6 +188,14 @@ public class APIConnection {
      */
     public void setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
+    }
+
+    /**
+     * Returns the prompt map for this connection.
+     * @return The prompt map for this connection.
+     */
+    public List<String> getParameterPrompts() {
+        return parameterPrompts;
     }
 
     /**

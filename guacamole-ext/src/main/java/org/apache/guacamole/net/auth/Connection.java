@@ -103,6 +103,12 @@ public interface Connection extends Identifiable, Connectable {
     void setAttributes(Map<String, String> attributes);
 
     /**
+     * Get parameters associated with this connection that will
+     * prompt user for input.
+     */
+    List<String> getParameterPrompts();
+
+    /**
      * Returns a list of ConnectionRecords representing the usage history
      * of this Connection, including any active users. ConnectionRecords
      * in this list will be sorted in descending order of end time (active

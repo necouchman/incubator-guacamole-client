@@ -19,6 +19,7 @@
 
 package org.apache.guacamole.net.auth.simple;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -101,6 +102,21 @@ public class SimpleConnection extends AbstractConnection {
     @Override
     public void setAttributes(Map<String, String> attributes) {
         // Do nothing - there are no attributes
+    }
+
+    @Override
+    public List<String> getParameterPrompts() {
+        List<String> parameterPrompts = new ArrayList<String>();
+
+        // Set parameters from associated data
+        Map<String, String> parameters = config.getParameters();
+        for (Map.Entry<String, String> parameter : parameters.entrySet()) {
+            if(parameter.getValue().equals("${GUAC_PROMPT}")) {
+                parameterPrompts.add(parameter.getKey());
+            }
+        }
+
+        return parameterPrompts;
     }
 
     @Override
