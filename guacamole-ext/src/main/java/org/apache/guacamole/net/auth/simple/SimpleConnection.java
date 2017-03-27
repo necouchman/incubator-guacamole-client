@@ -104,6 +104,9 @@ public class SimpleConnection extends AbstractConnection {
         // Do nothing - there are no attributes
     }
 
+    // ***FIX*** Should use a constant and not a literal here.
+    // ***FIX*** As with JDBC< should this really be done here,
+    //           or abstracted a little higher??
     @Override
     public List<String> getParameterPrompts() {
         List<String> parameterPrompts = new ArrayList<String>();

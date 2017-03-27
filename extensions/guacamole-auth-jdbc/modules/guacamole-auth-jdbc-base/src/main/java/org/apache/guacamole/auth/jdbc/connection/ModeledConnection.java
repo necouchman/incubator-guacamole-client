@@ -197,6 +197,9 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
         List<String> prompts = new ArrayList<String>();
 
         // Set parameters from associated data
+        // ***FIX*** Should probably use a constant here instead of a literal
+        // ***FIX*** This part of the function should probably be abstracted to a higher level
+        //           and not implemented in the JDBC module specifically.
         Map<String, String> parameters = config.getParameters();
         for (Map.Entry<String, String> parameter : parameters.entrySet()) {
             if(parameter.getValue().equals("${GUAC_PROMPT}")) {

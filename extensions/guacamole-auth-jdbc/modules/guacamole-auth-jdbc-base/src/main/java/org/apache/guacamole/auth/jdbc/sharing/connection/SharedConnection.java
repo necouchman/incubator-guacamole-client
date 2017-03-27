@@ -148,6 +148,8 @@ public class SharedConnection implements Connection {
 
     @Override
     public List<String> getParameterPrompts() {
+        // Sharing should not prompt for anything, since connection
+        // is already established.  Do we even need an override here??
         return Collections.<String>emptyList();
     }
 

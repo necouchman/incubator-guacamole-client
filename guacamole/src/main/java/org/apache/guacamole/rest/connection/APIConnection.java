@@ -116,6 +116,9 @@ public class APIConnection {
         this.parameterPrompts = new ArrayList<String>();
 
         // Set parameters from associated data
+        // ***FIX*** Use constant, not string literal.
+        // ***FIX*** Which one really matters, this instance,
+        //           or the ones implemented in the auth/ext?
         Map<String, String> parameters = configuration.getParameters();
         for (Map.Entry<String, String> parameter : parameters.entrySet()) {
             if(parameter.getValue().equals("${GUAC_PROMPT}")) {

@@ -105,6 +105,7 @@ public interface Connection extends Identifiable, Connectable {
     /**
      * Get parameters associated with this connection that will
      * prompt user for input.
+     * ***FIX*** More comments needed here.
      */
     List<String> getParameterPrompts();
 
