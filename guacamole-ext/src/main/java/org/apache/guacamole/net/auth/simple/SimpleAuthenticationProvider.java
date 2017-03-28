@@ -166,8 +166,10 @@ public abstract class SimpleAuthenticationProvider
         StandardTokens.addStandardTokens(tokenFilter, credentials);
 
         // Filter each configuration
-        for (GuacamoleConfiguration config : configs.values())
+        for (GuacamoleConfiguration config : configs.values()) {
+            tokenFilter.filterPrompts(config);
             tokenFilter.filterValues(config.getParameters());
+        }
 
         return configs;
 

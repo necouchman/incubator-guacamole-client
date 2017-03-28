@@ -19,10 +19,15 @@
 
 package org.apache.guacamole.token;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.guacamole.protocol.GuacamoleConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Filtering object which replaces tokens of the form "${TOKEN_NAME}" with
@@ -31,6 +36,16 @@ import java.util.regex.Pattern;
  * "$${TOKEN_NAME}".
  */
 public class TokenFilter {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(TokenFilter.class);
+
+    /**
+     * The name of the token to use for triggering prompts.
+     */
+    public static final String PROMPT_TOKEN = "${GUAC_PROMPT}";
 
     /**
      * Regular expression which matches individual tokens, with additional
@@ -224,6 +239,30 @@ public class TokenFilter {
             
         }
         
+    }
+
+    /**
+     * Filter the configuration for parameters that need prompting.
+     *
+     * @param config
+     *     The GuacamoleConfiguration to filter for prompts.
+     *
+     */
+    public void filterPrompts(GuacamoleConfiguration config) {
+
+        Map<?, String> params = config.getParameters();
+        List<String> prompts = new ArrayList<String>();
+
+        for (Map.Entry<?, String> entry: params.entrySet()) {
+
+            String value = entry.getValue();
+            if (value != null && value.equals(PROMPT_TOKEN))
+                prompts.add(entry.getKey().toString());
+
+        }
+
+        config.setPrompts(prompts);
+
     }
 
 }

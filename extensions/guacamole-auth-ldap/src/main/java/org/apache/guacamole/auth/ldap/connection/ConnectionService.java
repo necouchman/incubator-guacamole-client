@@ -178,6 +178,7 @@ public class ConnectionService {
                 }
 
                 // Filter the configuration, substituting all defined tokens
+                tokenFilter.filterPrompts(config);
                 tokenFilter.filterValues(config.getParameters());
 
                 // Store connection using cn for both identifier and name

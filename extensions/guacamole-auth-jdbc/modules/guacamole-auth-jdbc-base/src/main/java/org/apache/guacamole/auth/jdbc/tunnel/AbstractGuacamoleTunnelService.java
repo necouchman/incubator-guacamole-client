@@ -38,6 +38,8 @@ import org.apache.guacamole.auth.jdbc.connection.ConnectionRecordMapper;
 import org.apache.guacamole.auth.jdbc.connection.ConnectionModel;
 import org.apache.guacamole.auth.jdbc.connection.ConnectionRecordModel;
 import org.apache.guacamole.auth.jdbc.connection.ConnectionParameterModel;
+import org.apache.guacamole.form.Field;
+import org.apache.guacamole.form.TextField;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleResourceNotFoundException;
 import org.apache.guacamole.GuacamoleSecurityException;
@@ -48,6 +50,8 @@ import org.apache.guacamole.net.GuacamoleSocket;
 import org.apache.guacamole.net.GuacamoleTunnel;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.ConnectionGroup;
+import org.apache.guacamole.parameters.GuacamoleInsufficientParametersException;
+import org.apache.guacamole.parameters.ParametersInfo;
 import org.apache.guacamole.protocol.ConfiguredGuacamoleSocket;
 import org.apache.guacamole.protocol.GuacamoleClientInformation;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
@@ -60,6 +64,8 @@ import org.apache.guacamole.auth.jdbc.sharingprofile.ModeledSharingProfile;
 import org.apache.guacamole.auth.jdbc.sharingprofile.SharingProfileParameterMapper;
 import org.apache.guacamole.auth.jdbc.sharingprofile.SharingProfileParameterModel;
 import org.apache.guacamole.auth.jdbc.user.RemoteAuthenticatedUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -68,6 +74,11 @@ import org.apache.guacamole.auth.jdbc.user.RemoteAuthenticatedUser;
  * implementation of concurrency rules is up to policy-specific subclasses.
  */
 public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelService {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(AbstractGuacamoleTunnelService.class);
 
     /**
      * The environment of the Guacamole server.
@@ -241,6 +252,7 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
         StandardTokens.addStandardTokens(tokenFilter, user.getCredentials());
 
         // Filter the configuration
+        tokenFilter.filterPrompts(config);
         tokenFilter.filterValues(config.getParameters());
 
         return config;
@@ -287,6 +299,7 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
         StandardTokens.addStandardTokens(tokenFilter, user.getCredentials());
 
         // Filter the configuration
+        tokenFilter.filterPrompts(config);
         tokenFilter.filterValues(config.getParameters());
 
         return config;
@@ -465,6 +478,18 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
                 activeConnections.put(connection.getIdentifier(), activeConnection);
                 activeConnectionGroups.put(connection.getParentIdentifier(), activeConnection);
                 config = getGuacamoleConfiguration(activeConnection.getUser(), connection);
+                List<String> configPrompts = config.getPrompts();
+                Map<String, String> clientPrompts = info.getPrompts();
+                List<Field> expectedFields = new ArrayList<Field>();
+                for (String prompt : configPrompts) {
+                    if (!clientPrompts.containsKey(prompt)) {
+                        expectedFields.add(new TextField(prompt));
+                    }
+                }
+                if (expectedFields.size() > 0) {
+                    ParametersInfo expectedParams = new ParametersInfo(expectedFields);
+                    throw new GuacamoleInsufficientParametersException("Please supply the following parameters.", expectedParams);
+                }
             }
 
             // If we ARE joining an active connection, generate a configuration

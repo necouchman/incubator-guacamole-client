@@ -19,7 +19,10 @@
 
 package org.apache.guacamole.tunnel;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.guacamole.GuacamoleClientException;
 import org.apache.guacamole.GuacamoleClientException;
 import org.apache.guacamole.GuacamoleException;
@@ -95,6 +98,12 @@ public abstract class TunnelRequest {
      * once for each mimetype.
      */
     public static final String IMAGE_PARAMETER = "GUAC_IMAGE";
+
+    /**
+     * The name of the parameter specifying data user entered in response
+     * to prompts.  This parameter will be an array of values.
+     */
+    public static final String PROMPT_PARAMETER = "GUAC_PROMPTS";
 
     /**
      * All supported object types that can be used as the destination of a
@@ -364,6 +373,30 @@ public abstract class TunnelRequest {
      */
     public List<String> getImageMimetypes() {
         return getParameterValues(IMAGE_PARAMETER);
+    }
+
+    /**
+     * Returns a Map of all prompts entered by the client within the tunnel
+     * request.
+     *
+     * @return
+     *     A Map of all prompts entered by the client within the tunnel
+     *     request, or an empty set if none were specified.
+     */
+    public Map<String, String> getPrompts() {
+        String paramValue = getParameter(PROMPT_PARAMETER);
+        
+        // If we don't get a value, just return an empty set.
+        if (paramValue == null)
+            return Collections.<String, String>emptyMap();
+
+        // Split the value into key/value pairs
+        Map<String, String> prompts = new HashMap<String, String>();
+        for (String pair : paramValue.split("&")) {
+            String[] kv = pair.split("=");
+            prompts.put(kv[0], kv[1]);
+        }
+        return prompts;
     }
 
 }

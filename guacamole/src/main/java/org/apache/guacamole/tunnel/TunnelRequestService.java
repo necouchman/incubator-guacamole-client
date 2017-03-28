@@ -22,6 +22,7 @@ package org.apache.guacamole.tunnel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
+import java.util.Map;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleSecurityException;
 import org.apache.guacamole.GuacamoleSession;
@@ -106,6 +107,11 @@ public class TunnelRequestService {
         List<String> imageMimetypes = request.getImageMimetypes();
         if (imageMimetypes != null)
             info.getImageMimetypes().addAll(imageMimetypes);
+
+        // Add prompts
+        Map<String, String> prompts = request.getPrompts();
+        if (prompts != null)
+            info.getPrompts().putAll(prompts);
 
         return info;
     }
