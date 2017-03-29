@@ -20,6 +20,7 @@
 package org.apache.guacamole.rest.connection;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -66,6 +67,11 @@ public class APIConnection {
     private Map<String, String> attributes;
 
     /**
+     * List of all prompts needed for the connection.
+     */
+    private List<String> prompts;
+
+    /**
      * All associated sharing profiles. If sharing profiles are not being
      * queried, this may be omitted.
      */
@@ -104,6 +110,7 @@ public class APIConnection {
 
         // Associate any attributes
         this.attributes = connection.getAttributes();
+        this.prompts = connection.getPrompts();
 
     }
 
@@ -231,6 +238,20 @@ public class APIConnection {
      */
     public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
+    }
+
+    /**
+     *
+     */
+    public List<String> getPrompts() {
+        return prompts;
+    }
+
+    /**
+     *
+     */
+    public void setPrompts(List<String> prompts) {
+        this.prompts = prompts;
     }
 
     /**

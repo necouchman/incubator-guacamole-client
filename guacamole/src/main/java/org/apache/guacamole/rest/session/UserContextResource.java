@@ -24,6 +24,8 @@ import org.apache.guacamole.rest.directory.DirectoryResourceFactory;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -41,6 +43,7 @@ import org.apache.guacamole.rest.connectiongroup.APIConnectionGroup;
 import org.apache.guacamole.rest.directory.DirectoryObjectResource;
 import org.apache.guacamole.rest.directory.DirectoryObjectResourceFactory;
 import org.apache.guacamole.rest.history.HistoryResource;
+import org.apache.guacamole.rest.prompts.PromptResource;
 import org.apache.guacamole.rest.schema.SchemaResource;
 import org.apache.guacamole.rest.sharingprofile.APISharingProfile;
 import org.apache.guacamole.rest.user.APIUser;
@@ -251,6 +254,15 @@ public class UserContextResource {
     @Path("schema")
     public SchemaResource getSchemaResource() {
         return new SchemaResource(userContext);
+    }
+
+    /**
+     *
+     */
+    @Path("prompts")
+    public PromptResource getConnectionPrompts() {
+        logger.debug(">>>>>rest/session/prompts");
+        return new PromptResource(userContext);
     }
 
 }

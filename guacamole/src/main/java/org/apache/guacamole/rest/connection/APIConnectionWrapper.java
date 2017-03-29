@@ -122,6 +122,16 @@ public class APIConnectionWrapper implements Connection {
     }
 
     @Override
+    public List<String> getPrompts() {
+        return apiConnection.getPrompts();
+    }
+
+    @Override
+    public void setPrompts(List<String> prompts) {
+        apiConnection.setPrompts(prompts);
+    }
+
+    @Override
     public Set<String> getSharingProfileIdentifiers() {
         throw new UnsupportedOperationException("Operation not supported.");
     }
