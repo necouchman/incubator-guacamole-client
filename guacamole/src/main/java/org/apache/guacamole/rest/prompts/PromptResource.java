@@ -21,13 +21,17 @@ package org.apache.guacamole.rest.prompts;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.auth.ConnectionRecord;
 import org.apache.guacamole.net.auth.ConnectionRecordSet;
@@ -88,6 +92,22 @@ public class PromptResource {
         logger.debug(">>>>>rest/prompts/{}", identifier);
 
         return userContext.getConnectionDirectory().get(identifier).getPrompts();
+
+    }
+
+    @POST
+    @Path("{identifier}")
+    public boolean checkConnectionPrompts(
+            @PathParam("identifier") String identifier,
+            @Context HttpServletRequest consumedRequest,
+            MultivaluedMap<String, String> parameters
+            )
+            throws GuacamoleException {
+
+        logger.debug(">>>>>rest/prompts/{}", identifier);
+        List<String> connectionPrompts = userContext.getConnectionDirectory().get(identifier).getPrompts();
+        
+        return false;
 
     }
 
