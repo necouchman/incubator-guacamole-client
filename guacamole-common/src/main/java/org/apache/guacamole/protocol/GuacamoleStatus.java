@@ -142,7 +142,13 @@ public enum GuacamoleStatus {
      * The operation failed because the current client is already using too
      * many resources.
      */
-    CLIENT_TOO_MANY(429, 1008, 0x031D);
+    CLIENT_TOO_MANY(429, 1008, 0x031D),
+
+    /**
+     * The operation failed because the client did not provide the required
+     * parameters to complete the connection.
+     */
+    CLIENT_INSUFFICIENT_PARAMETERS(400, 1002, 0x031F);
 
     /**
      * The most applicable HTTP error code.
