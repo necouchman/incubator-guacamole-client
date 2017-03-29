@@ -90,7 +90,7 @@ public interface Connection extends Identifiable, Connectable {
      *     for all attributes associated with this connection, which may not be
      *     modifiable.
      */
-    Map<String, String> getAttributes();
+    public Map<String, String> getAttributes();
 
     /**
      * Sets the given attributes. If an attribute within the map is not
@@ -100,7 +100,17 @@ public interface Connection extends Identifiable, Connectable {
      * @param attributes
      *     A map of all attribute identifiers to their corresponding values.
      */
-    void setAttributes(Map<String, String> attributes);
+    public void setAttributes(Map<String, String> attributes);
+
+    /**
+     *
+     */
+    public List<String> getPrompts();
+
+    /**
+     *
+     */
+    public void setPrompts(List<String> prompts);
 
     /**
      * Returns a list of ConnectionRecords representing the usage history

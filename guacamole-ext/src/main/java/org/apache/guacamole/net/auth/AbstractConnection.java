@@ -20,6 +20,7 @@
 package org.apache.guacamole.net.auth;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
@@ -46,6 +47,11 @@ public abstract class AbstractConnection extends AbstractIdentifiable
      * The GuacamoleConfiguration associated with this connection.
      */
     private GuacamoleConfiguration configuration;
+
+    /**
+     * The prompts needed to allow connection to continue.
+     */
+    private List<String> prompts;
 
     @Override
     public String getName() {
@@ -81,6 +87,16 @@ public abstract class AbstractConnection extends AbstractIdentifiable
     public Set<String> getSharingProfileIdentifiers()
             throws GuacamoleException {
         return Collections.<String>emptySet();
+    }
+
+    @Override
+    public List<String> getPrompts() {
+        return prompts;
+    }
+
+    @Override
+    public void setPrompts(List<String> prompts) {
+        this.prompts = prompts;
     }
 
 }

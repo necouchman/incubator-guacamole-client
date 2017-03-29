@@ -19,7 +19,9 @@
 
 package org.apache.guacamole.auth.jdbc.connection;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.guacamole.auth.jdbc.base.ChildObjectModel;
 
@@ -58,6 +60,11 @@ public class ConnectionModel extends ChildObjectModel {
      * connection.
      */
     private Set<String> sharingProfileIdentifiers = new HashSet<String>();
+
+    /**
+     * The prompts needed to successfully complete the connection.
+     */
+    private List<String> prompts = new ArrayList<String>();
 
     /**
      * Creates a new, empty connection.
@@ -182,6 +189,20 @@ public class ConnectionModel extends ChildObjectModel {
      */
     public void setSharingProfileIdentifiers(Set<String> sharingProfileIdentifiers) {
         this.sharingProfileIdentifiers = sharingProfileIdentifiers;
+    }
+
+    /**
+     *
+     */
+    public List<String> getPrompts() {
+        return prompts;
+    }
+
+    /**
+     *
+     */
+    public void setPrompts(List<String> prompts) {
+        this.prompts = prompts;
     }
 
     @Override
