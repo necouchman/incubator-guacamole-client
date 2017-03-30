@@ -34,6 +34,16 @@ import org.apache.guacamole.protocol.GuacamoleConfiguration;
 public interface Connection extends Identifiable, Connectable {
 
     /**
+     * String that identifies a parameter as promptable.
+     */
+    public static final String PROMPT_TOKEN = "GUAC_PROMPT";
+
+    /**
+     * Integer value for numeric fields to triger a prompt.
+     */
+    public static final int PROMPT_NUMERIC = -1;
+
+    /**
      * Returns the name assigned to this Connection.
      * @return The name assigned to this Connection.
      */
@@ -106,11 +116,6 @@ public interface Connection extends Identifiable, Connectable {
      *
      */
     public List<String> getPrompts();
-
-    /**
-     *
-     */
-    public void setPrompts(List<String> prompts);
 
     /**
      * Returns a list of ConnectionRecords representing the usage history

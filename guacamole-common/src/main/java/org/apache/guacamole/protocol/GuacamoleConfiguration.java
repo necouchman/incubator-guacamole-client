@@ -21,8 +21,10 @@ package org.apache.guacamole.protocol;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,6 +54,11 @@ public class GuacamoleConfiguration implements Serializable {
      * Map of all associated parameter values, indexed by parameter name.
      */
     private final Map<String, String> parameters = new HashMap<String, String>();
+
+    /**
+     * List of all parameters to prompt for.
+     */
+    private final List<String> prompts = new ArrayList<String>();
 
     /**
      * Creates a new, blank GuacamoleConfiguration with its protocol, connection
@@ -182,6 +189,23 @@ public class GuacamoleConfiguration implements Serializable {
     public void setParameters(Map<String, String> parameters) {
         this.parameters.clear();
         this.parameters.putAll(parameters);
+    }
+
+    /**
+     *
+     */
+    public List<String> getPrompts() {
+        logger.debug(">>*<< getPrompts()");
+        return prompts;
+    }
+
+    /**
+     *
+     */
+    public void setPrompts(List<String> prompts) {
+        logger.debug(">>*<< setPrompts() {}", prompts.size());
+        this.prompts.clear();
+        this.prompts.addAll(prompts);
     }
 
 }

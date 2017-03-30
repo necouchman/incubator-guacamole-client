@@ -40,6 +40,7 @@ import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.ConnectionRecord;
 import org.apache.guacamole.protocol.GuacamoleClientInformation;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
+import org.apache.guacamole.token.PromptFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -210,12 +211,11 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
 
     @Override
     public List<String> getPrompts() {
-        return getModel().getPrompts();
-    }
-
-    @Override
-    public void setPrompts(List<String> prompts) {
-       getModel().setPrompts(prompts);
+        logger.debug(">>*<< In method getPrompts()");
+        PromptFilter promptFilter = new PromptFilter();
+        List<String> prompts = promptFilter.filterPrompts(getConfiguration().getParameters());
+        logger.debug(">>*<< getPrompts() return {} prompts.", prompts.size());
+        return prompts;
     }
 
     /**

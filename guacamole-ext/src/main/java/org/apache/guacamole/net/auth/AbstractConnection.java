@@ -91,12 +91,9 @@ public abstract class AbstractConnection extends AbstractIdentifiable
 
     @Override
     public List<String> getPrompts() {
-        return prompts;
-    }
-
-    @Override
-    public void setPrompts(List<String> prompts) {
-        this.prompts = prompts;
+        logger.debug(">>*<<In AbstractConnection getPrompts()");
+        PromptFilter promptFilter = new PromptFilter();
+        return promptFilter.filterPrompts(getConfiguration().getParameters());
     }
 
 }

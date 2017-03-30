@@ -248,13 +248,6 @@ public class APIConnection {
     }
 
     /**
-     *
-     */
-    public void setPrompts(List<String> prompts) {
-        this.prompts = prompts;
-    }
-
-    /**
      * Returns a collection of all associated sharing profiles, or null if
      * sharing profiles have not been queried.
      *

@@ -51,6 +51,7 @@ import org.apache.guacamole.net.auth.ConnectionGroup;
 import org.apache.guacamole.protocol.ConfiguredGuacamoleSocket;
 import org.apache.guacamole.protocol.GuacamoleClientInformation;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
+import org.apache.guacamole.token.PromptFilter;
 import org.apache.guacamole.token.StandardTokens;
 import org.apache.guacamole.token.TokenFilter;
 import org.mybatis.guice.transactional.Transactional;
@@ -242,6 +243,10 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
 
         // Filter the configuration
         tokenFilter.filterValues(config.getParameters());
+
+        // Filter for prompts
+        PromptFilter promptFilter = new PromptFilter();
+        config.setPrompts(promptFilter.filterPrompts(config.getParameters()));
 
         return config;
         

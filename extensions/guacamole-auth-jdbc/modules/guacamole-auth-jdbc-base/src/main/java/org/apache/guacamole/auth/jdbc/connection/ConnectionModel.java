@@ -198,13 +198,6 @@ public class ConnectionModel extends ChildObjectModel {
         return prompts;
     }
 
-    /**
-     *
-     */
-    public void setPrompts(List<String> prompts) {
-        this.prompts = prompts;
-    }
-
     @Override
     public String getIdentifier() {
 

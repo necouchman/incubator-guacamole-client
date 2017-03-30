@@ -153,11 +153,6 @@ public class SharedConnection implements Connection {
     }
 
     @Override
-    public void setPrompts(List<String> prompts) {
-        // Do nothing.
-    }
-
-    @Override
     public List<? extends ConnectionRecord> getHistory()
             throws GuacamoleException {
         return Collections.<ConnectionRecord>emptyList();
