@@ -20,9 +20,11 @@
 package org.apache.guacamole.auth.jdbc.connection;
 
 import com.google.inject.Inject;
+import java.util.List;
 import java.util.Map;
 import org.apache.guacamole.auth.jdbc.user.ModeledAuthenticatedUser;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
+import org.apache.guacamole.token.PromptFilter;
 
 /**
  * Implementation of GuacamoleConfiguration which loads parameter values only
@@ -52,6 +54,11 @@ public class ModeledGuacamoleConfiguration extends GuacamoleConfiguration {
      * The manually-set parameter map, if any.
      */
     private Map<String, String> parameters = null;
+
+    /**
+     * The manually-set prompts, if any.
+     */
+    private List<String> prompts = null;
     
     /**
      * Creates a new, empty ModelGuacamoleConfiguration.
@@ -109,6 +116,18 @@ public class ModeledGuacamoleConfiguration extends GuacamoleConfiguration {
         }
 
         return super.getParameters();
+
+    }
+
+    @Override
+    public List<String> getPrompts() {
+
+        if (prompts == null) {
+            List<String> prompts = connectionService.retrievePrompts(connectionModel.getIdentifier());
+            super.setPrompts(prompts);
+        }
+
+        return super.getPrompts();
 
     }
 

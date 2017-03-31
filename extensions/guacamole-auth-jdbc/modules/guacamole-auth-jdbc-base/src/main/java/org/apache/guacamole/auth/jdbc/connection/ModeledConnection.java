@@ -212,10 +212,16 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
     @Override
     public List<String> getPrompts() {
         logger.debug(">>*<< In method getPrompts()");
-        PromptFilter promptFilter = new PromptFilter();
-        List<String> prompts = promptFilter.filterPrompts(getConfiguration().getParameters());
-        logger.debug(">>*<< getPrompts() return {} prompts.", prompts.size());
-        return prompts;
+        // If configuration has been manually set, return that
+        if (config != null)
+            return config.getPrompts();
+
+        logger.debug(">>*<< getConfiguration(): No local config, grabbing restricted config.");
+        // Otherwise, return permission-controlled configuration
+        ModeledGuacamoleConfiguration restrictedConfig = configProvider.get();
+        restrictedConfig.init(getCurrentUser(), getModel());
+        logger.debug(">>*<< getPrompts() return {} prompts.", restrictedConfig.getPrompts().size());
+        return restrictedConfig.getPrompts();
     }
 
     /**

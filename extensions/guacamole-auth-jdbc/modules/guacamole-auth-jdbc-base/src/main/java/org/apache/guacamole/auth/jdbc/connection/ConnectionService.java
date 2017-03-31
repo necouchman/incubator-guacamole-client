@@ -45,6 +45,7 @@ import org.apache.guacamole.net.auth.permission.ObjectPermissionSet;
 import org.apache.guacamole.net.auth.permission.SystemPermission;
 import org.apache.guacamole.net.auth.permission.SystemPermissionSet;
 import org.apache.guacamole.protocol.GuacamoleClientInformation;
+import org.apache.guacamole.token.PromptFilter;
 
 /**
  * Service which provides convenience methods for creating, retrieving, and
@@ -346,6 +347,17 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
         }
 
         return parameterMap;
+
+    }
+
+    public List<String> retrievePrompts(String identifier) {
+
+        Map<String, String> parameterMap = new HashMap<String, String>();
+        PromptFilter promptFilter = new PromptFilter();
+        for (ConnectionParameterModel parameter : parameterMapper.select(identifier))
+            parameterMap.put(parameter.getName(), parameter.getValue());
+
+        return promptFilter.filterPrompts(parameterMap);
 
     }
 
