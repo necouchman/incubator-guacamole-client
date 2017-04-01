@@ -33,6 +33,7 @@ import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleResourceNotFoundException;
 import org.apache.guacamole.GuacamoleSecurityException;
 import org.apache.guacamole.GuacamoleUnauthorizedException;
+import org.apache.guacamole.parameters.GuacamoleInsufficientParametersException;
 import org.apache.guacamole.rest.auth.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,6 +177,10 @@ public class RESTExceptionWrapper implements MethodInterceptor {
         }
         catch (GuacamoleResourceNotFoundException e) {
             throw new APIException(Response.Status.NOT_FOUND, e);
+        }
+        catch (GuacamoleInsufficientParametersException e) {
+            logger.debug(">>*<< InsufficientParameters->APIException: {}", e.getMessage());
+            throw new APIException(Response.Status.BAD_REQUEST, e);
         }
         catch (GuacamoleClientException e) {
             throw new APIException(Response.Status.BAD_REQUEST, e);

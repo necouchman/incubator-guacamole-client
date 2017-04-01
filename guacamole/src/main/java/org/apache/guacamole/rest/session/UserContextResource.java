@@ -261,7 +261,6 @@ public class UserContextResource {
      */
     @Path("prompts")
     public PromptResource getConnectionPrompts() {
-        logger.debug(">>>>>rest/session/prompts");
         return new PromptResource(userContext);
     }
 

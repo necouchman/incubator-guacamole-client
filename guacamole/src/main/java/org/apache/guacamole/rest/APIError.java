@@ -30,6 +30,7 @@ import org.apache.guacamole.language.TranslatableMessage;
 import org.apache.guacamole.net.auth.credentials.GuacamoleCredentialsException;
 import org.apache.guacamole.net.auth.credentials.GuacamoleInsufficientCredentialsException;
 import org.apache.guacamole.net.auth.credentials.GuacamoleInvalidCredentialsException;
+import org.apache.guacamole.parameters.GuacamoleInsufficientParametersException;
 import org.apache.guacamole.tunnel.GuacamoleStreamException;
 
 /**
@@ -85,6 +86,12 @@ public class APIError {
         INSUFFICIENT_CREDENTIALS,
 
         /**
+         * The parameters provided were not necessarily invalid, but were not
+         * sufficient to complete the connection.
+         */
+        INSUFFICIENT_PARAMETERS,
+
+        /**
          * An internal server error has occurred.
          */
         INTERNAL_ERROR,
@@ -135,6 +142,10 @@ public class APIError {
             if (exception instanceof GuacamoleResourceNotFoundException)
                 return NOT_FOUND;
 
+            // Additional parameters are needed
+            if (exception instanceof GuacamoleInsufficientParametersException)
+                return INSUFFICIENT_PARAMETERS;
+
             // Arbitrary bad requests
             if (exception instanceof GuacamoleClientException)
                 return BAD_REQUEST;
@@ -171,6 +182,11 @@ public class APIError {
             GuacamoleCredentialsException credentialsException = (GuacamoleCredentialsException) exception;
             this.expected = credentialsException.getCredentialsInfo().getFields();
         }
+        // Add expected parameters if applicable
+        else if (exception instanceof GuacamoleInsufficientParametersException) {
+            GuacamoleInsufficientParametersException paramsException = (GuacamoleInsufficientParametersException) exception;
+            this.expected = paramsException.getParametersInfo().getFields();
+        }
         else
             this.expected = null;
 
@@ -178,6 +194,10 @@ public class APIError {
         if (exception instanceof GuacamoleStreamException) {
             GuacamoleStreamException streamException = (GuacamoleStreamException) exception;
             this.statusCode = streamException.getStatus().getGuacamoleStatusCode();
+        }
+        else if (exception instanceof GuacamoleInsufficientCredentialsException) {
+            GuacamoleInsufficientParametersException paramsException = (GuacamoleInsufficientParametersException) exception;
+            this.statusCode = paramsException.getStatus().getGuacamoleStatusCode();
         }
         else
             this.statusCode = null;

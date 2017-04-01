@@ -195,7 +195,6 @@ public class GuacamoleConfiguration implements Serializable {
      *
      */
     public List<String> getPrompts() {
-        logger.debug(">>*<< getPrompts()");
         return prompts;
     }
 
@@ -203,7 +202,6 @@ public class GuacamoleConfiguration implements Serializable {
      *
      */
     public void setPrompts(List<String> prompts) {
-        logger.debug(">>*<< setPrompts() {}", prompts.size());
         this.prompts.clear();
         this.prompts.addAll(prompts);
     }

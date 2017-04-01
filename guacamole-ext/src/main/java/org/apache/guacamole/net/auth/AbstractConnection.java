@@ -91,7 +91,6 @@ public abstract class AbstractConnection extends AbstractIdentifiable
 
     @Override
     public List<String> getPrompts() {
-        logger.debug(">>*<<In AbstractConnection getPrompts()");
         return configuration.getPrompts();
     }
 

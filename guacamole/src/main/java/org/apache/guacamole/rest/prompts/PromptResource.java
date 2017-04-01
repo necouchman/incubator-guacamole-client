@@ -36,6 +36,8 @@ import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.auth.ConnectionRecord;
 import org.apache.guacamole.net.auth.ConnectionRecordSet;
 import org.apache.guacamole.net.auth.UserContext;
+import org.apache.guacamole.parameters.GuacamoleInsufficientParametersException;
+import org.apache.guacamole.parameters.ParametersInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,18 +98,39 @@ public class PromptResource {
     }
 
     @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("{identifier}")
-    public boolean checkConnectionPrompts(
+    public List<String> checkConnectionPrompts(
             @PathParam("identifier") String identifier,
             @Context HttpServletRequest consumedRequest,
             MultivaluedMap<String, String> parameters
             )
             throws GuacamoleException {
 
-        logger.debug(">>>>>rest/prompts/{}", identifier);
+        logger.debug(">>>>>rest/prompts/{} (POST)", identifier);
         List<String> connectionPrompts = userContext.getConnectionDirectory().get(identifier).getPrompts();
-        
-        return false;
+        List<String> requiredParams = new ArrayList<String>();
+
+        // If we don't get any prompts back, call it good and return the empty array.
+        if (connectionPrompts == null || connectionPrompts.size() < 1)
+            return requiredParams;
+
+        for (String prompt : connectionPrompts) {
+            if (parameters.get(prompt) == null) {
+                requiredParams.add(prompt);
+            }
+        }
+
+        logger.debug(">>*<< requiredParams size is {}", requiredParams.size());
+
+        /*
+        if (requiredParams.size() > 0)
+            throw new GuacamoleInsufficientParametersException("Please enter the following parameters",
+                new ParametersInfo(requiredParams));
+        */
+
+        return requiredParams;
 
     }
 
