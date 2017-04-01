@@ -200,6 +200,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
     var getConnectString = function getConnectString(identifier, connectionParameters) {
 
         var deferred = $q.defer();
+        console.log(connectionParameters);
 
         // Calculate optimal width/height for display
         var pixel_density = $window.devicePixelRatio || 1;
@@ -216,7 +217,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
             + "&GUAC_WIDTH="       + Math.floor(optimal_width)
             + "&GUAC_HEIGHT="      + Math.floor(optimal_height)
             + "&GUAC_DPI="         + Math.floor(optimal_dpi)
-            + (connectionParameters ? '&' + connectionParameters : '');
+            + (connectionParameters ? connectionParameters : '');
 
         // Add audio mimetypes to connect string
         guacAudio.supported.forEach(function(mimetype) {
@@ -488,18 +489,13 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
         // Parse connection details from ID
         var clientIdentifier = ClientIdentifier.fromString(id);
 
-        // Connect the Guacamole client
-        getConnectString(clientIdentifier, connectionParameters)
-        .then(function connectClient(connectString) {
-            client.connect(connectString);
-        });
-
         // If using a connection, pull connection name
         if (clientIdentifier.type === ClientIdentifier.Types.CONNECTION) {
             connectionService.getConnection(clientIdentifier.dataSource, clientIdentifier.id)
             .success(function connectionRetrieved(connection) {
                 managedClient.name = connection.name;
             });
+
         }
         
         // If using a connection group, pull connection name
@@ -508,7 +504,23 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
             .success(function connectionGroupRetrieved(group) {
                 managedClient.name = group.name;
             });
+
         }
+
+        // Connect the Guacamole client
+        connectionService.getConnectionPrompts(clientIdentifier.dataSource, clientIdentifier.id)
+        .then(function(promptObject) {
+            console.log(promptObject['data']);
+            promptParameters = '';
+            angular.forEach(promptObject['data']['prompts'], function(value) {
+                promptParameters += '&' + value + '=' + encodeURIComponent(prompt('Please enter a value for the ' + value + ' parameter.'));
+            });
+            connectionParameters = (connectionParameters ? connectionParameters + '&' + promptParameters : promptParameters);
+            getConnectString(clientIdentifier, connectionParameters)
+            .then(function connectClient(connectString) {
+                client.connect(connectString);
+            });
+        });
 
         return managedClient;
 

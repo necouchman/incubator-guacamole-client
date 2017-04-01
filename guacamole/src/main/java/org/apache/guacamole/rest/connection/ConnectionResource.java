@@ -23,11 +23,14 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.apache.guacamole.GuacamoleException;
@@ -50,6 +53,8 @@ import org.apache.guacamole.rest.directory.DirectoryObjectTranslator;
 import org.apache.guacamole.rest.directory.DirectoryResource;
 import org.apache.guacamole.rest.directory.DirectoryResourceFactory;
 import org.apache.guacamole.rest.sharingprofile.APISharingProfile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A REST resource which abstracts the operations available on an existing
@@ -58,6 +63,11 @@ import org.apache.guacamole.rest.sharingprofile.APISharingProfile;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ConnectionResource extends DirectoryObjectResource<Connection, APIConnection> {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionResource.class);
 
     /**
      * The UserContext associated with the Directory which contains the
@@ -103,6 +113,7 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
         super(directory, connection, translator);
         this.userContext = userContext;
         this.connection = connection;
+        logger.debug(">>>>>rest/connection/ConnectionResource");
     }
 
     /**
@@ -118,6 +129,8 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
     @Path("parameters")
     public Map<String, String> getConnectionParameters()
             throws GuacamoleException {
+
+        logger.debug(">>>>>rest/connection/parameters for {}", connection.getName());
 
         User self = userContext.self();
 
@@ -154,6 +167,8 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
     public List<APIConnectionRecord> getConnectionHistory()
             throws GuacamoleException {
 
+        logger.debug(">>>>>rest/connection/history for {}", connection.getName());
+
         // Retrieve the requested connection's history
         List<APIConnectionRecord> apiRecords = new ArrayList<APIConnectionRecord>();
         for (ConnectionRecord record : connection.getHistory())
@@ -181,6 +196,8 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
     public DirectoryResource<SharingProfile, APISharingProfile>
             getSharingProfileDirectoryResource() throws GuacamoleException {
 
+        logger.debug(">>>>>rest/connection/sharingProfiles for {}", connection.getName());
+
         // Produce subset of all SharingProfiles, containing only those which
         // are associated with this connection
         Directory<SharingProfile> sharingProfiles = new DirectoryView<SharingProfile>(
@@ -191,6 +208,33 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
         // Return a new resource which provides access to only those SharingProfiles
         return sharingProfileDirectoryResourceFactory.create(userContext, sharingProfiles);
 
+    }
+
+    /**
+     *
+     */
+    @GET
+    @Path("prompts")
+    public Map<String, List<String>> getConnectionPrompts() throws GuacamoleException {
+
+        logger.debug(">>>>>rest/connection/prompts for {}", connection.getName());
+        Map<String, List<String>> promptsMap = new HashMap<String, List<String>>();
+
+        promptsMap.put("protocol", Collections.singletonList(connection.getConfiguration().getProtocol()));
+        promptsMap.put("prompts", connection.getConfiguration().getPrompts());
+
+        return promptsMap;
+
+    }
+
+    /**
+     *
+     */
+    @POST
+    @Path("checkPrompts")
+    public boolean checkConnectionPrompts() throws GuacamoleException {
+        logger.debug(">>>>>rest/connection/checkPrompts for {}", connection.getName());
+        return true;
     }
 
 }

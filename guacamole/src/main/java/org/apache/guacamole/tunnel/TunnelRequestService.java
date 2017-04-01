@@ -330,7 +330,7 @@ public class TunnelRequestService {
 
         try {
 
-            checkForPrompts(userContext, type, id, request);
+            checkForPrompts(userContext, type, id, request, info);
 
             // Create connected tunnel using provided connection ID and client information
             GuacamoleTunnel tunnel = createConnectedTunnel(userContext, type, id, info);
@@ -354,7 +354,7 @@ public class TunnelRequestService {
 
     }
 
-    private void checkForPrompts(UserContext context, TunnelRequest.Type type, String id, TunnelRequest request) 
+    private void checkForPrompts(UserContext context, TunnelRequest.Type type, String id, TunnelRequest request, GuacamoleClientInformation info)
         throws GuacamoleException {
 
         Connection connection = context.getConnectionDirectory().get(id);
@@ -362,9 +362,11 @@ public class TunnelRequestService {
         List<Field> missingPrompts = new ArrayList<Field>();
         if (requiredPrompts != null && requiredPrompts.size() > 0) {
 
-            for (String prompt : requiredPrompts)
+            for (String prompt : requiredPrompts) {
                 if(request.getParameter(prompt) == null)
                     missingPrompts.add(new TextField(prompt));
+                info.getPrompts().put(prompt, request.getRequiredParameter(prompt));    
+            }
 
             if (missingPrompts.size() > 0)
                 throw new GuacamoleInsufficientParametersException("You are missing the following parameters: ", new ParametersInfo(missingPrompts));
