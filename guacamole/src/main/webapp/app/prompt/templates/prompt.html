@@ -1,0 +1,30 @@
+<div class="prompt-ui" ng-class="prompt.className">
+
+    <div class="prompt-dialog-middle">
+
+        <div class="prompt-dialog">
+
+            <form class="prompt-form" ng-submit="prompt()">
+
+                <!-- Prompt message/instructions -->
+                <p ng-show="helpText" translate="{{helpText.key}}"
+                   translate-values="{{helpText.variables}}"></p>
+
+                <!-- Prompt fields -->
+                <div class="prompt-fields">
+                    <guac-form namespace="'PROMPT'" content="remainingFields" model="enteredValues"></guac-form>
+                </div>
+
+                <!-- Submit button -->
+                <div class="buttons">
+                    <input type="submit" name="prompt" class="prompt" value="{{'PROMPT.ACTION_CONNECT' | translate}}"/>
+                    <input type="submit" name="prompt" class="continue-prompt" value="{{'PROMPT.ACTION_CONTINUE' | translate}}"/>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
