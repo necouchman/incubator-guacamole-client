@@ -61,6 +61,8 @@ import org.apache.guacamole.auth.jdbc.sharingprofile.ModeledSharingProfile;
 import org.apache.guacamole.auth.jdbc.sharingprofile.SharingProfileParameterMapper;
 import org.apache.guacamole.auth.jdbc.sharingprofile.SharingProfileParameterModel;
 import org.apache.guacamole.auth.jdbc.user.RemoteAuthenticatedUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -69,6 +71,11 @@ import org.apache.guacamole.auth.jdbc.user.RemoteAuthenticatedUser;
  * implementation of concurrency rules is up to policy-specific subclasses.
  */
 public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelService {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(AbstractGuacamoleTunnelService.class);
 
     /**
      * The environment of the Guacamole server.
@@ -470,6 +477,14 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
                 activeConnections.put(connection.getIdentifier(), activeConnection);
                 activeConnectionGroups.put(connection.getParentIdentifier(), activeConnection);
                 config = getGuacamoleConfiguration(activeConnection.getUser(), connection);
+                List<String> expectedPrompts = config.getPrompts();
+                Map<String, String> receivedPrompts = info.getPrompts();
+                logger.debug(">>*<< Expecting {} prompts, got {}.", expectedPrompts.size(), receivedPrompts.size());
+                for (Map.Entry<String, String> entry : receivedPrompts.entrySet()) {
+                    if(!expectedPrompts.contains(entry.getKey().toString()))
+                        logger.warn("Got a prompt for {} that we weren't expecting.", entry.getKey().toString());
+                    config.setParameter(entry.getKey().toString(), entry.getValue().toString());
+                }
             }
 
             // If we ARE joining an active connection, generate a configuration
