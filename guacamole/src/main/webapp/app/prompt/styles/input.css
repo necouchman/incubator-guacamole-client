@@ -32,15 +32,6 @@
     max-width: none;
 }
 
-.prompt-ui .prompt-dialog .buttons input[type="submit"] {
-    width: 100%;
-    margin: 0;
-}
-
-.prompt-ui.continuation .prompt-dialog .buttons input[type="submit"] {
-    width: auto;
-}
-
 .prompt-ui.initial .prompt-dialog input.continue-prompt,
 .prompt-ui.continuation .prompt-dialog input.prompt {
     display: none;

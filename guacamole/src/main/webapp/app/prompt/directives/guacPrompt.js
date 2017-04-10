@@ -26,7 +26,7 @@ angular.module('prompt').directive('guacPrompt', [function guacPrompt() {
     var directive = {
         restrict    : 'E',
         replace     : true,
-        templateUrl : 'app/login/templates/prompt.html'
+        templateUrl : 'app/prompt/templates/prompt.html'
     };
 
     // Prompt directive scope
@@ -56,8 +56,8 @@ angular.module('prompt').directive('guacPrompt', [function guacPrompt() {
     };
 
     // Controller for prompt directive
-    directive.controller = ['$scope', '$injector',
-        function promptController($scope, $injector) {
+    directive.controller = ['$scope', '$injector', '$log',
+        function promptController($scope, $injector, $log) {
         
         // Required types
         var Error = $injector.get('Error');
@@ -83,11 +83,14 @@ angular.module('prompt').directive('guacPrompt', [function guacPrompt() {
         // Ensure provided values are included within entered values, even if
         // they have no corresponding input fields
         $scope.$watch('values', function resetEnteredValues(values) {
+            $log.debug('Reset entered values: ' + values);
             angular.extend($scope.enteredValues, values || {});
         });
 
         // Update field information when form is changed
         $scope.$watch('form', function resetRemainingFields(fields) {
+
+            $log.debug('Reset remaining fields: ' + fields);
 
             // If no fields are provided, then no fields remain
             if (!fields) {
@@ -114,41 +117,15 @@ angular.module('prompt').directive('guacPrompt', [function guacPrompt() {
          */
         $scope.prompt = function prompt() {
 
-            // Attempt login once existing session is destroyed
-            authenticationService.authenticate($scope.enteredValues)
+            $log.debug('In prompt() method.');
+
+            // Attempt to continue connection after prompts are entered
+            promptService.complete($scope.enteredValues)
 
             // Clear and reload upon success
-            .then(function loginSuccessful() {
+            .then(function promptSuccessful() {
                 $scope.enteredValues = {};
                 $route.reload();
-            })
-
-            // Reset upon failure
-            ['catch'](function loginFailed(error) {
-
-                // Clear out passwords if the credentials were rejected for any reason
-                if (error.type !== Error.Type.INSUFFICIENT_CREDENTIALS) {
-
-                    // Flag generic error for invalid login
-                    if (error.type === Error.Type.INVALID_CREDENTIALS)
-                        $scope.loginError = {
-                            'key' : 'LOGIN.ERROR_INVALID_LOGIN'
-                        };
-
-                    // Display error if anything else goes wrong
-                    else
-                        $scope.loginError = error.translatableMessage;
-
-                    // Clear all visible password fields
-                    angular.forEach($scope.remainingFields, function clearEnteredValueIfPassword(field) {
-
-                        // Remove entered value only if field is a password field
-                        if (field.type === Field.Type.PASSWORD && field.name in $scope.enteredValues)
-                            $scope.enteredValues[field.name] = '';
-
-                    });
-                }
-
             });
 
         };

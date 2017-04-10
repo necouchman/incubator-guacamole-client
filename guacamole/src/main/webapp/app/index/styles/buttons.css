@@ -22,7 +22,7 @@ a.button {
     display: inline-block;
 }
 
-input[type="submit"], button, a.button {
+input[type="submit"], input[type="reset"], input[type="button"], button, a.button {
     
     -webkit-appearance: none;
     text-decoration: none;

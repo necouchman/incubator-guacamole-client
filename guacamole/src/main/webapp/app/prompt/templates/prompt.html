@@ -12,13 +12,15 @@
 
                 <!-- Prompt fields -->
                 <div class="prompt-fields">
+                    <input ng-repeat"field in prompt.fields"
                     <guac-form namespace="'PROMPT'" content="remainingFields" model="enteredValues"></guac-form>
                 </div>
 
                 <!-- Submit button -->
                 <div class="buttons">
                     <input type="submit" name="prompt" class="prompt" value="{{'PROMPT.ACTION_CONNECT' | translate}}"/>
-                    <input type="submit" name="prompt" class="continue-prompt" value="{{'PROMPT.ACTION_CONTINUE' | translate}}"/>
+                    <input type="reset" name="reset" class="prompt" value="{{'PROMPT.ACTION_RESET' | translate}}"/>
+                    <input type="button" name="cancel" class="prompt" value="{{'PROMPT.ACTION_CANCEL' | translate}}"/>
                 </div>
 
             </form>
