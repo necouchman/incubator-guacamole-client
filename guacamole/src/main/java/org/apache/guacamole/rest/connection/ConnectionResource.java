@@ -33,6 +33,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.guacamole.environment.LocalEnvironment;
+import org.apache.guacamole.form.Field;
+import org.apache.guacamole.form.Form;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleSecurityException;
 import org.apache.guacamole.net.auth.Connection;
@@ -48,6 +51,7 @@ import org.apache.guacamole.net.auth.permission.SystemPermission;
 import org.apache.guacamole.net.auth.permission.SystemPermissionSet;
 import org.apache.guacamole.rest.history.APIConnectionRecord;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
+import org.apache.guacamole.protocols.ProtocolInfo;
 import org.apache.guacamole.rest.directory.DirectoryObjectResource;
 import org.apache.guacamole.rest.directory.DirectoryObjectTranslator;
 import org.apache.guacamole.rest.directory.DirectoryResource;
@@ -153,6 +157,19 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
     }
 
     /**
+     *
+     */
+    @GET
+    @Path("protocol")
+    public ProtocolInfo getConnectionProtocol()
+            throws GuacamoleException {
+
+        LocalEnvironment env = new LocalEnvironment();
+        return env.getProtocol(connection.getConfiguration().getProtocol());
+
+    }
+
+    /**
      * Retrieves the usage history of a single connection.
      * 
      * @return
@@ -215,13 +232,19 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
      */
     @GET
     @Path("prompts")
-    public Map<String, List<String>> getConnectionPrompts() throws GuacamoleException {
+    public Map<String, String> getConnectionPrompts() throws GuacamoleException {
 
-        logger.debug(">>>>>rest/connection/prompts for {}", connection.getName());
-        Map<String, List<String>> promptsMap = new HashMap<String, List<String>>();
+        logger.debug(">>>>>rest/connection/promptinfo for {}", connection.getName());
+        Map<String, String> promptsMap = new HashMap<String, String>();
 
-        promptsMap.put("protocol", Collections.singletonList(connection.getConfiguration().getProtocol()));
-        promptsMap.put("prompts", connection.getConfiguration().getPrompts());
+        List<String> prompts = connection.getConfiguration().getPrompts();
+        LocalEnvironment env = new LocalEnvironment();
+        ProtocolInfo protocol = env.getProtocol(connection.getConfiguration().getProtocol());
+        for(Form form : protocol.getConnectionForms())
+            for(Field field : form.getFields())
+                for(String prompt : prompts)
+                    if(prompt.equals(field.getName()))
+                        promptsMap.put(prompt, field.getType());
 
         return promptsMap;
 

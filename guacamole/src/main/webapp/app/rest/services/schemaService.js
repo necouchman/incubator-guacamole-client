@@ -197,6 +197,39 @@ angular.module('rest').factory('schemaService', ['$injector',
 
     };
 
+    /**
+     * Makes a request to the REST API to get the promise that provides
+     * Protocol information for the specified protocol.
+     *
+     * @param {String} dataSource
+     *     The unique identifier of the data source defining available
+     *     protocols. This identifier corresponds to an AuthenticationProvider
+     *     within the Guacamole web application.
+     *
+     * @param {String} protocol
+     *     The protocol for which to return information.
+     *
+     * @returns {Promise.<Protocol>}
+     *     A promise which will resolve with a Protocol
+     *     object for the specified protocol upon success.
+     */
+    service.getProtocol = function getProtocol(dataSource,protocol) {
+
+        // Build HTTP parameters set
+        var httpParameters = {
+            token : authenticationService.getCurrentToken()
+        };
+
+        // Retrieve specified protocol
+        return $http({
+            cache   : cacheService.schema,
+            method  : 'GET',
+            url     : 'api/session/data/' + encodeURIComponent(dataSource) + '/schema/protocol/' + encodeURIComponent(protocol),
+            params  : httpParameters
+        });
+
+    };
+
     return service;
 
 }]);

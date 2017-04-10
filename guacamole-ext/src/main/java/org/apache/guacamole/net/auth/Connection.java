@@ -115,7 +115,7 @@ public interface Connection extends Identifiable, Connectable {
     /**
      *
      */
-    public List<String> getPrompts();
+    public List<String> getPrompts() throws GuacamoleException;
 
     /**
      * Returns a list of ConnectionRecords representing the usage history

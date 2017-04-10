@@ -20,8 +20,8 @@
 /**
  * Provides the ManagedClient class used by the guacClientManager service.
  */
-angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
-    function defineManagedClient($rootScope, $injector) {
+angular.module('client').factory('ManagedClient', ['$rootScope', '$injector', '$log',
+    function defineManagedClient($rootScope, $injector, $log) {
 
     // Required types
     var ClientProperties       = $injector.get('ClientProperties');
@@ -42,10 +42,13 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
     var authenticationService  = $injector.get('authenticationService');
     var connectionGroupService = $injector.get('connectionGroupService');
     var connectionService      = $injector.get('connectionService');
+    var schemaService          = $injector.get('schemaService');
     var tunnelService          = $injector.get('tunnelService');
     var guacAudio              = $injector.get('guacAudio');
     var guacHistory            = $injector.get('guacHistory');
     var guacImage              = $injector.get('guacImage');
+    var guacNotification       = $injector.get('guacNotification');
+    var guacPrompt             = $injector.get('guacPrompt');
     var guacVideo              = $injector.get('guacVideo');
 
     /**
@@ -507,13 +510,23 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
 
         }
 
-        // Connect the Guacamole client
-        connectionService.getConnectionPrompts(clientIdentifier.dataSource, clientIdentifier.id)
+        // Retrieve prompts for this connection.
+        var loadingPrompts = connectionService.getConnectionPrompts(clientIdentifier.dataSource, clientIdentifier.id);
+
+        $q.when(loadingPrompts, function(promptObject) {
+            $log.debug(promptObject['data']);
+        });
+
+        /*
         .then(function(promptObject) {
+            guacPrompt.showPrompt(promptObject['data']['prompts']);
             console.log(promptObject['data']);
             promptParameters = '';
             angular.forEach(promptObject['data']['prompts'], function(value) {
-                promptParameters += '&' + value + '=' + encodeURIComponent(prompt('Please enter a value for the ' + value + ' parameter.'));
+                promptValue = prompt('Please enter a value for the ' + value + ' parameter.');
+                if(promptValue == null)
+                    return false;
+                promptParameters += '&' + value + '=' + encodeURIComponent(promptValue);
             });
             connectionParameters = (connectionParameters ? connectionParameters + '&' + promptParameters : promptParameters);
             getConnectString(clientIdentifier, connectionParameters)
@@ -521,6 +534,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
                 client.connect(connectString);
             });
         });
+        */
 
         return managedClient;
 
