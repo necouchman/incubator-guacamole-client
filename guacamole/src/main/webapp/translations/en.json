@@ -306,6 +306,16 @@
         "TEXT_CONFIRM_DELETE" : "Users cannot be restored after they have been deleted. Are you sure you want to delete this user?"
 
     },
+
+    "PROMPT": {
+
+        "ACTION_CONNECT"      : "Connect",
+        "ACTION_RESET"        : "Reset",
+        "ACTION_CANCEL"       : "@:APP.ACTION_CANCEL",
+
+        "DIALOG_HEADER_ERROR" : "@:APP.DIALOG_HEADER_ERROR"
+
+    },
     
     "PROTOCOL_RDP" : {
 
