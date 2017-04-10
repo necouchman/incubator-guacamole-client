@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.apache.guacamole.GuacamoleException;
@@ -154,6 +155,27 @@ public class SchemaResource {
         // Get and return a map of all protocols.
         Environment env = new LocalEnvironment();
         return env.getProtocols();
+
+    }
+
+    /**
+     * Gets a specific protocol defined in the system as specified by
+     * protocol name.
+     *
+     * @return
+     *     A ProtocolInfo object for the specific protocol requested
+     *     in the URL.
+     *
+     * @throws GuacamoleException
+     *     If an error occurs while retrieving the available protocols.
+     */
+    @GET
+    @Path("protocol/{protocol}")
+    public ProtocolInfo getProtocol(@PathParam("protocol") String protocol) throws GuacamoleException {
+
+        // Get and return a map of all protocols.
+        Environment env = new LocalEnvironment();
+        return env.getProtocol(protocol);
 
     }
 
