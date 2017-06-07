@@ -54,7 +54,7 @@ public interface ConnectionGroup extends Identifiable, Connectable, Attributes {
     /**
      * Available load balancing algorithms.
      */
-    public enum Type {
+    public enum LBAlgo {
         
         /**
          * Assigns the client to the connection that currently has
@@ -140,6 +140,21 @@ public interface ConnectionGroup extends Identifiable, Connectable, Attributes {
      * @return the type of this connection.
      */
     public Type getType();
+
+    /**
+     * Set the load balancing algorithm of this ConnectionGroup.
+     *
+     * @param lbalgo The load balancing algorithm of this ConnectionGroup.
+     */
+    public void setLBAlgo(LBAlgo lbalgo);
+
+    /**
+     * Return the load balancing algorithm of this ConnectionGroup.
+     *
+     * @return
+     *     The load balancing algorithm of this ConnectionGroup.
+     */
+    public LBAlgo getLBAlgo();
 
     /**
      * Returns the identifiers of all readable connections that are children
