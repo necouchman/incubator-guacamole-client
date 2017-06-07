@@ -52,6 +52,52 @@ public interface ConnectionGroup extends Identifiable, Connectable, Attributes {
     };
 
     /**
+     * Available load balancing algorithms.
+     */
+    public enum Type {
+        
+        /**
+         * Assigns the client to the connection that currently has
+         * the least number of active connections.
+         */
+        LC,
+
+        /**
+         * Assign the client to the connection with the least
+         * number of active connections, but also factors in
+         * per-connection weights.
+         */
+        WLC,
+
+        /**
+         * Round Robin: Assign the client to the next connection
+         * in sequence in the group. 
+         */
+        RR,
+
+        /**
+         * Weighted Round Robin: Assign the client to the next
+         * connection in sequence in the group, but with the
+         * per-connection weight factored in.
+         */
+        WRR,
+
+        /**
+         * Least Recently Used: Assign the client to the connection
+         * that has least recently been assigned.
+         */
+        LRU,
+
+        /**
+         * Weighted Least Recently Used: Assign the client
+         * to the connection least recently used, but factor in
+         * per-connection weight.
+         */
+        WLRU
+
+    };
+
+    /**
      * Returns the name assigned to this ConnectionGroup.
      * @return The name assigned to this ConnectionGroup.
      */
