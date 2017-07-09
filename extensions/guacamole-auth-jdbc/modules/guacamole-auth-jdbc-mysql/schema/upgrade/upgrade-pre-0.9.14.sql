@@ -37,3 +37,19 @@ ALTER TABLE guacamole_connection
 
 ALTER TABLE guacamole_connection_history
     ADD COLUMN remote_host VARCHAR(256) DEFAULT NULL;
+
+--
+-- Change size of parameter_value column in
+--     guacamole_connection_parameter table
+--
+
+ALTER TABLE guacamole_connection_parameter
+    ALTER COLUMN parameter_value TYPE varchar(8192);
+
+--
+-- Change size of parameter_value column in
+--     guacamole_sharing_profile_parameter table
+--
+
+ALTER TABLE guacamole_sharing_profile_parameter
+    ALTER COLUMN parameter_value TYPE varchar(8192);

@@ -200,7 +200,7 @@ GO;
 CREATE TABLE [guacamole_connection_parameter](
     [connection_id]   [int] NOT NULL,
     [parameter_name]  [nvarchar](128) NOT NULL,
-    [parameter_value] [nvarchar](4000) NOT NULL,
+    [parameter_value] [nvarchar](8192) NOT NULL,
 
     CONSTRAINT [PK_guacamole_connection_parameter] PRIMARY KEY CLUSTERED 
         ([connection_id] ASC, [parameter_name] ASC) ON [PRIMARY]
@@ -225,7 +225,7 @@ GO;
 CREATE TABLE [guacamole_sharing_profile_parameter](
     [sharing_profile_id] [int] NOT NULL,
     [parameter_name]     [nvarchar](128) NOT NULL,
-    [parameter_value]    [nvarchar](4000) NOT NULL,
+    [parameter_value]    [nvarchar](8192) NOT NULL,
 
     CONSTRAINT [PK_guacamole_sharing_profile_parameter] PRIMARY KEY CLUSTERED 
         ([sharing_profile_id] ASC, [parameter_name] ASC) ON [PRIMARY]
