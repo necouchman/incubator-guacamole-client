@@ -68,3 +68,13 @@ CREATE TABLE guacamole_user_history (
     REFERENCES guacamole_user (user_id) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Add template_connection to guacamole_connection
+--
+
+ALTER TABLE guacamole_connection
+    ADD COLUMN template_connection int(11)
+    REFERENCES guacamole_connection(connection_id)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE;
