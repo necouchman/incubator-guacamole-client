@@ -55,6 +55,11 @@ public class APIConnection {
      * The protocol of this connection.
      */
     private String protocol;
+
+    /**
+     * The identifier of the template connection.
+     */
+    private String templateConnection;
     
     /**
      * Map of all associated parameter values, indexed by parameter name.
@@ -103,6 +108,7 @@ public class APIConnection {
         this.name = connection.getName();
         this.identifier = connection.getIdentifier();
         this.parentIdentifier = connection.getParentIdentifier();
+        this.templateConnection = connection.getTemplateConnection();
         this.activeConnections = connection.getActiveConnections();
         this.lastActive = connection.getLastActive();
         
@@ -162,6 +168,28 @@ public class APIConnection {
      */
     public void setParentIdentifier(String parentIdentifier) {
         this.parentIdentifier = parentIdentifier;
+    }
+
+    /**
+     * Returns the identifiers for the template connection.
+     * 
+     * @return
+     *     The identifier for the parent connection.
+     */
+    public String getTemplateConnection() {
+        return templateConnection;
+    }
+
+    /**
+     * Sets the template connection identifiers for this
+     * connection.
+     *
+     * @param templateConnection
+     *     The connection identifiers for the template
+     *     for this connection.
+     */
+    public void setTemplateConnection(String templateConnection) {
+        this.templateConnection = templateConnection;
     }
 
     /**
