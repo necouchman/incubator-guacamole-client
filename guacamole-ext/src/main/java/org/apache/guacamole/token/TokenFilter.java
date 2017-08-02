@@ -19,7 +19,9 @@
 
 package org.apache.guacamole.token;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,6 +71,11 @@ public class TokenFilter {
      * The values of all known tokens.
      */
     private final Map<String, String> tokenValues = new HashMap<String, String>();
+
+    /**
+     * The names of all parameters that will generate prompts.
+     */
+    private List<String> prompts = new ArrayList<String>();
 
     /**
      * Sets the token having the given name to the given value. Any existing
@@ -147,7 +154,7 @@ public class TokenFilter {
      *     A copy of the input string, with any tokens replaced with their
      *     corresponding values.
      */
-    public String filter(String input) {
+    public String filter(String param, String input) {
 
         StringBuilder output = new StringBuilder();
         Matcher tokenMatcher = tokenPattern.matcher(input);
@@ -179,6 +186,12 @@ public class TokenFilter {
 
                 // Pull token value
                 String tokenName = tokenMatcher.group(TOKEN_NAME_GROUP);
+
+                if (tokenName.equals(StandardTokens.PROMPT_TOKEN)) {
+                    prompts.add(tokenName);
+                    return "";
+                }
+
                 String tokenValue = getToken(tokenName);
 
                 // If token is unknown, interpret as literal
@@ -220,10 +233,20 @@ public class TokenFilter {
             // If value is non-null, filter value through this TokenFilter
             String value = entry.getValue();
             if (value != null)
-                entry.setValue(filter(value));
+                entry.setValue(filter(entry.getKey().toString(),value));
             
         }
         
+    }
+
+    /**
+     * Return the list of parameters that will generate prompts.
+     *
+     * @return
+     *     A list of parameters to prompt for.
+     */
+    public List<String> getPrompts() {
+        return prompts;
     }
 
 }
