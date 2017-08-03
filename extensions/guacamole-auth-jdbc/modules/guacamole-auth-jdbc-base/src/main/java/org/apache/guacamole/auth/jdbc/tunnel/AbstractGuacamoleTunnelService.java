@@ -235,10 +235,13 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
 
         // Build token filter containing credential tokens
         TokenFilter tokenFilter = new TokenFilter();
+        connection.setPrompts(tokenFilter.getPrompts(config.getParameters()));
         StandardTokens.addStandardTokens(tokenFilter, user.getCredentials());
 
         // Filter the configuration
         tokenFilter.filterValues(config.getParameters());
+
+        // Set prompts for connection
 
         return config;
         

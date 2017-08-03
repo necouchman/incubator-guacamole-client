@@ -43,13 +43,13 @@ public class TokenFilterTest {
         // Test basic substitution and escaping
         assertEquals(
             "$${NOPE}hellovalue-of-aworldvalue-of-b${NOT_A_TOKEN}",
-            tokenFilter.filter("param","$$${NOPE}hello${TOKEN_A}world${TOKEN_B}$${NOT_A_TOKEN}")
+            tokenFilter.filter("$$${NOPE}hello${TOKEN_A}world${TOKEN_B}$${NOT_A_TOKEN}")
         );
         
         // Unknown tokens must be interpreted as literals
         assertEquals(
             "${NOPE}hellovalue-of-aworld${TOKEN_C}",
-            tokenFilter.filter("param","${NOPE}hello${TOKEN_A}world${TOKEN_C}")
+            tokenFilter.filter("${NOPE}hello${TOKEN_A}world${TOKEN_C}")
         );
         
     }

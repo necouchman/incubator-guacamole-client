@@ -56,6 +56,8 @@ import org.apache.guacamole.rest.directory.DirectoryObjectTranslator;
 import org.apache.guacamole.rest.directory.DirectoryResource;
 import org.apache.guacamole.rest.directory.DirectoryResourceFactory;
 import org.apache.guacamole.rest.sharingprofile.APISharingProfile;
+import org.apache.guacamole.token.StandardTokens;
+import org.apache.guacamole.token.TokenFilter;
 
 /**
  * A REST resource which abstracts the operations available on an existing
@@ -160,8 +162,9 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
     public List<Field> getConnectionPrompts()
             throws GuacamoleException {
 
-        List<String> connectionPrompts = connection.getPrompts();
         List<Field> promptFields = new ArrayList<Field>();
+        TokenFilter tokenFilter = new TokenFilter();
+        List<String> connectionPrompts = tokenFilter.getPrompts(connection.getConfiguration().getParameters());
         if (connectionPrompts != null) {
             Environment env = new LocalEnvironment();
             Collection<Form> protocolForms = env.getProtocol(connection.getConfiguration().getProtocol()).getConnectionForms();

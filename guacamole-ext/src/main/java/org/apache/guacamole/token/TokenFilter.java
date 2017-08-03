@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Filtering object which replaces tokens of the form "${TOKEN_NAME}" with
@@ -33,6 +35,11 @@ import java.util.regex.Pattern;
  * "$${TOKEN_NAME}".
  */
 public class TokenFilter {
+
+    /**
+     * Logger for this class.
+     */
+    private final Logger logger = LoggerFactory.getLogger(TokenFilter.class);
 
     /**
      * Regular expression which matches individual tokens, with additional
@@ -71,11 +78,6 @@ public class TokenFilter {
      * The values of all known tokens.
      */
     private final Map<String, String> tokenValues = new HashMap<String, String>();
-
-    /**
-     * The names of all parameters that will generate prompts.
-     */
-    private List<String> prompts = new ArrayList<String>();
 
     /**
      * Sets the token having the given name to the given value. Any existing
@@ -154,7 +156,7 @@ public class TokenFilter {
      *     A copy of the input string, with any tokens replaced with their
      *     corresponding values.
      */
-    public String filter(String param, String input) {
+    public String filter(String input) {
 
         StringBuilder output = new StringBuilder();
         Matcher tokenMatcher = tokenPattern.matcher(input);
@@ -186,13 +188,13 @@ public class TokenFilter {
 
                 // Pull token value
                 String tokenName = tokenMatcher.group(TOKEN_NAME_GROUP);
+                String tokenValue = null;
 
-                if (tokenName.equals(StandardTokens.PROMPT_TOKEN)) {
-                    prompts.add(tokenName);
-                    return "";
-                }
+                if (tokenName.equals(StandardTokens.PROMPT_TOKEN))
+                    tokenValue = "";
 
-                String tokenValue = getToken(tokenName);
+                else
+                     tokenValue = getToken(tokenName);
 
                 // If token is unknown, interpret as literal
                 if (tokenValue == null) {
@@ -208,14 +210,14 @@ public class TokenFilter {
 
             // Update last regex match
             endOfLastMatch = tokenMatcher.end();
-            
+
         }
 
         // Append any remaining non-token text
         output.append(input.substring(endOfLastMatch));
-        
+
         return output.toString();
-       
+
     }
 
     /**
@@ -233,20 +235,56 @@ public class TokenFilter {
             // If value is non-null, filter value through this TokenFilter
             String value = entry.getValue();
             if (value != null)
-                entry.setValue(filter(entry.getKey().toString(),value));
+                entry.setValue(filter(value));
             
         }
         
     }
 
-    /**
-     * Return the list of parameters that will generate prompts.
-     *
-     * @return
-     *     A list of parameters to prompt for.
-     */
-    public List<String> getPrompts() {
+    public List<String> getPrompts(Map<?, String> map) {
+
+        List<String> prompts = new ArrayList<String>();
+
+        for (Map.Entry<?, String> entry: map.entrySet()) {
+
+            Matcher tokenMatcher = tokenPattern.matcher(entry.getValue());
+
+            // Track last regex match
+            int endOfLastMatch = 0;
+
+            // For each possible token
+            while (tokenMatcher.find()) {
+
+                String escape = tokenMatcher.group(ESCAPE_CHAR_GROUP);
+
+                // If char before token is '$', the token itself is escaped
+                if ("$".equals(escape)) {
+                    String notToken = tokenMatcher.group(TOKEN_GROUP);
+                    break;
+                }
+
+                // If char is not '$', interpret as a token
+                else {
+
+                    // Pull token value
+                    String tokenName = tokenMatcher.group(TOKEN_NAME_GROUP);
+
+                    if (tokenName.equals(StandardTokens.PROMPT_TOKEN)) {
+                        logger.debug(">>>PROMPT<<< Got prompt for param {}", entry.getKey().toString());
+                        prompts.add(entry.getKey().toString());
+                    }
+
+                }
+
+                // Update last regex match
+                endOfLastMatch = tokenMatcher.end();
+
+            }
+
+        }
+
         return prompts;
+
     }
 
 }

@@ -184,6 +184,7 @@ public class ConnectionService {
                 String name = cn.getStringValue();
                 Connection connection = new SimpleConnection(name, name, config);
                 connection.setParentIdentifier(LDAPAuthenticationProvider.ROOT_CONNECTION_GROUP);
+                connection.setPrompts(tokenFilter.getPrompts(config.getParameters()));
                 connections.put(name, connection);
 
             }
