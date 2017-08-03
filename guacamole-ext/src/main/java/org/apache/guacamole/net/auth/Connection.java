@@ -103,6 +103,30 @@ public interface Connection extends Identifiable, Connectable {
     void setAttributes(Map<String, String> attributes);
 
     /**
+     * Returns a list of all of the parameters that should generate prompts.
+     *
+     * @return
+     *     A list of all parameters that should be prompted.
+     */
+    List<String> getPrompts();
+
+    /**
+     * Sets the parameters that should be prompted.
+     *
+     * @param prompts
+     *     A list of parameters that should be prompted.
+     */
+    void setPrompts(List<String> prompts);
+
+    /**
+     * Add a parameter to the list of prompts.
+     *
+     * @param param
+     *     A parameter to be added to the list of prompts.
+     */
+    void addPrompt(String param);
+
+    /**
      * Returns a list of ConnectionRecords representing the usage history
      * of this Connection, including any active users. ConnectionRecords
      * in this list will be sorted in descending order of end time (active

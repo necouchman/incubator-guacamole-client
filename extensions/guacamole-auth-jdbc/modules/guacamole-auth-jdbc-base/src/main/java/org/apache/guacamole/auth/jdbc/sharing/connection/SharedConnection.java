@@ -147,6 +147,21 @@ public class SharedConnection implements Connection {
     }
 
     @Override
+    public List<String> getPrompts() {
+        return Collections.<String>emptyList();
+    }
+
+    @Override
+    public void setPrompts(List<String> prompts) {
+        // Do nothing - no prompts for shared connections.
+    }
+
+    @Override
+    public void addPrompt(String param) {
+        // Do nothing - no prompts for shared connections.
+    }
+
+    @Override
     public List<? extends ConnectionRecord> getHistory()
             throws GuacamoleException {
         return Collections.<ConnectionRecord>emptyList();

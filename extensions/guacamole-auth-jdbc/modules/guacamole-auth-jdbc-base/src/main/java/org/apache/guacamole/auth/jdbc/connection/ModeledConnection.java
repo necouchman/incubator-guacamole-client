@@ -350,6 +350,21 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
 
     }
 
+    @Override
+    public List<String> getPrompts() {
+        return getModel().getPrompts();
+    }
+
+    @Override
+    public void setPrompts(List<String> prompts) {
+        getModel().setPrompts(prompts);
+    }
+
+    @Override
+    public void addPrompt(String param) {
+        getModel().addPrompt(param);
+    }
+
     /**
      * Returns the maximum number of connections that should be allowed to this
      * connection overall. If no limit applies, zero is returned.

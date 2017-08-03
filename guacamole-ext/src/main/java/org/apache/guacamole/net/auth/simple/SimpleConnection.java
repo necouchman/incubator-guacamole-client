@@ -19,6 +19,7 @@
 
 package org.apache.guacamole.net.auth.simple;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,11 @@ public class SimpleConnection extends AbstractConnection {
     private GuacamoleConfiguration config;
 
     /**
+     * Parameters that should generate prompts.
+     */
+    private List<String> prompts;
+
+    /**
      * Creates a completely uninitialized SimpleConnection.
      */
     public SimpleConnection() {
@@ -76,6 +82,8 @@ public class SimpleConnection extends AbstractConnection {
         setConfiguration(config);
         this.config = config;
 
+        this.prompts = new ArrayList<String>();
+
     }
 
     @Override
@@ -91,6 +99,21 @@ public class SimpleConnection extends AbstractConnection {
     @Override
     public void setAttributes(Map<String, String> attributes) {
         // Do nothing - there are no attributes
+    }
+
+    @Override
+    public List<String> getPrompts() {
+        return prompts;
+    }
+
+    @Override
+    public void setPrompts(List<String> prompts) {
+        this.prompts = prompts;
+    }
+
+    @Override
+    public void addPrompt(String param) {
+        this.prompts.add(param);
     }
 
     @Override

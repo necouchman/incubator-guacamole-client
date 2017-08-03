@@ -19,7 +19,9 @@
 
 package org.apache.guacamole.auth.jdbc.connection;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.guacamole.auth.jdbc.base.ChildObjectModel;
 import org.apache.guacamole.net.auth.GuacamoleProxyConfiguration.EncryptionMethod;
@@ -91,6 +93,11 @@ public class ConnectionModel extends ChildObjectModel {
      * the encryption method of the default guacd instance should be used.
      */
     private EncryptionMethod proxyEncryptionMethod;
+
+    /**
+     * List of parameters to prompt the user for.
+     */
+    private List<String> prompts = new ArrayList<String>();
 
     /**
      * Creates a new, empty connection.
@@ -339,6 +346,36 @@ public class ConnectionModel extends ChildObjectModel {
      */
     public void setSharingProfileIdentifiers(Set<String> sharingProfileIdentifiers) {
         this.sharingProfileIdentifiers = sharingProfileIdentifiers;
+    }
+
+    /**
+     * Gets the list of parameters to prompt the user for at connection time.
+     *
+     * @return
+     *     The list of parameters to prompt the user for.
+     */
+    public List<String> getPrompts() {
+        return prompts;
+    }
+
+    /**
+     * Sets the list of parameters to prompt the user for at connection time.
+     *
+     * @param prompts
+     *     The list of parameters to prompt the user for.
+     */
+    public void setPrompts(List<String> prompts) {
+        this.prompts = prompts;
+    }
+
+    /**
+     * Add a parameter to the list of prompts.
+     *
+     * @param param
+     *     The name of the parameter to add to the list.
+     */
+    public void addPrompt(String param) {
+        prompts.add(param);
     }
 
     @Override
