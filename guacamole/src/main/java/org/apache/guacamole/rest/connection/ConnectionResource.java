@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.Consumes;
@@ -30,6 +31,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.guacamole.environment.Environment;
+import org.apache.guacamole.environment.LocalEnvironment;
+import org.apache.guacamole.form.Field;
+import org.apache.guacamole.form.Form;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleSecurityException;
 import org.apache.guacamole.net.auth.Connection;
@@ -45,6 +50,7 @@ import org.apache.guacamole.net.auth.permission.SystemPermission;
 import org.apache.guacamole.net.auth.permission.SystemPermissionSet;
 import org.apache.guacamole.rest.history.APIConnectionRecord;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
+import org.apache.guacamole.protocols.ProtocolInfo;
 import org.apache.guacamole.rest.directory.DirectoryObjectResource;
 import org.apache.guacamole.rest.directory.DirectoryObjectTranslator;
 import org.apache.guacamole.rest.directory.DirectoryResource;
@@ -136,6 +142,43 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
 
         // Return parameter map
         return config.getParameters();
+
+    }
+
+    /**
+     * Retrieves the prompts for the connection and matches them with the type of field, and returns
+     * a list of fields to be prompted for.
+     *
+     * @return
+     *     A list of fields to prompt for.
+     *
+     * @throws GuacamoleException
+     *     If an error occurs retrieving prompts or the environment.
+     */
+    @GET
+    @Path("prompts")
+    public List<Field> getConnectionPrompts()
+            throws GuacamoleException {
+
+        List<String> connectionPrompts = connection.getPrompts();
+        List<Field> promptFields = new ArrayList<Field>();
+        if (connectionPrompts != null) {
+            Environment env = new LocalEnvironment();
+            Collection<Form> protocolForms = env.getProtocol(connection.getConfiguration().getProtocol()).getConnectionForms();
+            paramLoop: for (String parameter : connectionPrompts) {
+                for (Form form : protocolForms) {
+                    Collection<Field> formFields = form.getFields();
+                    for (Field field : formFields) {
+                        if (parameter.equals(field.getName())) {
+                            promptFields.add(field);
+                            continue paramLoop;
+                        }
+                    }
+                }
+            }
+        }
+
+        return promptFields;
 
     }
 
