@@ -120,6 +120,35 @@ angular.module('rest').factory('connectionService', ['$injector',
     };
 
     /**
+     * Makes a request to the REST API to get the prompts of a single
+     * connection, returning a promise that provides the corresponding
+     * list of fields that should be prompted.
+     *
+     * @param {String} id
+     *     The identifier of the connection.
+     *
+     * @returns {Promise.<Object.<FIELD>>}
+     *     A promise which will resolve with a list of fields that
+     *     the connection should prompt the user for.
+     */
+    service.getConnectionPrompts = function getConnectionPrompts(dataSource, id) {
+
+        // Build HTTP parameters set
+        var httpParameters = {
+            token : authenticationService.getCurrentToken()
+        };
+
+        // Retrieve connection parameters
+        return $http({
+            cache   : cacheService.connections,
+            method  : 'GET',
+            url     : 'api/session/data/' + encodeURIComponent(dataSource) + '/connections/' + encodeURIComponent(id) + '/prompts',
+            params  : httpParameters
+        });
+
+    };
+
+    /**
      * Makes a request to the REST API to save a connection, returning a
      * promise that can be used for processing the results of the call. If the
      * connection is new, and thus does not yet have an associated identifier,
