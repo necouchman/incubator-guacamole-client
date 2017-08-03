@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Filtering object which replaces tokens of the form "${TOKEN_NAME}" with
@@ -35,11 +33,6 @@ import org.slf4j.LoggerFactory;
  * "$${TOKEN_NAME}".
  */
 public class TokenFilter {
-
-    /**
-     * Logger for this class.
-     */
-    private final Logger logger = LoggerFactory.getLogger(TokenFilter.class);
 
     /**
      * Regular expression which matches individual tokens, with additional
@@ -269,10 +262,8 @@ public class TokenFilter {
                     // Pull token value
                     String tokenName = tokenMatcher.group(TOKEN_NAME_GROUP);
 
-                    if (tokenName.equals(StandardTokens.PROMPT_TOKEN)) {
-                        logger.debug(">>>PROMPT<<< Got prompt for param {}", entry.getKey().toString());
+                    if (tokenName.equals(StandardTokens.PROMPT_TOKEN))
                         prompts.add(entry.getKey().toString());
-                    }
 
                 }
 
