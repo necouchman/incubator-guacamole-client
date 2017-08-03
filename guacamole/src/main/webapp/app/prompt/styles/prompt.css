@@ -17,23 +17,34 @@
  * under the License.
  */
 
-/**
- * The module for the root of the application.
- */
-angular.module('index', [
-    'auth',
-    'client',
-    'clipboard',
-    'home',
-    'login',
-    'manage',
-    'navigation',
-    'ngRoute',
-    'ngTouch',
-    'notification',
-    'prompt',
-    'pascalprecht.translate',
-    'rest',
-    'settings',
-    'templates-main'
-]);
+.prompt {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.125);
+    background: white;
+    color: black;
+}
+
+.prompt.error {
+    background: #FDD;
+}
+
+.prompt .body {
+    margin: 0.5em;
+}
+
+.prompt .buttons {
+    margin: 0.5em;
+}
+
+.prompt .title-bar {
+    font-size: 1.25em;
+    font-weight: bold;
+
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.125);
+    background: rgba(0, 0, 0, 0.04);
+
+    padding: 0.5em;
+    margin-bottom: 1em;
+}
