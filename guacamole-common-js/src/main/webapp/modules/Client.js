@@ -1516,12 +1516,14 @@ Guacamole.Client = function(tunnel) {
      *             tunnel during the connection process.
      * @throws {Guacamole.Status} If an error occurs during connection.
      */
-    this.connect = function(data) {
+    this.connect = function(data, uuid) {
+
+        console.log('Client got UUID: ' + uuid);
 
         setState(STATE_CONNECTING);
 
         try {
-            tunnel.connect(data);
+            tunnel.connect(data, uuid);
         }
         catch (status) {
             setState(STATE_IDLE);

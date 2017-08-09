@@ -37,7 +37,7 @@ Guacamole.Tunnel = function() {
      * 
      * @param {String} data The data to send to the tunnel when connecting.
      */
-    this.connect = function(data) {};
+    this.connect = function(data, uuid) {};
     
     /**
      * Disconnect from the tunnel.
@@ -172,9 +172,10 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain) {
      */
     var tunnel = this;
 
-    var TUNNEL_CONNECT = tunnelURL + "?connect";
-    var TUNNEL_READ    = tunnelURL + "?read:";
-    var TUNNEL_WRITE   = tunnelURL + "?write:";
+    var TUNNEL_CONNECT          = tunnelURL + "?connect";
+    var TUNNEL_CONNECT_EXISTING = tunnelURL + "?connect:";
+    var TUNNEL_READ             = tunnelURL + "?read:";
+    var TUNNEL_WRITE            = tunnelURL + "?write:";
 
     var POLLING_ENABLED     = 1;
     var POLLING_DISABLED    = 0;
@@ -543,7 +544,7 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain) {
 
     }
 
-    this.connect = function(data) {
+    this.connect = function(data, uuid) {
 
         // Start waiting for connect
         reset_timeout();
@@ -575,7 +576,12 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain) {
 
         };
 
-        connect_xmlhttprequest.open("POST", TUNNEL_CONNECT, true);
+        if (uuid !== undefined && uuid !== null && uuid != "")
+            connect_xmlhttprequest.open("POST", TUNNEL_CONNECT_EXISTING + uuid, true);
+
+        else
+            connect_xmlhttprequest.open("POST", TUNNEL_CONNECT, true);
+
         connect_xmlhttprequest.withCredentials = withCredentials;
         connect_xmlhttprequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
         connect_xmlhttprequest.send(data);
@@ -743,7 +749,7 @@ Guacamole.WebSocketTunnel = function(tunnelURL) {
 
     };
 
-    this.connect = function(data) {
+    this.connect = function(data, uuid) {
 
         reset_timeout();
 
@@ -874,6 +880,8 @@ Guacamole.ChainedTunnel = function(tunnelChain) {
      */
     var connect_data;
 
+    var connect_uuid;
+
     /**
      * Array of all tunnels passed to this ChainedTunnel through the
      * constructor arguments.
@@ -1000,14 +1008,15 @@ Guacamole.ChainedTunnel = function(tunnelChain) {
         };
 
         // Attempt connection
-        tunnel.connect(connect_data);
+        tunnel.connect(connect_data, connect_uuid);
         
     }
 
-    this.connect = function(data) {
-       
-        // Remember connect data
+    this.connect = function(data, uuid) {
+
+        // Remember connect data & uuid
         connect_data = data;
+        connect_uuid = uuid;
 
         // Get committed tunnel if exists or the first tunnel on the list
         var next_tunnel = committedTunnel ? committedTunnel : tunnels.shift();
@@ -1127,7 +1136,7 @@ Guacamole.StaticHTTPTunnel = function StaticHTTPTunnel(url, crossDomain) {
         // Do nothing
     };
 
-    this.connect = function connect(data) {
+    this.connect = function connect(data, uuid) {
 
         // Ensure any existing connection is killed
         tunnel.disconnect();
