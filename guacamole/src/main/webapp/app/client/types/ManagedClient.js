@@ -20,8 +20,8 @@
 /**
  * Provides the ManagedClient class used by the guacClientManager service.
  */
-angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
-    function defineManagedClient($rootScope, $injector) {
+angular.module('client').factory('ManagedClient', ['$rootScope', '$injector', '$log',
+    function defineManagedClient($rootScope, $injector, $log) {
 
     // Required types
     var ClientProperties       = $injector.get('ClientProperties');
@@ -505,8 +505,12 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
 
         // Connect the Guacamole client
         getConnectString(clientIdentifier, connectionParameters)
-        .then(function connectClient(connectString) {
-            client.connect(connectString);
+        .then(function connectTunnel(connectString) {
+            connectionService.getConnectionTunnel(clientIdentifier.dataSource, clientIdentifier.id, connectString)
+            .then(function connectClient(tunnelUUID) {
+                $log.debug('Connecting to tunnel with UUID: ' + JSON.stringify(tunnelUUID));
+                client.connect(connectString, tunnelUUID.data.tunnelUUID);
+            });
         });
 
         // If using a connection, pull connection name
