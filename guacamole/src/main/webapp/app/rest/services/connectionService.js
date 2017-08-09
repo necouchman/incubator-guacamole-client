@@ -239,6 +239,26 @@ angular.module('rest').factory('connectionService', ['$injector',
         });
 
     };
+
+    service.getConnectionTunnel = function getConnectionTunnel(dataSource, id, data) {
+
+        // Build HTTP parameters set
+        var httpParameters = {
+            token : authenticationService.getCurrentToken()
+        };
+
+        // POST for a new connection tunnel
+        return $http({
+            method  : 'POST',
+            url     : 'api/session/data/' + encodeURIComponent(dataSource) + '/connections/' + encodeURIComponent(id) + '/createTunnel',
+            headers: {
+                'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            params  : httpParameters,
+            data    : data
+        });
+
+    };
     
     return service;
 }]);

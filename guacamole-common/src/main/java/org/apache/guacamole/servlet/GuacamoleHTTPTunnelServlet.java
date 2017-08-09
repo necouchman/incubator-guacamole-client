@@ -58,14 +58,25 @@ public abstract class GuacamoleHTTPTunnelServlet extends HttpServlet {
     private final GuacamoleHTTPTunnelMap tunnels = new GuacamoleHTTPTunnelMap();
 
     /**
+     * The prefix of the query string which denotes a tunnel connect
+     * operation.
+     */
+    private static final String CONNECT_PREFIX = "connect:";
+
+    /**
      * The prefix of the query string which denotes a tunnel read operation.
      */
-    private static final String READ_PREFIX  = "read:";
+    private static final String READ_PREFIX = "read:";
 
     /**
      * The prefix of the query string which denotes a tunnel write operation.
      */
     private static final String WRITE_PREFIX = "write:";
+
+    /**
+     * The length of the connect prefix, in characters.
+     */
+    private static final int CONNECT_PREFIX_LENGTH = CONNECT_PREFIX.length();
 
     /**
      * The length of the read prefix, in characters.
@@ -235,6 +246,27 @@ public abstract class GuacamoleHTTPTunnelServlet extends HttpServlet {
 
             }
 
+            // Connecting to a tunnel that has already been created
+            // via REST API.
+            else if (query.startsWith(CONNECT_PREFIX)) {
+                GuacamoleTunnel tunnel = doConnect(request, query.substring(
+                        CONNECT_PREFIX_LENGTH,
+                        CONNECT_PREFIX_LENGTH + UUID_LENGTH));
+
+                if (tunnel != null) {
+
+                    registerTunnel(tunnel);
+
+                    try {
+                        response.setHeader("Cache-Control", "no-cache");
+                        response.getWriter().print(tunnel.getUUID().toString());
+                    }
+                    catch (IOException e) {
+                        throw new GuacamoleServerException(e);
+                    }
+                }
+            }
+
             // If read operation, call doRead() with tunnel UUID, ignoring any
             // characters following the tunnel UUID.
             else if(query.startsWith(READ_PREFIX))
@@ -289,6 +321,32 @@ public abstract class GuacamoleHTTPTunnelServlet extends HttpServlet {
      */
     protected abstract GuacamoleTunnel doConnect(HttpServletRequest request)
             throws GuacamoleException;
+
+    /**
+     * Called whenever the JavaScript Guacamole client makes a connection
+     * request via HTTP and requests a specific tunnel that has already been
+     * created.  It is up to the implementor of this function to defined what
+     * conditions must be met for a tunnel to be configured and returned as a
+     * result of this connection request (whether some sort of credentials
+     * must be specified, for example).
+     *
+     * @param request
+     *     The HttpServletRequest associated with the connection request
+     *     received. Any parameters specified along with the connection request
+     *     can be read from this object.
+     * @param tunnelUUID
+     *     The UUID of the existing tunnel that the user is attempting to
+     *     to establish a connection to.
+     *
+     * @return
+     *     A newly constructed GuacamoleTunnel if successful, null otherwise.
+     *
+     * @throws GuacamoleException
+     *     If an error occurs while constructing the GuacamoleTunnel, or if the
+     *     conditions required for connection are not met.
+     */
+    protected abstract GuacamoleTunnel doConnect(HttpServletRequest request,
+            String tunnelUUID) throws GuacamoleException;
 
     /**
      * Called whenever the JavaScript Guacamole client makes a read request.

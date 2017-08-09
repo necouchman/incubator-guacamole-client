@@ -347,4 +347,28 @@ public class TunnelRequestService {
 
     }
 
+    /**
+     * Get an existing tunnel from a user session and return that tunnel.
+     *
+     * @param request
+     *     The request describing the tunnel to retrieve.
+     * @param tunnelUUID
+     *     The UUID of the existing tunnel to retrieve.
+     *
+     * @return
+     *     The created tunnel, or null if the tunnel could not be retrieved.
+     *
+     * @throws GuacamoleException
+     *     If an error occurs while retrieving the tunnel.
+     */
+    public GuacamoleTunnel getExistingTunnel(TunnelRequest request, String tunnelUUID)
+            throws GuacamoleException {
+
+        String authToken = request.getAuthenticationToken();
+        GuacamoleSession session = authenticationService.getGuacamoleSession(authToken);
+
+        return session.getTunnel(tunnelUUID);
+
+    }
+
 }

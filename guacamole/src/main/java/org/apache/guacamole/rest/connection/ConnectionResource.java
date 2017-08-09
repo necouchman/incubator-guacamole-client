@@ -22,15 +22,20 @@ package org.apache.guacamole.rest.connection;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import org.apache.guacamole.environment.Environment;
 import org.apache.guacamole.environment.LocalEnvironment;
 import org.apache.guacamole.form.Field;
@@ -48,9 +53,11 @@ import org.apache.guacamole.net.auth.permission.ObjectPermission;
 import org.apache.guacamole.net.auth.permission.ObjectPermissionSet;
 import org.apache.guacamole.net.auth.permission.SystemPermission;
 import org.apache.guacamole.net.auth.permission.SystemPermissionSet;
+import org.apache.guacamole.net.GuacamoleTunnel;
 import org.apache.guacamole.rest.history.APIConnectionRecord;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
 import org.apache.guacamole.protocols.ProtocolInfo;
+import org.apache.guacamole.rest.APIRequest;
 import org.apache.guacamole.rest.directory.DirectoryObjectResource;
 import org.apache.guacamole.rest.directory.DirectoryObjectTranslator;
 import org.apache.guacamole.rest.directory.DirectoryResource;
@@ -58,6 +65,8 @@ import org.apache.guacamole.rest.directory.DirectoryResourceFactory;
 import org.apache.guacamole.rest.sharingprofile.APISharingProfile;
 import org.apache.guacamole.token.StandardTokens;
 import org.apache.guacamole.token.TokenFilter;
+import org.apache.guacamole.tunnel.TunnelRequestService;
+import org.apache.guacamole.tunnel.http.HTTPTunnelRequest;
 
 /**
  * A REST resource which abstracts the operations available on an existing
@@ -85,6 +94,12 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
     @Inject
     private DirectoryResourceFactory<SharingProfile, APISharingProfile>
             sharingProfileDirectoryResourceFactory;
+
+    /**
+     * Service for handling tunnel requests.
+     */
+    @Inject
+    private TunnelRequestService tunnelRequestService;
 
     /**
      * Creates a new ConnectionResource which exposes the operations and
@@ -236,6 +251,33 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
 
         // Return a new resource which provides access to only those SharingProfiles
         return sharingProfileDirectoryResourceFactory.create(userContext, sharingProfiles);
+
+    }
+
+    /**
+     * Create a new tunnel for the specified connection, returning the UUID or
+     * throwing a GuacamoleException if the tunnel cannot be created.
+     *
+     * @return
+     *   The UUID of the newly-created tunnel in a string.
+     *
+     * @throws GucamoleException
+     *     If the tunnel cannot be created.
+     */
+    @POST
+    @Path("createTunnel")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Map<String, String> acquireConnectionTunnel(
+            @Context HttpServletRequest consumedRequest,
+            MultivaluedMap<String, String> parameters
+            )
+            throws GuacamoleException {
+
+        // Reconstitute the HTTP request with the map of parameters
+        HttpServletRequest request = new APIRequest(consumedRequest, parameters);
+
+        GuacamoleTunnel tunnel = tunnelRequestService.createTunnel(new HTTPTunnelRequest(request));
+        return Collections.<String, String>singletonMap("tunnelUUID", tunnel.getUUID().toString());
 
     }
 

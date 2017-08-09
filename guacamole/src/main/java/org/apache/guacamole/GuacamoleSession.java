@@ -198,6 +198,10 @@ public class GuacamoleSession {
         return tunnels;
     }
 
+    public UserTunnel getTunnel(String uuid) {
+        return tunnels.get(uuid);  
+    }
+
     /**
      * Associates the given tunnel with this session, such that it is taken
      * into account when determining session activity.

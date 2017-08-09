@@ -20,6 +20,7 @@
 package org.apache.guacamole.net.example;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.GuacamoleSocket;
 import org.apache.guacamole.net.GuacamoleTunnel;
@@ -58,6 +59,12 @@ public class DummyGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         GuacamoleTunnel tunnel = new SimpleGuacamoleTunnel(socket);
         return tunnel;
 
+    }
+
+    @Override
+    protected GuacamoleTunnel doConnect(HttpServletRequest request, String uuid)
+            throws GuacamoleException {
+        return doConnect(request);
     }
 
 }
