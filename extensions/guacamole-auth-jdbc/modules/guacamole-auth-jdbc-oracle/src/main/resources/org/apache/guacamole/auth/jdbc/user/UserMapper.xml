@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+
+<mapper namespace="org.apache.guacamole.auth.jdbc.user.UserMapper" >
+
+    <!-- Result mapper for user objects -->
+    <resultMap id="UserResultMap" type="org.apache.guacamole.auth.jdbc.user.UserModel" >
+        <id     column="USER_ID"             property="objectID"           jdbcType="INTEGER"/>
+        <result column="USERNAME"            property="identifier"         jdbcType="VARCHAR"/>
+        <result column="PASSWORD_HASH"       property="passwordHash"       jdbcType="BINARY"/>
+        <result column="PASSWORD_SALT"       property="passwordSalt"       jdbcType="BINARY"/>
+        <result column="PASSWORD_DATE"       property="passwordDate"       jdbcType="TIMESTAMP"/>
+        <result column="DISABLED"            property="disabled"           jdbcType="INTEGER"/>
+        <result column="EXPIRED"             property="expired"            jdbcType="INTEGER"/>
+        <result column="ACCESS_WINDOW_START" property="accessWindowStart"  jdbcType="TIME"/>
+        <result column="ACCESS_WINDOW_END"   property="accessWindowEnd"    jdbcType="TIME"/>
+        <result column="VALID_FROM"          property="validFrom"          jdbcType="DATE"/>
+        <result column="VALID_UNTIL"         property="validUntil"         jdbcType="DATE"/>
+        <result column="TIMEZONE"            property="timeZone"           jdbcType="VARCHAR"/>
+        <result column="FULL_NAME"           property="fullName"           jdbcType="VARCHAR"/>
+        <result column="EMAIL_ADDRESS"       property="emailAddress"       jdbcType="VARCHAR"/>
+        <result column="ORGANIZATION"        property="organization"       jdbcType="VARCHAR"/>
+        <result column="ORGANIZATIONAL_ROLE" property="organizationalRole" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- Select all usernames -->
+    <select id="selectIdentifiers" resultType="string">
+        SELECT USERNAME
+        FROM GUACAMOLE_USER
+    </select>
+
+    <!-- Select usernames of all readable users -->
+    <select id="selectReadableIdentifiers" resultType="string">
+        SELECT USERNAME
+        FROM GUACAMOLE_USER
+        JOIN USER_PERMISSION ON AFFECTED_USER_ID = GUACAMOLE_USER.USER_ID
+        WHERE
+            USER_PERMISSION.USER_ID = #{user.objectID,jdbcType=INTEGER}
+            AND PERMISSION = 'READ'
+    </select>
+
+    <!-- Select multiple users by username -->
+    <select id="select" resultMap="UserResultMap">
+
+        SELECT
+            USER_ID,
+            USERNAME,
+            PASSWORD_HASH,
+            PASSWORD_SALT,
+            PASSWORD_DATE,
+            DISABLED,
+            EXPIRED,
+            ACCESS_WINDOW_START,
+            ACCESS_WINDOW_END,
+            VALID_FROM,
+            VALID_UNTIL,
+            TIMEZONE,
+            FULL_NAME,
+            EMAIL_ADDRESS,
+            ORGANIZATION,
+            ORGANIZATIONAL_ROLE
+        FROM GUACAMOLE_USER
+        WHERE USERNAME IN
+            <foreach collection="identifiers" item="identifier"
+                     open="(" separator="," close=")">
+                #{identifier,jdbcType=VARCHAR}
+            </foreach>
+
+    </select>
+
+    <!-- Select multiple users by username only if readable -->
+    <select id="selectReadable" resultMap="UserResultMap">
+
+        SELECT
+            GUACAMOLE_USER.USER_ID,
+            USERNAME,
+            PASSWORD_HASH,
+            PASSWORD_SALT,
+            PASSWORD_DATE,
+            DISABLED,
+            EXPIRED,
+            ACCESS_WINDOW_START,
+            ACCESS_WINDOW_END,
+            VALID_FROM,
+            VALID_UNTIL,
+            TIMEZONE,
+            FULL_NAME,
+            EMAIL_ADDRESS,
+            ORGANIZATION,
+            ORGANIZATIONAL_ROLE
+        FROM GUACAMOLE_USER
+        JOIN USER_PERMISSION ON AFFECTED_USER_ID = GUACAMOLE_USER.USER_ID
+        WHERE USERNAME IN
+            <foreach collection="identifiers" item="identifier"
+                     open="(" separator="," close=")">
+                #{identifier,jdbcType=VARCHAR}
+            </foreach>
+            AND USER_PERMISSION.USER_ID = #{user.objectID,jdbcType=INTEGER}
+            AND PERMISSION = 'READ'
+
+    </select>
+
+    <!-- Select single user by username -->
+    <select id="selectOne" resultMap="UserResultMap">
+
+        SELECT
+            USER_ID,
+            USERNAME,
+            PASSWORD_HASH,
+            PASSWORD_SALT,
+            PASSWORD_DATE,
+            DISABLED,
+            EXPIRED,
+            ACCESS_WINDOW_START,
+            ACCESS_WINDOW_END,
+            VALID_FROM,
+            VALID_UNTIL,
+            TIMEZONE,
+            FULL_NAME,
+            EMAIL_ADDRESS,
+            ORGANIZATION,
+            ORGANIZATIONAL_ROLE
+        FROM GUACAMOLE_USER
+        WHERE
+            USERNAME = #{username,jdbcType=VARCHAR}
+
+    </select>
+
+    <!-- Delete single user by username -->
+    <delete id="delete">
+        DELETE FROM GUACAMOLE_USER
+        WHERE USERNAME = #{identifier,jdbcType=VARCHAR}
+    </delete>
+
+    <!-- Insert single user -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="object.objectID"
+            parameterType="org.apache.guacamole.auth.jdbc.user.UserModel">
+
+        INSERT INTO GUACAMOLE_USER (
+            USERNAME,
+            PASSWORD_HASH,
+            PASSWORD_SALT,
+            PASSWORD_DATE,
+            DISABLED,
+            EXPIRED,
+            ACCESS_WINDOW_START,
+            ACCESS_WINDOW_END,
+            VALID_FROM,
+            VALID_UNTIL,
+            TIMEZONE,
+            FULL_NAME,
+            EMAIL_ADDRESS,
+            ORGANIZATION,
+            ORGANIZATIONAL_ROLE
+        )
+        VALUES (
+            #{object.identifier,jdbcType=VARCHAR},
+            #{object.passwordHash,jdbcType=BINARY},
+            #{object.passwordSalt,jdbcType=BINARY},
+            #{object.passwordDate,jdbcType=TIMESTAMP},
+            #{object.disabled,jdbcType=INTEGER},
+            #{object.expired,jdbcType=INTEGER},
+            #{object.accessWindowStart,jdbcType=TIME},
+            #{object.accessWindowEnd,jdbcType=TIME},
+            #{object.validFrom,jdbcType=DATE},
+            #{object.validUntil,jdbcType=DATE},
+            #{object.timeZone,jdbcType=VARCHAR},
+            #{object.fullName,jdbcType=VARCHAR},
+            #{object.emailAddress,jdbcType=VARCHAR},
+            #{object.organization,jdbcType=VARCHAR},
+            #{object.organizationalRole,jdbcType=VARCHAR}
+        )
+
+    </insert>
+
+    <!-- Update single user -->
+    <update id="update" parameterType="org.apache.guacamole.auth.jdbc.user.UserModel">
+        UPDATE GUACAMOLE_USER
+        SET PASSWORD_HASH = #{object.passwordHash,jdbcType=BINARY},
+            PASSWORD_SALT = #{object.passwordSalt,jdbcType=BINARY},
+            PASSWORD_DATE = #{object.passwordDate,jdbcType=TIMESTAMP},
+            DISABLED = #{object.disabled,jdbcType=INTEGER},
+            EXPIRED = #{object.expired,jdbcType=INTEGER},
+            ACCESS_WINDOW_START = #{object.accessWindowStart,jdbcType=TIME},
+            ACCESS_WINDOW_END = #{object.accessWindowEnd,jdbcType=TIME},
+            VALID_FROM = #{object.validFrom,jdbcType=DATE},
+            VALID_UNTIL = #{object.validUntil,jdbcType=DATE},
+            TIMEZONE = #{object.timeZone,jdbcType=VARCHAR},
+            FULL_NAME = #{object.fullName,jdbcType=VARCHAR},
+            EMAIL_ADDRESS = #{object.emailAddress,jdbcType=VARCHAR},
+            ORGANIZATION = #{object.organization,jdbcType=VARCHAR},
+            ORGANIZATIONAL_ROLE = #{object.organizationalRole,jdbcType=VARCHAR}
+        WHERE USER_ID = #{object.objectID,jdbcType=VARCHAR}
+    </update>
+
+</mapper>
