@@ -34,30 +34,7 @@ public class H2GuacamoleProperties {
     private H2GuacamoleProperties() {}
 
     /**
-     * The URL of the H2 server hosting the Guacamole authentication tables.
-     */
-    public static final StringGuacamoleProperty H2_HOSTNAME =
-            new StringGuacamoleProperty() {
-
-        @Override
-        public String getName() { return "h2-hostname"; }
-
-    };
-
-    /**
-     * The port of the H2 server hosting the Guacamole authentication
-     * tables.
-     */
-    public static final IntegerGuacamoleProperty H2_PORT =
-            new IntegerGuacamoleProperty() {
-
-        @Override
-        public String getName() { return "h2-port"; }
-
-    };
-
-    /**
-     * The name of the H2 database containing the Guacamole
+     * The name or path of the H2 embedded database containing the Guacamole
      * authentication tables.
      */
     public static final StringGuacamoleProperty H2_DATABASE =
@@ -65,30 +42,6 @@ public class H2GuacamoleProperties {
 
         @Override
         public String getName() { return "h2-database"; }
-
-    };
-
-    /**
-     * The username used to authenticate to the H2 database containing
-     * the Guacamole authentication tables.
-     */
-    public static final StringGuacamoleProperty H2_USERNAME =
-            new StringGuacamoleProperty() {
-
-        @Override
-        public String getName() { return "h2-username"; }
-
-    };
-
-    /**
-     * The password used to authenticate to the H2 database containing
-     * the Guacamole authentication tables.
-     */
-    public static final StringGuacamoleProperty H2_PASSWORD =
-            new StringGuacamoleProperty() {
-
-        @Override
-        public String getName() { return "h2-password"; }
 
     };
 

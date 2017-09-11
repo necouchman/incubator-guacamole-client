@@ -143,10 +143,10 @@ CREATE TABLE guacamole_user (
   user_id       serial       NOT NULL,
 
   -- Username and optionally-salted password
-  username      varchar(128) NOT NULL,
-  password_hash bytea        NOT NULL,
+  username      varchar(128)                NOT NULL,
+  password_hash bytea                       NOT NULL,
   password_salt bytea,
-  password_date timestamptz  NOT NULL,
+  password_date TIMESTAMP WITH TIME ZONE    NOT NULL,
 
   -- Account disabled/expired status
   disabled      boolean      NOT NULL DEFAULT FALSE,
@@ -396,16 +396,16 @@ CREATE INDEX guacamole_user_permission_user_id
 
 CREATE TABLE guacamole_connection_history (
 
-  history_id           serial       NOT NULL,
-  user_id              integer      DEFAULT NULL,
-  username             varchar(128) NOT NULL,
-  remote_host          varchar(256) DEFAULT NULL,
-  connection_id        integer      DEFAULT NULL,
-  connection_name      varchar(128) NOT NULL,
-  sharing_profile_id   integer      DEFAULT NULL,
-  sharing_profile_name varchar(128) DEFAULT NULL,
-  start_date           timestamptz  NOT NULL,
-  end_date             timestamptz  DEFAULT NULL,
+  history_id           serial                   NOT NULL,
+  user_id              integer                  DEFAULT NULL,
+  username             varchar(128)             NOT NULL,
+  remote_host          varchar(256)             DEFAULT NULL,
+  connection_id        integer                  DEFAULT NULL,
+  connection_name      varchar(128)             NOT NULL,
+  sharing_profile_id   integer                  DEFAULT NULL,
+  sharing_profile_name varchar(128)             DEFAULT NULL,
+  start_date           timestamp with time zone NOT NULL,
+  end_date             timestamp with time zone DEFAULT NULL,
 
   PRIMARY KEY (history_id),
 
@@ -448,9 +448,9 @@ CREATE TABLE guacamole_user_password_history (
   user_id             integer NOT NULL,
 
   -- Salted password
-  password_hash bytea        NOT NULL,
+  password_hash bytea                       NOT NULL,
   password_salt bytea,
-  password_date timestamptz  NOT NULL,
+  password_date timestamp with time zone    NOT NULL,
 
   PRIMARY KEY (password_history_id),
 

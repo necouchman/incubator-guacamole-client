@@ -19,6 +19,7 @@
 
 package org.apache.guacamole.auth.h2;
 
+import java.io.File;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.auth.jdbc.JDBCEnvironment;
 import org.slf4j.Logger;
@@ -37,14 +38,9 @@ public class H2Environment extends JDBCEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(H2Environment.class);
 
     /**
-     * The default host to connect to, if H2_HOSTNAME is not specified.
+     * The default embedded H2 database to use.
      */
-    private static final String DEFAULT_HOSTNAME = "localhost";
-
-    /**
-     * The default port to connect to, if H2_PORT is not specified.
-     */
-    private static final int DEFAULT_PORT = 5432;
+    private static final String DEFAULT_DATABASE = "guacamole";
 
     /**
      * Whether a database user account is required by default for authentication
@@ -224,41 +220,6 @@ public class H2Environment extends JDBCEnvironment {
     }
 
     /**
-     * Returns the hostname of the H2 server hosting the Guacamole
-     * authentication tables. If unspecified, this will be "localhost".
-     * 
-     * @return
-     *     The URL of the H2 server.
-     *
-     * @throws GuacamoleException 
-     *     If an error occurs while retrieving the property value.
-     */
-    public String getH2Hostname() throws GuacamoleException {
-        return getProperty(
-            H2GuacamoleProperties.H2_HOSTNAME,
-            DEFAULT_HOSTNAME
-        );
-    }
-    
-    /**
-     * Returns the port number of the H2 server hosting the Guacamole
-     * authentication tables. If unspecified, this will be the default
-     * H2 port of 5432.
-     * 
-     * @return
-     *     The port number of the H2 server.
-     *
-     * @throws GuacamoleException 
-     *     If an error occurs while retrieving the property value.
-     */
-    public int getH2Port() throws GuacamoleException {
-        return getProperty(
-            H2GuacamoleProperties.H2_PORT,
-            DEFAULT_PORT
-        );
-    }
-    
-    /**
      * Returns the name of the H2 database containing the Guacamole
      * authentication tables.
      * 
@@ -270,37 +231,10 @@ public class H2Environment extends JDBCEnvironment {
      *     value was not set, as this property is required.
      */
     public String getH2Database() throws GuacamoleException {
-        return getRequiredProperty(H2GuacamoleProperties.H2_DATABASE);
-    }
-    
-    /**
-     * Returns the username that should be used when authenticating with the
-     * H2 database containing the Guacamole authentication tables.
-     * 
-     * @return
-     *     The username for the H2 database.
-     *
-     * @throws GuacamoleException 
-     *     If an error occurs while retrieving the property value, or if the
-     *     value was not set, as this property is required.
-     */
-    public String getH2Username() throws GuacamoleException {
-        return getRequiredProperty(H2GuacamoleProperties.H2_USERNAME);
-    }
-    
-    /**
-     * Returns the password that should be used when authenticating with the
-     * H2 database containing the Guacamole authentication tables.
-     * 
-     * @return
-     *     The password for the H2 database.
-     *
-     * @throws GuacamoleException 
-     *     If an error occurs while retrieving the property value, or if the
-     *     value was not set, as this property is required.
-     */
-    public String getH2Password() throws GuacamoleException {
-        return getRequiredProperty(H2GuacamoleProperties.H2_PASSWORD);
+        return getProperty(
+            H2GuacamoleProperties.H2_DATABASE,
+            DEFAULT_DATABASE
+        );
     }
     
 }
