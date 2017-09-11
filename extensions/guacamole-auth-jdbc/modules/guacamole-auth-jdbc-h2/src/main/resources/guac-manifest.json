@@ -1,0 +1,28 @@
+{
+
+    "guacamoleVersion" : "0.9.13-incubating",
+
+    "name"      : "H2 Authentication",
+    "namespace" : "guac-h2",
+
+    "authProviders" : [
+        "org.apache.guacamole.auth.h2.H2AuthenticationProvider",
+        "org.apache.guacamole.auth.h2.H2SharedAuthenticationProvider"
+    ],
+
+    "css" : [
+        "styles/jdbc.css"
+    ],
+
+    "html" : [
+        "html/shared-connection.html"
+    ],
+
+    "translations" : [
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/ru.json"
+    ]
+
+}
+
