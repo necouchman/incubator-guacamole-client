@@ -59,7 +59,7 @@ public class APIConnection {
     /**
      * The identifier of the template connection.
      */
-    private String templateConnection;
+    private String templateConnectionId;
     
     /**
      * Map of all associated parameter values, indexed by parameter name.
@@ -108,7 +108,7 @@ public class APIConnection {
         this.name = connection.getName();
         this.identifier = connection.getIdentifier();
         this.parentIdentifier = connection.getParentIdentifier();
-        this.templateConnection = connection.getTemplateConnection();
+        this.templateConnectionId = connection.getTemplateConnectionId();
         this.activeConnections = connection.getActiveConnections();
         this.lastActive = connection.getLastActive();
         
@@ -176,20 +176,20 @@ public class APIConnection {
      * @return
      *     The identifier for the parent connection.
      */
-    public String getTemplateConnection() {
-        return templateConnection;
+    public String getTemplateConnectionId() {
+        return templateConnectionId;
     }
 
     /**
      * Sets the template connection identifiers for this
      * connection.
      *
-     * @param templateConnection
+     * @param templateConnectionId
      *     The connection identifiers for the template
      *     for this connection.
      */
-    public void setTemplateConnection(String templateConnection) {
-        this.templateConnection = templateConnection;
+    public void setTemplateConnectionId(String templateConnectionId) {
+        this.templateConnectionId = templateConnectionId;
     }
 
     /**

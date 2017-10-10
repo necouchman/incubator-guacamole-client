@@ -41,6 +41,7 @@
         <result column="failover_only"            property="failoverOnly"          jdbcType="BOOLEAN"/>
         <result column="last_active"              property="lastActive"            jdbcType="TIMESTAMP"/>
         <result column="template_connection"      property="templateConnection"    jdbcType="INTEGER"/>
+        <result column="template_connection_id"   property="templateConnectionId"  jdbcType="INTEGER"/>
 
         <!-- Associated sharing profiles -->
         <collection property="sharingProfileIdentifiers" resultSet="sharingProfiles" ofType="java.lang.String"
@@ -111,7 +112,7 @@
             connection_weight,
             failover_only,
             MAX(start_date) AS last_active,
-            template_connection
+            template_connection_id
         FROM guacamole_connection
         LEFT JOIN guacamole_connection_history ON guacamole_connection_history.connection_id = guacamole_connection.connection_id
         WHERE guacamole_connection.connection_id IN
@@ -159,7 +160,7 @@
             connection_weight,
             failover_only,
             MAX(start_date) AS last_active,
-            template_connection
+            template_connection_id
         FROM guacamole_connection
         JOIN guacamole_connection_permission ON guacamole_connection_permission.connection_id = guacamole_connection.connection_id
         LEFT JOIN guacamole_connection_history ON guacamole_connection_history.connection_id = guacamole_connection.connection_id
@@ -215,7 +216,7 @@
             connection_weight,
             failover_only,
             MAX(start_date) AS last_active,
-            template_connection
+            template_connection_id
         FROM guacamole_connection
         LEFT JOIN guacamole_connection_history ON guacamole_connection_history.connection_id = guacamole_connection.connection_id
         WHERE 
@@ -247,7 +248,7 @@
             proxy_encryption_method,
             connection_weight,
             failover_only,
-            template_connection
+            template_connection_id
         )
         VALUES (
             #{object.name,jdbcType=VARCHAR},
@@ -260,7 +261,7 @@
             #{object.proxyEncryptionMethod,jdbcType=VARCHAR}::guacamole_proxy_encryption_method,
             #{object.connectionWeight,jdbcType=INTEGER},
             #{object.failoverOnly,jdbcType=BOOLEAN},
-            #{object.templateConnection,jdbcType=INTEGER}::integer
+            #{object.templateConnectionId,jdbcType=INTEGER}::integer
         )
 
     </insert>
@@ -278,7 +279,7 @@
             proxy_encryption_method  = #{object.proxyEncryptionMethod,jdbcType=VARCHAR}::guacamole_proxy_encryption_method,
             connection_weight        = #{object.connectionWeight,jdbcType=INTEGER},
             failover_only            = #{object.failoverOnly,jdbcType=BOOLEAN},
-            template_connection      = #{object.templateConnection,jdbcType=INTEGER}::integer
+            template_connection_id   = #{object.templateConnectionId,jdbcType=INTEGER}::integer
         WHERE connection_id = #{object.objectID,jdbcType=INTEGER}::integer
     </update>
 
