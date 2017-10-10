@@ -140,6 +140,7 @@ CREATE TABLE [guacamole_connection] (
     -- Connection Weight
     [connection_weight] [int],
     [failover_only]     [bit] NOT NULL DEFAULT 0,
+    [template_connection_id] [int] NULL,
 
     -- Guacamole proxy (guacd) overrides
     [proxy_port]              [int],
@@ -156,6 +157,13 @@ CREATE TABLE [guacamole_connection] (
         FOREIGN KEY ([parent_id])
         REFERENCES [guacamole_connection_group] ([connection_group_id])
         -- ON DELETE CASCADE handled by guacamole_delete_connection_group trigger
+
+    CONSTRAINT [FK_guacamole_template_connection_id]
+        FOREIGN KEY([template_connection_id])
+        REFERENCES [guacamole_connection] ([connection_id]);
+    
+    CONSTRAINT [CK_guacamole_template_connection_id_self]
+        CHECK (([template_connection_id] <> [connection_id]));
 
 );
 
@@ -792,4 +800,3 @@ AS BEGIN
 
 END
 GO
-

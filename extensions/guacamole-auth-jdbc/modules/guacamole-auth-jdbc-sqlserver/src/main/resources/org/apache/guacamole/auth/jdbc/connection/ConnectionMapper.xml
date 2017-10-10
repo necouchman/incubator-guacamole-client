@@ -40,6 +40,7 @@
         <result column="connection_weight"        property="connectionWeight"      jdbcType="INTEGER"/>
         <result column="failover_only"            property="failoverOnly"          jdbcType="BOOLEAN"/>
         <result column="last_active"              property="lastActive"            jdbcType="TIMESTAMP"/>
+        <result column="template_connection_id"   property="templateConnectionId"  jdbcType="INTEGER"/>
 
         <!-- Associated sharing profiles -->
         <collection property="sharingProfileIdentifiers" resultSet="sharingProfiles" ofType="java.lang.String"
@@ -113,7 +114,8 @@
                 SELECT MAX(start_date)
                 FROM [guacamole_connection_history]
                 WHERE [guacamole_connection_history].connection_id = [guacamole_connection].connection_id
-            ) AS last_active
+            ) AS last_active,
+            template_connection_id
         FROM [guacamole_connection]
         WHERE [guacamole_connection].connection_id IN
             <foreach collection="identifiers" item="identifier"
@@ -162,7 +164,8 @@
                 SELECT MAX(start_date)
                 FROM [guacamole_connection_history]
                 WHERE [guacamole_connection_history].connection_id = [guacamole_connection].connection_id
-            ) AS last_active
+            ) AS last_active,
+            template_connection_id
         FROM [guacamole_connection]
         JOIN [guacamole_connection_permission] ON [guacamole_connection_permission].connection_id = [guacamole_connection].connection_id
         WHERE [guacamole_connection].connection_id IN
@@ -219,7 +222,8 @@
                 SELECT MAX(start_date)
                 FROM [guacamole_connection_history]
                 WHERE [guacamole_connection_history].connection_id = [guacamole_connection].connection_id
-            ) AS last_active
+            ) AS last_active,
+            template_connection_id
         FROM [guacamole_connection]
         WHERE 
             <if test="parentIdentifier != null">parent_id = #{parentIdentifier,jdbcType=INTEGER}</if>
@@ -248,7 +252,8 @@
             proxy_port,
             proxy_encryption_method,
             connection_weight,
-            failover_only
+            failover_only,
+            template_connection_id
         )
         VALUES (
             #{object.name,jdbcType=VARCHAR},
@@ -260,7 +265,8 @@
             #{object.proxyPort,jdbcType=INTEGER},
             #{object.proxyEncryptionMethod,jdbcType=VARCHAR},
             #{object.connectionWeight,jdbcType=INTEGER},
-            #{object.failoverOnly,jdbcType=INTEGER}
+            #{object.failoverOnly,jdbcType=INTEGER},
+            #{object.templateConnectionId,jdbcType=INTEGER}
         )
 
     </insert>
@@ -277,7 +283,8 @@
             proxy_port               = #{object.proxyPort,jdbcType=INTEGER},
             proxy_encryption_method  = #{object.proxyEncryptionMethod,jdbcType=VARCHAR},
             connection_weight        = #{object.connectionWeight,jdbcType=INTEGER},
-            failover_only            = #{object.failoverOnly,jdbcType=INTEGER}
+            failover_only            = #{object.failoverOnly,jdbcType=INTEGER},
+            template_connection_id   = #{object.templateConnectionId,jdbcType=INTEGER}
         WHERE connection_id = #{object.objectID,jdbcType=INTEGER}
     </update>
 
