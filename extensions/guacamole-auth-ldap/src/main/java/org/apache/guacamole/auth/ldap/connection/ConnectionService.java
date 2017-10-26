@@ -109,7 +109,6 @@ public class ConnectionService {
             // Pull the current user DN from the LDAP connection
             LdapConnectionConfig ldapConnectionConfig = ((LdapNetworkConnection)ldapConnection).getConfig();
             String userDN = ldapConnectionConfig.getName();
-            logger.debug(">>>LDAP<<< User DN is: {}", userDN);
 
             // getConnections() will only be called after a connection has been
             // authenticated (via non-anonymous bind), thus userDN cannot

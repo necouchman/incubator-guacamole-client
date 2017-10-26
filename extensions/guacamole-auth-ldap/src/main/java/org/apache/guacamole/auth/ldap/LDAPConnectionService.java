@@ -54,7 +54,8 @@ public class LDAPConnectionService {
      *
      * @return
      *     A new LdapConnection instance which has already been configured to
-     *     use the encryption method requested within guacamole.properties.
+     *     use the encryption method requested within guacamole.properties, and
+     *     also has the host and port configured.
      *
      * @throws GuacamoleException
      *     If an error occurs while parsing guacamole.properties, or if the
