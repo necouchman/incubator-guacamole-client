@@ -111,6 +111,10 @@ public class UserService {
             request.setSizeLimit(confService.getMaxResults());
             request.setTimeLimit(confService.getOperationTimeout());
             request.setTypesOnly(false);
+
+            if (confService.getFollowReferrals())
+                request.followReferrals();
+
             SearchCursor results = ldapConnection.search(request);
 
             // Read all visible users
@@ -284,6 +288,10 @@ public class UserService {
             request.setSizeLimit(confService.getMaxResults());
             request.setTimeLimit(confService.getOperationTimeout());
             request.setTypesOnly(false);
+
+            if (confService.getFollowReferrals())
+                request.followReferrals();
+
             SearchCursor results = ldapConnection.search(request);
 
             // Add all DNs for found users

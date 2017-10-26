@@ -132,6 +132,9 @@ public class ConnectionService {
             request.setTimeLimit(confService.getOperationTimeout());
             request.setTypesOnly(false);
 
+            if(confService.getFollowReferrals())
+                request.followReferrals();
+
             SearchCursor results = ldapConnection.search(request);
 
             // Build token filter containing credential tokens
@@ -266,6 +269,9 @@ public class ConnectionService {
             request.setSizeLimit(confService.getMaxResults());
             request.setTimeLimit(confService.getOperationTimeout());
             request.setTypesOnly(false);
+
+            if (confService.getFollowReferrals())
+                request.followReferrals();
 
             SearchCursor userRoleGroupResults = ldapConnection.search(request);
 

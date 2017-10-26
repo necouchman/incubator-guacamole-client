@@ -19,6 +19,7 @@
 
 package org.apache.guacamole.auth.ldap;
 
+import org.apache.guacamole.properties.BooleanGuacamoleProperty;
 import org.apache.guacamole.properties.IntegerGuacamoleProperty;
 import org.apache.guacamole.properties.StringGuacamoleProperty;
 
@@ -181,6 +182,16 @@ public class LDAPGuacamoleProperties {
 
         @Override
         public String getName() { return "ldap-operation-timeout"; }
+
+    };
+
+    /**
+     * Whether or not to follow referrals.
+     */
+    public static final BooleanGuacamoleProperty LDAP_FOLLOW_REFERRALS = new BooleanGuacamoleProperty() {
+
+        @Override
+        public String getName() { return "ldap-follow-referrals"; }
 
     };
 
