@@ -20,9 +20,10 @@
 package org.apache.guacamole.auth.ldap;
 
 import com.google.inject.Inject;
-import com.novell.ldap.LDAPSearchConstraints;
 import java.util.Collections;
 import java.util.List;
+import org.apache.directory.api.ldap.model.message.AliasDerefMode;
+import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.environment.Environment;
 import org.slf4j.Logger;
@@ -113,7 +114,7 @@ public class ConfigurationService {
      *     If guacamole.properties cannot be parsed, or if the user base DN
      *     property is not specified.
      */
-    public String getUserBaseDN() throws GuacamoleException {
+    public Dn getUserBaseDN() throws GuacamoleException {
         return environment.getRequiredProperty(
             LDAPGuacamoleProperties.LDAP_USER_BASE_DN
         );
@@ -132,7 +133,7 @@ public class ConfigurationService {
      * @throws GuacamoleException
      *     If guacamole.properties cannot be parsed.
      */
-    public String getConfigurationBaseDN() throws GuacamoleException {
+    public Dn getConfigurationBaseDN() throws GuacamoleException {
         return environment.getProperty(
             LDAPGuacamoleProperties.LDAP_CONFIG_BASE_DN
         );
@@ -150,7 +151,7 @@ public class ConfigurationService {
      * @throws GuacamoleException
      *     If guacamole.properties cannot be parsed.
      */
-    public String getGroupBaseDN() throws GuacamoleException {
+    public Dn getGroupBaseDN() throws GuacamoleException {
         return environment.getProperty(
             LDAPGuacamoleProperties.LDAP_GROUP_BASE_DN
         );
@@ -169,7 +170,7 @@ public class ConfigurationService {
      * @throws GuacamoleException
      *     If guacamole.properties cannot be parsed.
      */
-    public String getSearchBindDN() throws GuacamoleException {
+    public Dn getSearchBindDN() throws GuacamoleException {
         return environment.getProperty(
             LDAPGuacamoleProperties.LDAP_SEARCH_BIND_DN
         );
@@ -224,7 +225,7 @@ public class ConfigurationService {
      * @throws GuacamoleException
      *     If guacamole.properties cannot be parsed.
      */
-    private int getMaxResults() throws GuacamoleException {
+    public int getMaxResults() throws GuacamoleException {
         return environment.getProperty(
             LDAPGuacamoleProperties.LDAP_MAX_SEARCH_RESULTS,
             1000 
@@ -244,32 +245,11 @@ public class ConfigurationService {
      * @throws GuacamoleException
      *     If guacamole.properties cannot be parsed.
      */
-    private DereferenceAliasesMode getDereferenceAliases() throws GuacamoleException {
+    public AliasDerefMode getDereferenceAliases() throws GuacamoleException {
         return environment.getProperty(
             LDAPGuacamoleProperties.LDAP_DEREFERENCE_ALIASES,
-            DereferenceAliasesMode.NEVER
+            AliasDerefMode.NEVER_DEREF_ALIASES
         );
-    }
-
-    /**
-     * Returns a set of LDAPSearchConstraints to apply globally
-     * to all LDAP searches.
-     *
-     * @return
-     *     A LDAPSearchConstraints object containing constraints
-     *     to be applied to all LDAP search operations.
-     *
-     * @throws GuacamoleException
-     *     If guacamole.properties cannot be parsed.
-     */
-    public LDAPSearchConstraints getLDAPSearchConstraints() throws GuacamoleException {
-
-        LDAPSearchConstraints constraints = new LDAPSearchConstraints();
-
-        constraints.setMaxResults(getMaxResults());
-        constraints.setDereference(getDereferenceAliases().DEREF_VALUE);
-
-        return constraints;
     }
 
     /**
@@ -289,6 +269,25 @@ public class ConfigurationService {
         return environment.getProperty(
             LDAPGuacamoleProperties.LDAP_USER_SEARCH_FILTER,
             "(objectClass=*)"
+        );
+    }
+
+    /**
+     * Returns the time limit, in seconds, that should be used when
+     * performing LDAP operations.  If no limit is specified a default
+     * of 30 seconds is returned.
+     *
+     * @return
+     *     The number of seconds to allow LDAP operations to run
+     *     before terminating the operation.
+     *
+     * @throws GuacamoleException
+     *     If guacamole.properties cannot be parsed.
+     */
+    public Integer getOperationTimeout() throws GuacamoleException {
+        return environment.getProperty(
+            LDAPGuacamoleProperties.LDAP_OPERATION_TIMEOUT,
+            30
         );
     }
 
