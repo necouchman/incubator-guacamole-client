@@ -172,7 +172,7 @@ public class RESTExceptionWrapper implements MethodInterceptor {
 
         // Translate GuacamoleException subclasses to HTTP error codes
         catch (GuacamoleException e) {
-            throw new APIException(
+            throw APIException.fromStatusException(
                 Response.Status.fromStatusCode(e.getHttpStatusCode()),
                 e
             );
@@ -193,7 +193,7 @@ public class RESTExceptionWrapper implements MethodInterceptor {
             // Ensure internal errors are fully logged at the debug level
             logger.debug("Unexpected error in REST endpoint.", t);
 
-            throw new APIException(Response.Status.INTERNAL_SERVER_ERROR,
+            throw APIException.fromStatusException(Response.Status.INTERNAL_SERVER_ERROR,
                     new GuacamoleException("Unexpected internal error.", t));
 
         }

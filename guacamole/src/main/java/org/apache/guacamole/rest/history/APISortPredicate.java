@@ -109,7 +109,7 @@ public class APISortPredicate {
 
         // Bail out if sort property is not valid
         catch (IllegalArgumentException e) {
-            throw new APIException(
+            throw APIException.fromStatusException(
                 Response.Status.BAD_REQUEST,
                 new GuacamoleClientException(String.format("Invalid sort property: \"%s\"", value))
             );

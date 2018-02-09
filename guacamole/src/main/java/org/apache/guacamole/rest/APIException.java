@@ -45,9 +45,52 @@ public class APIException extends WebApplicationException {
      */
     public APIException(Response.Status status, GuacamoleException exception) {
         super(Response.status(status)
-                .type(MediaType.APPLICATION_JSON)
-                .entity(new APIError(exception))
-                .build());
+            .type(MediaType.APPLICATION_JSON)
+            .entity(new APIError(exception))
+            .build());
+    }
+
+    /**
+     * Construct a new APIException based on the given ResponseBuilder
+     * data  The details of the GuacamoleException relevant to the REST
+     * API will be exposed via an APIError.
+     *
+     * @param status
+     *     The HTTP status which corresponds to the GuacamoleException.
+     *
+     * @param exception
+     *     The GuacamoleException that occurred.
+     */
+    public APIException(Response.ResponseBuilder builder) {
+        super(builder.build());
+    }
+
+    /**
+     * Use the given HTTP status and exception parameters to generate
+     * a ResponseBuilder that will then be used to construct the API
+     * exception.
+     *
+     * @param status
+     *     The HTTP status which corresponds to the GuacamoleException.
+     *
+     * @param exception
+     *     The GuacamoleException that occurred.
+     *
+     * @return
+     *     The constructed APIException from the given status and
+     *     exception.
+     */
+    public static APIException fromStatusException(Response.Status status,
+            GuacamoleException exception) {
+
+        Response.ResponseBuilder builder = Response.status(status);
+        builder = builder.type(MediaType.APPLICATION_JSON);
+        if (status == Response.Status.UNAUTHORIZED)
+            builder = builder.header("WWW-Authenticate",
+                        "Basic realm=\"Apache Guacamole\"");
+        builder = builder.entity(new APIError(exception));
+        return new APIException(builder);
+
     }
 
 }
