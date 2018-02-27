@@ -537,6 +537,7 @@
     "PROTOCOL_VNC" : {
 
         "FIELD_HEADER_AUDIO_SERVERNAME" : "Audio server name:",
+        "FIELD_HEADER_AUDIO_PORT"       : "Audiio port:",
         "FIELD_HEADER_CLIPBOARD_ENCODING" : "Encoding:",
         "FIELD_HEADER_COLOR_DEPTH"      : "Color depth:",
         "FIELD_HEADER_CREATE_RECORDING_PATH" : "Automatically create recording path:",
@@ -563,6 +564,11 @@
         "FIELD_HEADER_SFTP_PRIVATE_KEY"           : "Private key:",
         "FIELD_HEADER_SFTP_ROOT_DIRECTORY"        : "File browser root directory:",
         "FIELD_HEADER_SFTP_USERNAME"              : "Username:",
+        "FIELD_HEADER_SSH_TUNNEL"          : "Enable SSH tunneling:",
+        "FIELD_HEADER_SSH_TUNNEL_HOSTNAME" : "SSH tunnel hostname:",
+        "FIELD_HEADER_SSH_TUNNEL_PORT"     : "SSH tunnel port:",
+        "FIELD_HEADER_SSH_TUNNEL_USERNAME" : "SSH tunnel username:",
+        "FIELD_HEADER_SSH_TUNNEL_PASSWORD" : "SSH tunnel password:",
         "FIELD_HEADER_SWAP_RED_BLUE"    : "Swap red/blue components:",
 
         "FIELD_OPTION_COLOR_DEPTH_8"     : "256 color",

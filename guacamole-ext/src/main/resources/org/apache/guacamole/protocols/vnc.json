@@ -12,6 +12,27 @@
                 {
                     "name"  : "port",
                     "type"  : "NUMERIC"
+                },
+                {
+                    "name"    : "ssh-tunnel",
+                    "type"    : "BOOLEAN",
+                    "options" : [ "true" ]
+                },
+                {
+                    "name"  : "ssh-tunnel-hostname",
+                    "type"  : "TEXT"
+                },
+                {
+                    "name"  : "ssh-tunnel-port",
+                    "type"  : "NUMERIC"
+                },
+                {
+                    "name"  : "ssh-tunnel-username",
+                    "type"  : "TEXT"
+                },
+                {
+                    "name"  : "ssh-tunnel-password",
+                    "type"  : "PASSWORD"
                 }
             ]
         },
@@ -169,6 +190,10 @@
                 {
                     "name"  : "audio-servername",
                     "type"  : "TEXT"
+                },
+                {
+                    "name"  : "audio-port",
+                    "type"  : "NUMERIC"
                 }
             ]
         }
