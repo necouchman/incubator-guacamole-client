@@ -19,12 +19,16 @@
 
 package org.apache.guacamole.auth.vhost;
 
+import com.google.inject.Guice;
 import com.google.inject.Injector;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.auth.AbstractAuthenticationProvider;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.Credentials;
 import org.apache.guacamole.net.auth.UserContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * AuthenticationProvider implementation which uses TOTP as an additional
@@ -34,10 +38,9 @@ import org.apache.guacamole.net.auth.UserContext;
 public class vHostAuthenticationProvider extends AbstractAuthenticationProvider {
 
     /**
-     * Injector which will manage the object graph of this authentication
-     * provider.
+     * Logger for this class.
      */
-    private final Injector injector;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * Creates a new TOTPAuthenticationProvider that verifies users using TOTP.
@@ -46,18 +49,13 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
      *     If a required property is missing, or an error occurs while parsing
      *     a property.
      */
-    public TOTPAuthenticationProvider() throws GuacamoleException {
-
-        // Set up Guice injector.
-        injector = Guice.createInjector(
-            new TOTPAuthenticationProviderModule(this)
-        );
-
+    public vHostAuthenticationProvider() throws GuacamoleException {
+        super();
     }
 
     @Override
     public String getIdentifier() {
-        return "totp";
+        return "vhost";
     }
 
     @Override
@@ -65,15 +63,14 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             AuthenticatedUser authenticatedUser, Credentials credentials)
             throws GuacamoleException {
 
-        UserVerificationService verificationService =
-                injector.getInstance(UserVerificationService.class);
-
-        // Verify identity of user
-        verificationService.verifyIdentity(context, authenticatedUser);
-
-        // User has been verified, and authentication should be allowed to
-        // continue
-        return new TOTPUserContext(context);
+        HttpServletRequest request = credentials.getRequest();
+        String uri = request.getRequestURI();
+        String url = request.getRequestURL().toString();
+        
+        logger.debug(">>>VHOST<<< Decorate URI: {}\nDecorate URL: {}", uri, url);
+        
+        // return new vHostUserContext(context);
+        return context;
 
     }
 
@@ -81,12 +78,15 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
     public UserContext redecorate(UserContext decorated, UserContext context,
             AuthenticatedUser authenticatedUser, Credentials credentials)
             throws GuacamoleException {
-        return new TOTPUserContext(context);
-    }
-
-    @Override
-    public void shutdown() {
-        injector.getInstance(CodeUsageTrackingService.class).shutdown();
+        
+        HttpServletRequest request = credentials.getRequest();
+        String uri = request.getRequestURI();
+        String url = request.getRequestURL().toString();
+        
+        logger.debug(">>>VHOST<<< Redecorate URI: {}\nRedecoreate URL: {}", uri, url);
+        
+        // return new vHostUserContext(context);
+        return context;
     }
 
 }
