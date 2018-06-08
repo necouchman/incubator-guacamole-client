@@ -7,22 +7,6 @@
 
     "authProviders" : [
         "org.apache.guacamole.auth.vhost.vHostAuthenticationProvider"
-    ],
-
-    "translations" : [
-        "translations/en.json"
-    ],
-
-    "js" : [
-        "vhost.min.js"
-    ],
-
-    "css" : [
-        "vhost.min.css"
-    ],
-
-    "resources" : {
-        "templates/authenticationCodeField.html" : "text/html"
-    }
+    ]
 
 }
