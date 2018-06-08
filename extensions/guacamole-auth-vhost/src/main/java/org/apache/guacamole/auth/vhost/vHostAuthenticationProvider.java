@@ -21,8 +21,14 @@ package org.apache.guacamole.auth.vhost;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.guacamole.GuacamoleException;
+import org.apache.guacamole.GuacamoleServerException;
 import org.apache.guacamole.net.auth.AbstractAuthenticationProvider;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.Credentials;
@@ -63,11 +69,7 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             AuthenticatedUser authenticatedUser, Credentials credentials)
             throws GuacamoleException {
 
-        HttpServletRequest request = credentials.getRequest();
-        String uri = request.getRequestURI();
-        String url = request.getRequestURL().toString();
-        
-        logger.debug(">>>VHOST<<< Decorate URI: {}\nDecorate URL: {}", uri, url);
+        getRequestHost(credentials.getRequest());
         
         // return new vHostUserContext(context);
         return context;
@@ -79,14 +81,35 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             AuthenticatedUser authenticatedUser, Credentials credentials)
             throws GuacamoleException {
         
-        HttpServletRequest request = credentials.getRequest();
-        String uri = request.getRequestURI();
-        String url = request.getRequestURL().toString();
-        
-        logger.debug(">>>VHOST<<< Redecorate URI: {}\nRedecoreate URL: {}", uri, url);
+        getRequestHost(credentials.getRequest());
         
         // return new vHostUserContext(context);
         return context;
+    }
+    
+    private String getRequestHost(HttpServletRequest request) 
+            throws GuacamoleException {
+        
+        String strUrl = request.getRequestURL().toString();
+        String referrer = request.getHeader("referrer");
+        
+        try {
+            URL url = new URL(strUrl);
+            URI uri = url.toURI();
+        
+            logger.debug(">>>VHOST<<< Got request for host {}", url.getHost());
+            logger.debug(">>>VHOST<<< Referrer: {}", referrer);
+            
+            return url.getHost();
+            
+        }
+        catch (MalformedURLException e) {
+            throw new GuacamoleServerException("Bad URL provided.", e);
+        }
+        catch (URISyntaxException e) {
+            throw new GuacamoleServerException("URI Syntax exception.", e);
+        }
+        
     }
 
 }
