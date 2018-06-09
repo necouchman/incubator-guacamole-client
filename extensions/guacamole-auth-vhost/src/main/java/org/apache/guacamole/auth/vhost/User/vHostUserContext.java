@@ -27,12 +27,19 @@ import org.apache.guacamole.net.auth.Directory;
 import org.apache.guacamole.net.auth.UserContext;
 import org.apache.guacamole.net.auth.credentials.CredentialsInfo;
 import org.apache.guacamole.net.auth.credentials.GuacamoleInvalidCredentialsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * User context that delegates to another context for the purposes
  * of vHost-based authentication and routing.
  */
 public class vHostUserContext extends DelegatingUserContext {
+    
+    /**
+     * The logger for this class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(vHostUserContext.class);
     
     /**
      * The virtual host associated with this user context.
@@ -64,11 +71,16 @@ public class vHostUserContext extends DelegatingUserContext {
         super(userContext);
         this.vHost = vHost;
         
+        logger.debug(">>>VHOST<<< Looking for {}", vHost);
+        
         if(!((vHostConnectionDirectory) directory).getAllvHosts().contains(vHost)) {
+            logger.debug(">>>VHOST<<< Virtual host {} not in any connection.", vHost);
             throw new GuacamoleInvalidCredentialsException(
                     "Virtual Host not found.",
                     CredentialsInfo.USERNAME_PASSWORD);
         }
+        
+        logger.debug(">>>VHOST<<< Found the connection an continuing.");
         
     }
     
