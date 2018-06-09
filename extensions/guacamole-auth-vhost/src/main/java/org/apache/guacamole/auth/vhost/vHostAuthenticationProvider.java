@@ -43,6 +43,11 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
      * Logger for this class.
      */
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
+    /**
+     * The User Context object for this class.
+     */
+    private UserContext userContext;
 
     /**
      * Creates a new TOTPAuthenticationProvider that verifies users using TOTP.
@@ -65,8 +70,12 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             AuthenticatedUser authenticatedUser, Credentials credentials)
             throws GuacamoleException {
         
-        // return new vHostUserContext(context);
-        return new vHostUserContext(context, getRequestHost(credentials.getRequest()));
+        if (userContext == null) {
+            userContext = new vHostUserContext(context,
+                    getRequestHost(credentials.getRequest()));
+        }
+        
+        return userContext;
 
     }
 
@@ -75,8 +84,12 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             AuthenticatedUser authenticatedUser, Credentials credentials)
             throws GuacamoleException {
         
-        // return new vHostUserContext(context);
-        return new vHostUserContext(context, getRequestHost(credentials.getRequest()));
+        if (userContext == null) {
+            userContext = new vHostUserContext(context,
+                    getRequestHost(credentials.getRequest()));
+        }
+        
+        return userContext;
     }
     
     private String getRequestHost(HttpServletRequest request) 
