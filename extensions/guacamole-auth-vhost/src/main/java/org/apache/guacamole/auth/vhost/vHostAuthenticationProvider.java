@@ -19,16 +19,12 @@
 
 package org.apache.guacamole.auth.vhost;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleServerException;
+import org.apache.guacamole.auth.vhost.User.vHostUserContext;
 import org.apache.guacamole.net.auth.AbstractAuthenticationProvider;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.Credentials;
@@ -68,11 +64,9 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
     public UserContext decorate(UserContext context,
             AuthenticatedUser authenticatedUser, Credentials credentials)
             throws GuacamoleException {
-
-        getRequestHost(credentials.getRequest());
         
         // return new vHostUserContext(context);
-        return context;
+        return new vHostUserContext(context, getRequestHost(credentials.getRequest()));
 
     }
 
@@ -81,10 +75,8 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             AuthenticatedUser authenticatedUser, Credentials credentials)
             throws GuacamoleException {
         
-        getRequestHost(credentials.getRequest());
-        
         // return new vHostUserContext(context);
-        return context;
+        return new vHostUserContext(context, getRequestHost(credentials.getRequest()));
     }
     
     private String getRequestHost(HttpServletRequest request) 
@@ -95,7 +87,6 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
         
         try {
             URL url = new URL(strUrl);
-            URI uri = url.toURI();
         
             logger.debug(">>>VHOST<<< Got request for host {}", url.getHost());
             logger.debug(">>>VHOST<<< Referrer: {}", referrer);
@@ -105,9 +96,6 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
         }
         catch (MalformedURLException e) {
             throw new GuacamoleServerException("Bad URL provided.", e);
-        }
-        catch (URISyntaxException e) {
-            throw new GuacamoleServerException("URI Syntax exception.", e);
         }
         
     }
