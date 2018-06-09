@@ -50,7 +50,9 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
     private UserContext userContext;
 
     /**
-     * Creates a new TOTPAuthenticationProvider that verifies users using TOTP.
+     * Creates a new vHostAuthenticationProvider that looks for a specific
+     * virtual host in the request and returns a decorated user context
+     * for that virtual host.
      *
      * @throws GuacamoleException
      *     If a required property is missing, or an error occurs while parsing
@@ -111,6 +113,11 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             throw new GuacamoleServerException("Bad URL provided.", e);
         }
         
+    }
+    
+    @Override
+    public void shutdown() {
+        userContext = null;
     }
 
 }
