@@ -73,14 +73,16 @@ public class vHostUserContext extends DelegatingUserContext {
         
         logger.debug(">>>VHOST<<< Looking for {}", vHost);
         
-        if(!((vHostConnectionDirectory) directory).getAllvHosts().contains(vHost)) {
+        String identifier = ((vHostConnectionDirectory) directory).getVHost(vHost);
+        
+        if(identifier == null || identifier.isEmpty()) {
             logger.debug(">>>VHOST<<< Virtual host {} not in any connection.", vHost);
             throw new GuacamoleInvalidCredentialsException(
                     "Virtual Host not found.",
                     CredentialsInfo.USERNAME_PASSWORD);
         }
         
-        logger.debug(">>>VHOST<<< Found the connection an continuing.");
+        logger.debug(">>>VHOST<<< Found connection {} and continuing.", identifier);
         
     }
     
@@ -88,7 +90,7 @@ public class vHostUserContext extends DelegatingUserContext {
     public final Directory<Connection> getConnectionDirectory()
             throws GuacamoleException {
         
-        return new vHostConnectionDirectory(super.getConnectionDirectory());
+        return directory;
 
     }
     
