@@ -48,16 +48,6 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
         return ((vHostConnection) connection).getUndecorated();
     }
     
-    public List<String> getAllvHosts() throws GuacamoleException {
-        List<String> vhosts = new ArrayList<String>();
-        Collection<Connection> connections = this.getAll(this.getIdentifiers());
-        for (Connection connection : connections)
-            vhosts.add(((vHostConnection) connection).getVHost());
-
-        return vhosts;
-                
-    }
-    
     public String getVHost(String vHost) throws GuacamoleException {
         Collection<Connection> connections = this.getAll(this.getIdentifiers());
         for (Connection connection : connections)

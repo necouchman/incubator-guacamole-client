@@ -65,6 +65,8 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             AuthenticatedUser authenticatedUser, Credentials credentials)
             throws GuacamoleException {
         
+        logger.debug(">>>VHOST<<< Decorating context {}", context.getClass().toString());
+        
         // return new vHostUserContext(context);
         return new vHostUserContext(context, getRequestHost(credentials.getRequest()));
 
@@ -75,6 +77,8 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             AuthenticatedUser authenticatedUser, Credentials credentials)
             throws GuacamoleException {
         
+        logger.debug(">>>VHOST<<< Redecorating context {}", context.getClass().toString());
+        
         // return new vHostUserContext(context);
         return new vHostUserContext(context, getRequestHost(credentials.getRequest()));
     }
@@ -83,7 +87,7 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             throws GuacamoleException {
         
         String strUrl = request.getRequestURL().toString();
-        String referrer = request.getHeader("referrer");
+        String referrer = request.getHeader("referer");
         
         try {
             URL url = new URL(strUrl);
