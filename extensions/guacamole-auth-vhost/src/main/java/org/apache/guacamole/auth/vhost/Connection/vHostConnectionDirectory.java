@@ -69,7 +69,7 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
             if (vHost != null && !vHost.isEmpty() &&
                     vHost.equals(((vHostConnection) connection).getVHost())) {
                 logger.debug(">>>VHOST<<< Match connection {} for vHost {}", connection.getName(), vHost);
-                this.add(connection);
+                this.add(new vHostConnection(connection));
             }
         }
     }
