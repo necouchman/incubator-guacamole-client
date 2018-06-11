@@ -20,6 +20,7 @@
 package org.apache.guacamole.auth.vhost.Connection;
 
 import java.util.Collection;
+import java.util.Map;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.DecoratingDirectory;
@@ -63,13 +64,16 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
         
         logger.debug(">>>VHOST<<< Constructing a new vHost directory.");
         
+        if (vHost == null || vHost.isEmpty())
+            return;
+        
         Collection<Connection> connections = directory.getAll(directory.getIdentifiers());
         for (Connection connection : connections) {
             logger.debug(">>>VHOST<<< Looking at connection {} for vHost {}", connection.getName(), vHost);
-            if (vHost != null && !vHost.isEmpty() &&
-                    vHost.equals(((vHostConnection) connection).getVHost())) {
+            Map<String, String> cAttrs = connection.getAttributes();
+            if (vHost.equals(cAttrs.get(vHostConnection.VHOST_ATTRIBUTE))) {
                 logger.debug(">>>VHOST<<< Match connection {} for vHost {}", connection.getName(), vHost);
-                this.add(new vHostConnection(connection));
+                this.add(connection);
             }
         }
     }
