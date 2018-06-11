@@ -42,12 +42,7 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
     /**
      * Logger for this class.
      */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
-    /**
-     * The User Context object for this class.
-     */
-    private UserContext userContext;
+    private static final Logger logger = LoggerFactory.getLogger(vHostAuthenticationProvider.class);
 
     /**
      * Creates a new vHostAuthenticationProvider that looks for a specific
@@ -72,12 +67,7 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             AuthenticatedUser authenticatedUser, Credentials credentials)
             throws GuacamoleException {
         
-        if (userContext == null) {
-            userContext = new vHostUserContext(context,
-                    getRequestHost(credentials.getRequest()));
-        }
-        
-        return userContext;
+        return new vHostUserContext(context, getRequestHost(credentials.getRequest()));
 
     }
 
@@ -86,15 +76,11 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             AuthenticatedUser authenticatedUser, Credentials credentials)
             throws GuacamoleException {
         
-        if (userContext == null) {
-            userContext = new vHostUserContext(context,
-                    getRequestHost(credentials.getRequest()));
-        }
+        return new vHostUserContext(context, getRequestHost(credentials.getRequest()));
         
-        return userContext;
     }
     
-    private String getRequestHost(HttpServletRequest request) 
+    private static String getRequestHost(HttpServletRequest request) 
             throws GuacamoleException {
         
         String strUrl = request.getRequestURL().toString();
@@ -113,11 +99,6 @@ public class vHostAuthenticationProvider extends AbstractAuthenticationProvider 
             throw new GuacamoleServerException("Bad URL provided.", e);
         }
         
-    }
-    
-    @Override
-    public void shutdown() {
-        userContext = null;
     }
 
 }

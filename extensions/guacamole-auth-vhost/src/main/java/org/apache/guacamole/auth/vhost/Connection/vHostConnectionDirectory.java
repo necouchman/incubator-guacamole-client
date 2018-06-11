@@ -19,9 +19,7 @@
 
 package org.apache.guacamole.auth.vhost.Connection;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.DecoratingDirectory;
@@ -33,8 +31,18 @@ import org.apache.guacamole.net.auth.Directory;
  */
 public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
 
-    public vHostConnectionDirectory(Directory<Connection> directory) {
+    public vHostConnectionDirectory(Directory<Connection> directory, String vHost) 
+            throws GuacamoleException {
         super(directory);
+        
+        Collection<Connection> connections = this.getAll(this.getIdentifiers());
+        for (Connection connection : connections) {
+            if (vHost != null && !vHost.isEmpty() &&
+                    vHost.equals(((vHostConnection) connection).getVHost())) {
+                continue;
+            }
+            directory.remove(connection.getIdentifier());
+        }
     }
     
     @Override
@@ -46,15 +54,6 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
     protected Connection undecorate(Connection connection) {
         assert(connection instanceof vHostConnection);
         return ((vHostConnection) connection).getUndecorated();
-    }
-    
-    public String getVHost(String vHost) throws GuacamoleException {
-        Collection<Connection> connections = this.getAll(this.getIdentifiers());
-        for (Connection connection : connections)
-            if (vHost != null && !vHost.isEmpty() &&
-                    vHost.equals(((vHostConnection) connection).getVHost()))
-                return connection.getIdentifier();
-        return null;
     }
     
 }

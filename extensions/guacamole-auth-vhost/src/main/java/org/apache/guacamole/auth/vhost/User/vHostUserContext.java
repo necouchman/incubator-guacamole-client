@@ -25,9 +25,6 @@ import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.DelegatingUserContext;
 import org.apache.guacamole.net.auth.Directory;
 import org.apache.guacamole.net.auth.UserContext;
-import org.apache.guacamole.net.auth.credentials.CredentialsInfo;
-import org.apache.guacamole.net.auth.credentials.GuacamoleCredentialsException;
-import org.apache.guacamole.net.auth.credentials.GuacamoleInvalidCredentialsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +47,7 @@ public class vHostUserContext extends DelegatingUserContext {
     /**
      * The directory for this context.
      */
-    private final Directory<Connection> directory = 
-            new vHostConnectionDirectory(super.getConnectionDirectory());
+    private final Directory<Connection> directory;
     
     /**
      * Create a new user context that decorates the existing user context
@@ -71,18 +67,8 @@ public class vHostUserContext extends DelegatingUserContext {
             throws GuacamoleException {
         super(userContext);
         this.vHost = vHost;
-        
-        logger.debug(">>>VHOST<<< Looking for {}", vHost);
-        
-        String identifier = ((vHostConnectionDirectory) directory).getVHost(vHost);
-        
-        if(identifier == null || identifier.isEmpty()) {
-            logger.debug(">>>VHOST<<< Virtual host {} not in any connection.", vHost);
-            throw new GuacamoleCredentialsException(
-                    "Virtual Host not found.", CredentialsInfo.EMPTY);
-        }
-        
-        logger.debug(">>>VHOST<<< Found connection {} and continuing.", identifier);
+        this.directory = new vHostConnectionDirectory(
+                super.getConnectionDirectory(), vHost);
         
     }
     
