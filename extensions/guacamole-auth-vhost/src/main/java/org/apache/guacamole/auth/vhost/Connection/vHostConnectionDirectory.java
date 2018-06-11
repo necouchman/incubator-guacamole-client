@@ -41,10 +41,21 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
     private static final Logger logger = LoggerFactory.getLogger(vHostConnectionDirectory.class);
     
     /**
+     * Construct a new directory that decorates another directory, with the given
+     * source directory and virtual host filtering out other connections.
      * 
      * @param directory
+     *     The source directory that this directory would decorate.  In reality,
+     *     matching connections will just be pulled from this directory and dropped
+     *     into a new directory.
+     * 
      * @param vHost
+     *     The virtual hostname to match against this to get connections from the
+     *     original directory.
+     * 
      * @throws GuacamoleException 
+     *     If an error occurs upstream in setting up the directory or in pulling
+     *     connections from the source directory.
      */
     public vHostConnectionDirectory(Directory<Connection> directory, String vHost) 
             throws GuacamoleException {
@@ -52,6 +63,7 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
         
         Collection<Connection> connections = directory.getAll(this.getIdentifiers());
         for (Connection connection : connections) {
+            logger.debug(">>>VHOST<<< Looking at connection {} for vHost {}", connection.getName(), vHost);
             if (vHost != null && !vHost.isEmpty() &&
                     vHost.equals(((vHostConnection) connection).getVHost())) {
                 logger.debug(">>>VHOST<<< Match connection {} for vHost {}", connection.getName(), vHost);
