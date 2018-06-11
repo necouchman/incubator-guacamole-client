@@ -41,7 +41,7 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
                     vHost.equals(((vHostConnection) connection).getVHost())) {
                 continue;
             }
-            directory.remove(connection.getIdentifier());
+            this.remove(connection.getIdentifier());
         }
     }
     
