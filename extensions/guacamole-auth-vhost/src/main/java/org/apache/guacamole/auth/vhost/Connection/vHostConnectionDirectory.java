@@ -74,8 +74,10 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
             if (vHost.equals(cAttrs.get(vHostConnection.VHOST_ATTRIBUTE))) {
                 logger.debug(">>>VHOST<<< Match connection {} for vHost {}", connection.getName(), vHost);
                 this.add(new vHostConnection(connection));
+                logger.debug(">>>VHOST<<< Added connection, moving on.");
             }
         }
+        logger.debug(">>>VHOST<<< Done constructing the new directory.");
     }
     
     @Override
