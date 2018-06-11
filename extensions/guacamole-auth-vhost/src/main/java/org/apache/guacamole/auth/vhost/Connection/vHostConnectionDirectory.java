@@ -25,13 +25,27 @@ import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.DecoratingDirectory;
 import org.apache.guacamole.net.auth.Directory;
 import org.apache.guacamole.net.auth.simple.SimpleDirectory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
- * @author nick_couchman
+ * A directory which decorates connections from another directory.  This one
+ * is a bit...special...since it actually masks all connections except the ones
+ * that are referred to by the specific virtual host attribute.
  */
 public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
-
+    
+    /**
+     * The logger for this class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(vHostConnectionDirectory.class);
+    
+    /**
+     * 
+     * @param directory
+     * @param vHost
+     * @throws GuacamoleException 
+     */
     public vHostConnectionDirectory(Directory<Connection> directory, String vHost) 
             throws GuacamoleException {
         super(new SimpleDirectory<Connection>());
@@ -40,6 +54,7 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
         for (Connection connection : connections) {
             if (vHost != null && !vHost.isEmpty() &&
                     vHost.equals(((vHostConnection) connection).getVHost())) {
+                logger.debug(">>>VHOST<<< Match connection {} for vHost {}", connection.getName(), vHost);
                 this.add(connection);
             }
         }
