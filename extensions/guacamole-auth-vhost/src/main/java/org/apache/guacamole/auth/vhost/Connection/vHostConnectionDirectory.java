@@ -24,6 +24,7 @@ import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.DecoratingDirectory;
 import org.apache.guacamole.net.auth.Directory;
+import org.apache.guacamole.net.auth.simple.SimpleDirectory;
 
 /**
  *
@@ -33,15 +34,14 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
 
     public vHostConnectionDirectory(Directory<Connection> directory, String vHost) 
             throws GuacamoleException {
-        super(directory);
+        super(new SimpleDirectory<Connection>());
         
-        Collection<Connection> connections = this.getAll(this.getIdentifiers());
+        Collection<Connection> connections = directory.getAll(this.getIdentifiers());
         for (Connection connection : connections) {
             if (vHost != null && !vHost.isEmpty() &&
                     vHost.equals(((vHostConnection) connection).getVHost())) {
-                continue;
+                this.add(connection);
             }
-            this.remove(connection.getIdentifier());
         }
     }
     
