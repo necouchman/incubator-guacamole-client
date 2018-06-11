@@ -61,7 +61,9 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
             throws GuacamoleException {
         super(new SimpleDirectory<Connection>());
         
-        Collection<Connection> connections = directory.getAll(this.getIdentifiers());
+        logger.debug(">>>VHOST<<< Constructing a new vHost directory.");
+        
+        Collection<Connection> connections = directory.getAll(directory.getIdentifiers());
         for (Connection connection : connections) {
             logger.debug(">>>VHOST<<< Looking at connection {} for vHost {}", connection.getName(), vHost);
             if (vHost != null && !vHost.isEmpty() &&
