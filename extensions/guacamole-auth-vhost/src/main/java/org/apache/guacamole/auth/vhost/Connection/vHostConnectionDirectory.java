@@ -73,7 +73,7 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
             Map<String, String> cAttrs = connection.getAttributes();
             if (vHost.equals(cAttrs.get(vHostConnection.VHOST_ATTRIBUTE))) {
                 logger.debug(">>>VHOST<<< Match connection {} for vHost {}", connection.getName(), vHost);
-                this.add(connection);
+                this.add(new vHostConnection(connection));
             }
         }
     }
