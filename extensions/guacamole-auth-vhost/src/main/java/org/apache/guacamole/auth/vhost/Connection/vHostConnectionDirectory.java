@@ -60,7 +60,7 @@ public class vHostConnectionDirectory extends DecoratingDirectory<Connection> {
      */
     public vHostConnectionDirectory(Directory<Connection> directory, String vHost) 
             throws GuacamoleException {
-        super(new SimpleDirectory<Connection>());
+        super(new vHostTempConnectionDirectory());
         
         logger.debug(">>>VHOST<<< Constructing a new vHost directory.");
         
