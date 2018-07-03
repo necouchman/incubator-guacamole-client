@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import org.apache.guacamole.auth.jdbc.base.ModeledChildDirectoryObject;
+import org.apache.guacamole.form.BooleanField;
+import org.apache.guacamole.form.Field;
 import org.apache.guacamole.form.Form;
 import org.apache.guacamole.net.auth.SharingProfile;
 
@@ -36,10 +38,28 @@ public class ModeledSharingProfile
         implements SharingProfile {
 
     /**
+     * The attribute for setting whether or not SharedConnections
+     * associated with this SharingProfile will be published for
+     * logged in users to see.
+     */
+    public static final String ATTRIBUTE_PUBLISH = "publish";
+
+    /**
+     * The form that will handle publishing attributes.
+     */
+    public static final String ATTRIBUTE_FORM_PUBLISHING = "publishing";
+
+    /**
      * All possible attributes of sharing profile objects organized as
      * individual, logical forms. Currently, there are no such attributes.
      */
-    public static final Collection<Form> ATTRIBUTES = Collections.<Form>emptyList();
+    public static final Collection<Form> ATTRIBUTES = 
+            Collections.<Form>singletonList(new Form(
+                    ATTRIBUTE_FORM_PUBLISHING,
+                    Collections.<Field>singletonList(
+                        new BooleanField(ATTRIBUTE_PUBLISH, "true")
+                    )
+            ));
 
     /**
      * The manually-set parameter map, if any.
@@ -93,6 +113,40 @@ public class ModeledSharingProfile
     @Override
     public void setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
+    }
+    
+    @Override
+    public Map<String, String> getAttributes() {
+        
+        // Retrieve any arbitrary attributes
+        Map<String, String> attributes = super.getAttributes();
+        
+        // Get the publish attribute
+        attributes.put(ATTRIBUTE_PUBLISH, getModel().getPublish() ? "true" : null);
+        
+        return attributes;
+    }
+    
+    @Override
+    public void setAttributes(Map<String, String> attributes) {
+        
+        // Set arbitrary attributes
+        super.setAttributes(attributes);
+        
+        // Parse value for whether or not the connection is published.
+        getModel().setPublish("true".equals(attributes.get(ATTRIBUTE_PUBLISH)));
+        
+    }
+    
+    /**
+     * Returns true if SharedConnections associated with this SharingProfile
+     * will be published, otherwise false.
+     * 
+     * @return
+     *     True if SharedConnections will be published, otherwise false.
+     */
+    public boolean getPublish() {
+        return getModel().getPublish();
     }
 
 }

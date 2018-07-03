@@ -31,6 +31,11 @@ public class SharingProfileModel extends ChildObjectModel {
      * The human-readable name associated with this sharing profile.
      */
     private String name;
+    
+    /**
+     * Whether or not this connection will be published.
+     */
+    private boolean publish;
 
     /**
      * Creates a new, empty sharing profile.
@@ -75,6 +80,30 @@ public class SharingProfileModel extends ChildObjectModel {
     public void setIdentifier(String identifier) {
         throw new UnsupportedOperationException("Sharing profile identifiers "
                 + "are derived from IDs. They cannot be set.");
+    }
+    
+    /**
+     * Returns whether or not this SharingProfile will result in shared
+     * connections being published.
+     * 
+     * @return
+     *     Boolean value that is true if the SharedConnection will be published,
+     *     otherwise false.
+     */
+    public boolean getPublish() {
+        return publish;
+    }
+    
+    /**
+     * Sets whether or not this SharingProfile will result in SharedConnections
+     * that are published.
+     * 
+     * @param publish
+     *     A boolean value that is true if the SharedConnections from this
+     *     profile will be published, otherwise false.
+     */
+    public void setPublish(boolean publish) {
+        this.publish = publish;
     }
 
 }
