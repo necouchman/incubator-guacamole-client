@@ -30,6 +30,7 @@
         <id     column="sharing_profile_id"    property="objectID"         jdbcType="INTEGER"/>
         <result column="sharing_profile_name"  property="name"             jdbcType="VARCHAR"/>
         <result column="primary_connection_id" property="parentIdentifier" jdbcType="INTEGER"/>
+        <result column="publish"               property="publish"          jdbcType="BOOLEAN"/>
 
         <!-- Arbitrary attributes -->
         <collection property="arbitraryAttributes" resultSet="arbitraryAttributes"
@@ -67,7 +68,8 @@
         SELECT
             sharing_profile_id,
             sharing_profile_name,
-            primary_connection_id
+            primary_connection_id,
+            publish
         FROM guacamole_sharing_profile
         WHERE sharing_profile_id IN
             <foreach collection="identifiers" item="identifier"
@@ -95,7 +97,8 @@
         SELECT
             guacamole_sharing_profile.sharing_profile_id,
             guacamole_sharing_profile.sharing_profile_name,
-            primary_connection_id
+            primary_connection_id,
+            publish
         FROM guacamole_sharing_profile
         JOIN guacamole_sharing_profile_permission ON guacamole_sharing_profile_permission.sharing_profile_id = guacamole_sharing_profile.sharing_profile_id
         WHERE guacamole_sharing_profile.sharing_profile_id IN
@@ -136,7 +139,8 @@
         SELECT
             sharing_profile_id,
             sharing_profile_name,
-            primary_connection_id
+            primary_connection_id,
+            publish
         FROM guacamole_sharing_profile
         WHERE 
             primary_connection_id = #{parentIdentifier,jdbcType=INTEGER}::integer
@@ -156,11 +160,13 @@
 
         INSERT INTO guacamole_sharing_profile (
             sharing_profile_name,
-            primary_connection_id
+            primary_connection_id,
+            publish
         )
         VALUES (
             #{object.name,jdbcType=VARCHAR},
-            #{object.parentIdentifier,jdbcType=INTEGER}::integer
+            #{object.parentIdentifier,jdbcType=INTEGER}::integer,
+            #{object.publish,jdbcType=BOOLEAN}::boolean
         )
 
     </insert>
@@ -169,7 +175,8 @@
     <update id="update" parameterType="org.apache.guacamole.auth.jdbc.sharingprofile.SharingProfileModel">
         UPDATE guacamole_sharing_profile
         SET sharing_profile_name  = #{object.name,jdbcType=VARCHAR},
-            primary_connection_id = #{object.parentIdentifier,jdbcType=INTEGER}::integer
+            primary_connection_id = #{object.parentIdentifier,jdbcType=INTEGER}::integer,
+            publish               = #{object.publish,jdbcType=BOOLEAN}::boolean
         WHERE sharing_profile_id = #{object.objectID,jdbcType=INTEGER}::integer
     </update>
 

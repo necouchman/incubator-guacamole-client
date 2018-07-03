@@ -207,6 +207,7 @@ CREATE TABLE guacamole_sharing_profile (
   `sharing_profile_id`    int(11)      NOT NULL AUTO_INCREMENT,
   `sharing_profile_name`  varchar(128) NOT NULL,
   `primary_connection_id` int(11)      NOT NULL,
+  `publish`               boolean      NOT NULL DEFAULT 0,
 
   PRIMARY KEY (`sharing_profile_id`),
   UNIQUE KEY `sharing_profile_name_primary` (sharing_profile_name, primary_connection_id),

@@ -273,6 +273,7 @@ CREATE TABLE guacamole_sharing_profile (
   sharing_profile_id    serial       NOT NULL,
   sharing_profile_name  varchar(128) NOT NULL,
   primary_connection_id integer      NOT NULL,
+  publish               boolean      NOT NULL DEFAULT FALSE,
 
   PRIMARY KEY (sharing_profile_id),
 

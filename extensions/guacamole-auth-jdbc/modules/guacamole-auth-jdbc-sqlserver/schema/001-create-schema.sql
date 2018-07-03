@@ -322,6 +322,7 @@ CREATE TABLE [guacamole_sharing_profile] (
     [sharing_profile_id]    [int] IDENTITY(1,1) NOT NULL,
     [sharing_profile_name]  [nvarchar](128)     NOT NULL,
     [primary_connection_id] [int]               NOT NULL,
+    [publish]               [bit]               NOT NULL DEFAULT 0,
 
     CONSTRAINT [PK_guacamole_sharing_profile]
         PRIMARY KEY CLUSTERED ([sharing_profile_id]),

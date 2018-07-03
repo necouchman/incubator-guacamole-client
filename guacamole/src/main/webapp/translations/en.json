@@ -845,6 +845,14 @@
         "TEXT_CONFIRM_DELETE" : "Are you sure you want to kill all selected sessions? The users using these sessions will be immediately disconnected."
 
     },
+    
+    "SHARING_PROFILE_ATTRIBUTES" : {
+        
+        "FIELD_HEADER_PUBLISH"      : "Publish:",
+        
+        "SECTION_HEADER_PUBLISHING" : "Publishing"
+        
+    },
 
     "USER_ATTRIBUTES" : {
 
