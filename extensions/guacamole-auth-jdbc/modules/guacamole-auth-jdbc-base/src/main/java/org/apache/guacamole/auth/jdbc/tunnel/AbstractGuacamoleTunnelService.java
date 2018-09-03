@@ -78,7 +78,7 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
     /**
      * Logger for this class.
      */
-    private final Logger logger = LoggerFactory.getLogger(AbstractGuacamoleTunnelService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractGuacamoleTunnelService.class);
 
     /**
      * Mapper for accessing connections.
