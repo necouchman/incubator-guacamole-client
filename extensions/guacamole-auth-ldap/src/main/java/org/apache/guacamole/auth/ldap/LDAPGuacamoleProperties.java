@@ -22,6 +22,7 @@ package org.apache.guacamole.auth.ldap;
 import org.apache.guacamole.properties.BooleanGuacamoleProperty;
 import org.apache.guacamole.properties.IntegerGuacamoleProperty;
 import org.apache.guacamole.properties.StringGuacamoleProperty;
+import org.apache.guacamole.properties.StringListProperty;
 
 
 /**
