@@ -44,6 +44,7 @@ import org.apache.guacamole.GuacamoleResourceNotFoundException;
 import org.apache.guacamole.GuacamoleSecurityException;
 import org.apache.guacamole.GuacamoleServerException;
 import org.apache.guacamole.GuacamoleUpstreamException;
+import org.apache.guacamole.auth.jdbc.JDBCEnvironment;
 import org.apache.guacamole.auth.jdbc.connection.ConnectionMapper;
 import org.apache.guacamole.net.GuacamoleSocket;
 import org.apache.guacamole.net.GuacamoleTunnel;
@@ -114,6 +115,12 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
      */
     @Inject
     private Provider<ActiveConnectionRecord> activeConnectionRecordProvider;
+    
+    /**
+     * The current environment.
+     */
+    @Inject
+    private JDBCEnvironment environment;
 
     /**
      * All active connections through the tunnel having a given UUID.
@@ -124,13 +131,24 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
     /**
      * All active connections to a connection having a given identifier.
      */
-    private final ActiveConnectionMultimap activeConnections = new ActiveConnectionMultimap();
+    private final ActiveConnectionMultimap activeConnections;
 
     /**
      * All active connections to a connection group having a given identifier.
      */
-    private final ActiveConnectionMultimap activeConnectionGroups = new ActiveConnectionMultimap();
+    private final ActiveConnectionMultimap activeConnectionGroups;
 
+    public AbstractGuacamoleTunnelService() throws GuacamoleException {
+        if (environment.getUseRedis()) {
+            activeConnections = new RedisActiveConnectionMultimap("activeConnections");
+            activeConnectionGroups = new RedisActiveConnectionMultimap("activeConnectionGroups");
+        }
+        else {
+            activeConnections = new ActiveConnectionMultimap();
+            activeConnectionGroups = new ActiveConnectionMultimap();
+        }
+    }
+    
     /**
      * Acquires possibly-exclusive access to any one of the given connections
      * on behalf of the given user. If access is denied for any reason, or if

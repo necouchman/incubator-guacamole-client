@@ -84,6 +84,18 @@ public class RestrictedGuacamoleTunnelService
     private final AtomicInteger totalActiveConnections = new AtomicInteger(0);
 
     /**
+     * Construct the RestrictedGuacamoleTunnelService, calling the parent
+     * constructor and passing along any exceptions.
+     * 
+     * @throws GuacamoleException 
+     *     Pass along any upstream errors, mainly dealing with reading
+     *     configuration parameters.
+     */
+    public RestrictedGuacamoleTunnelService() throws GuacamoleException {
+        super();
+    }
+    
+    /**
      * Attempts to add a single instance of the given value to the given
      * multiset without exceeding the specified maximum number of values. If
      * the value cannot be added without exceeding the maximum, false is
