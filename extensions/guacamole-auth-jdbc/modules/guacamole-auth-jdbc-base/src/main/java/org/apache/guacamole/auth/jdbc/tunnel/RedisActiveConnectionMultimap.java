@@ -48,7 +48,7 @@ public class RedisActiveConnectionMultimap extends ActiveConnectionMultimap {
     /**
      * Logger for this class.
      */
-    private static final Logger logger = LoggerFactory.getLogger(RedisActiveConnectionMultimap.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * The current JDBC environment.
