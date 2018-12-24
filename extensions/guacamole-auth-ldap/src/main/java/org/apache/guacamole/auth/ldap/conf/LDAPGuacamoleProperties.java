@@ -255,4 +255,20 @@ public class LDAPGuacamoleProperties {
         public String getName() { return "ldap-member-attribute"; }
         
     };
+    
+    public static final BooleanGuacamoleProperty LDAP_ALL_COMPUTERS =
+            new BooleanGuacamoleProperty() {
+                
+        @Override
+        public String getName() { return "ldap-all-computers"; }
+                
+    };
+    
+    public static final StringGuacamoleProperty LDAP_ALL_COMPUTERS_TYPE =
+            new StringGuacamoleProperty() {
+
+        @Override
+        public String getName() { return "ldap-all-computers-type"; }
+
+    };
 }

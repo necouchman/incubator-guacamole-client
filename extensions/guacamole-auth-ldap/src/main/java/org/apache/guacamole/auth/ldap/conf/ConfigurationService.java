@@ -372,5 +372,19 @@ public class ConfigurationService {
             "member"
         );
     }
+    
+    public Boolean getAllComputers() throws GuacamoleException {
+        return environment.getProperty(
+            LDAPGuacamoleProperties.LDAP_ALL_COMPUTERS,
+            false
+        );
+    }
+    
+    public String getAllComputersType() throws GuacamoleException {
+        return environment.getProperty(
+            LDAPGuacamoleProperties.LDAP_ALL_COMPUTERS_TYPE,
+            "rdp"
+        );
+    }
 
 }

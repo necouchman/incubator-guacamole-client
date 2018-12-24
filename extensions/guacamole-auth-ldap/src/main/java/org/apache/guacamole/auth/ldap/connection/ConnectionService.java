@@ -77,6 +77,18 @@ public class ConnectionService {
      */
     @Inject
     private UserGroupService userGroupService;
+    
+    public Map<String, Connection> getAllConnections(AuthenticatedUser user,
+            LdapNetworkConnection ldapConnection) throws GuacamoleException {
+        
+        Boolean getAll = confService.get
+        Dn configurationBaseDn = confService.getConfigurationBaseDN();
+        
+        // If base DN is not defined, return 
+        if (configurationBaseDn == null)
+            return Collections.<String, Connection>emptyMap();
+        
+    }
 
     /**
      * Returns all Guacamole connections accessible to the user currently bound
