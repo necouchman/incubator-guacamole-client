@@ -26,6 +26,8 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.apache.guacamole.GuacamoleException;
@@ -168,8 +170,9 @@ public class ReverseConnectionRegistrar {
      *     If the specified connection cannot be found or retrieved.
      */
     @GET
-    public RegisteredConnection getConnection(@FormParam("secret") String secret,
-            @FormParam("id") String id)
+    @Path("{secret}/{id}")
+    public RegisteredConnection getConnection(@PathParam("secret") String secret,
+            @PathParam("id") String id)
             throws GuacamoleException {
         
         if(!secret.equals(confService.getSecretToken()))
