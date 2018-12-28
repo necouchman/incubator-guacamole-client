@@ -100,6 +100,8 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
         connection.setParentIdentifier(rootGroup.getIdentifier());
         add(connection);
         
+        rootGroup.addConnectionIdentifier(newId);
+        
         return newId;
     }
     
