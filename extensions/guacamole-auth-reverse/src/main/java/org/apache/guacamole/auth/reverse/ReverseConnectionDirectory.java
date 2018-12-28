@@ -134,6 +134,10 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
         connections.remove(id);
     }
     
+    public ConnectionGroup getRootConnectionGroup() {
+        return rootGroup;
+    }
+    
     @Override
     public void add(Connection connection) {
         connections.put(connection.getIdentifier(), connection);

@@ -24,6 +24,7 @@ import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.auth.reverse.ReverseConnectionDirectory;
 import org.apache.guacamole.net.auth.AbstractUserContext;
 import org.apache.guacamole.net.auth.AuthenticationProvider;
+import org.apache.guacamole.net.auth.ConnectionGroup;
 import org.apache.guacamole.net.auth.User;
 import org.apache.guacamole.net.auth.permission.ObjectPermissionSet;
 import org.apache.guacamole.net.auth.simple.SimpleObjectPermissionSet;
@@ -116,6 +117,11 @@ public class ReverseUserContext extends AbstractUserContext {
     @Override
     public ReverseConnectionDirectory getConnectionDirectory() {
         return directory;
+    }
+    
+    @Override
+    public ConnectionGroup getRootConnectionGroup() throws GuacamoleException {
+        return directory.getRootConnectionGroup();
     }
     
 }

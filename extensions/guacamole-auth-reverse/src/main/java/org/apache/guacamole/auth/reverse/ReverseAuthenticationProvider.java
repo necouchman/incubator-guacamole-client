@@ -87,7 +87,7 @@ public class ReverseAuthenticationProvider extends AbstractAuthenticationProvide
             throws GuacamoleException {
         
         return new ReverseUserContext(
-                authenticatedUser.getAuthenticationProvider(),
+                this,
                 authenticatedUser.getIdentifier(),
                 directory);
         
