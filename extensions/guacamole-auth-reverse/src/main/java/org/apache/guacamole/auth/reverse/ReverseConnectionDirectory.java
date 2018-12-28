@@ -103,6 +103,27 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
         return newId;
     }
     
+    /**
+     * Return the number of items in the directory.
+     * 
+     * @return 
+     *     The number of items in the directory.
+     */
+    public int size() {
+        return connections.size();
+    }
+    
+    /**
+     * Return whether or not the directory is empty;
+     * 
+     * @return 
+     *     Return true if the directory is empty, or false if there are items
+     *     in the directory.
+     */
+    public boolean isEmpty() {
+        return connections.isEmpty();
+    }
+    
     public void delete(String id) {
         connections.remove(id);
     }

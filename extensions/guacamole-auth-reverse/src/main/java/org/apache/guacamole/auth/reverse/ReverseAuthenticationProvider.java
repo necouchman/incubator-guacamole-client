@@ -46,6 +46,11 @@ public class ReverseAuthenticationProvider extends AbstractAuthenticationProvide
     private ConfigurationService confService;
     
     /**
+     * The connection directory for this module.
+     */
+    private final ReverseConnectionDirectory directory;
+    
+    /**
      * Create a new ReverseAuthenticationProvider instance and configure
      * the Guice injector.
      * 
@@ -59,6 +64,8 @@ public class ReverseAuthenticationProvider extends AbstractAuthenticationProvide
             new ReverseAuthenticationProviderModule(this)
         );
         
+        this.directory = new ReverseConnectionDirectory();
+        
     }
     
     @Override
@@ -68,7 +75,7 @@ public class ReverseAuthenticationProvider extends AbstractAuthenticationProvide
     
     @Override
     public Object getResource() throws GuacamoleException {
-        return new ReverseConnectionRegistrar(new ReverseConnectionDirectory(),
+        return new ReverseConnectionRegistrar(directory,
                 confService.getSecretToken());
     }
 

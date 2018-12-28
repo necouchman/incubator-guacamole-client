@@ -21,10 +21,8 @@ package org.apache.guacamole.auth.reverse.rest;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -36,7 +34,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleSecurityException;
+import org.apache.guacamole.GuacamoleResourceNotFoundException;
 import org.apache.guacamole.auth.reverse.ReverseConnectionDirectory;
+import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
 
 /**
@@ -186,7 +186,14 @@ public class ReverseConnectionRegistrar {
         if (!secret.equals(this.secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
-        return new RegisteredConnection(directory.get(id));
+        if (directory.isEmpty())
+            throw new GuacamoleResourceNotFoundException("Directory is empty.");
+        
+        Connection connection = directory.get(id);
+        if (connection == null)
+            throw new GuacamoleResourceNotFoundException("Connection does not exist.");
+        
+        return new RegisteredConnection(connection);
         
     }
     
@@ -198,6 +205,9 @@ public class ReverseConnectionRegistrar {
         
         if (!secret.equals(this.secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
+        
+        if (directory.isEmpty())
+            throw new GuacamoleResourceNotFoundException("Directory is empty.");
         
         Set<String> identifiers = directory.getIdentifiers();
         Map<String, RegisteredConnection> connections = new HashMap<>();
