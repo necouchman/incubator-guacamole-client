@@ -20,8 +20,10 @@
 package org.apache.guacamole.auth.reverse;
 
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.apache.guacamole.GuacamoleException;
+import org.apache.guacamole.auth.reverse.conf.ConfigurationService;
 import org.apache.guacamole.auth.reverse.rest.ReverseConnectionRegistrar;
 import org.apache.guacamole.net.auth.AbstractAuthenticationProvider;
 
@@ -36,6 +38,12 @@ public class ReverseAuthenticationProvider extends AbstractAuthenticationProvide
      * The Guice injector for this authentication provider.
      */
     private final Injector injector;
+    
+    /**
+     * The configuration service for this module.
+     */
+    @Inject
+    private ConfigurationService confService;
     
     /**
      * Create a new ReverseAuthenticationProvider instance and configure
@@ -60,7 +68,8 @@ public class ReverseAuthenticationProvider extends AbstractAuthenticationProvide
     
     @Override
     public Object getResource() throws GuacamoleException {
-        return new ReverseConnectionRegistrar(new ReverseConnectionDirectory());
+        return new ReverseConnectionRegistrar(new ReverseConnectionDirectory(),
+                confService.getSecretToken());
     }
 
 }

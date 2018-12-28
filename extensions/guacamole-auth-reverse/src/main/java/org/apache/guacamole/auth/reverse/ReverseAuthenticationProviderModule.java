@@ -74,7 +74,6 @@ public class ReverseAuthenticationProviderModule extends AbstractModule {
 
         // Bind Reverse registrar-specific services
         bind(ConfigurationService.class);
-        bind(ReverseConnectionRegistrar.class);
 
     }
 

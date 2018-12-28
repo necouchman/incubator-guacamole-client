@@ -45,17 +45,16 @@ import org.apache.guacamole.protocol.GuacamoleConfiguration;
 public class ReverseConnectionRegistrar {
     
     /**
-     * The environment of the server.
-     */
-    @Inject
-    private ConfigurationService confService;
-    
-    /**
      * The connection directory to use for this REST endpoint.  Connections
      * will be registered, updated, deleted, and retrieved from this directory.
      */
     private final ReverseConnectionDirectory directory;
     
+    /**
+     * The secret token to use when authenticating registrations.
+     */
+    private final String secret;
+
     /**
      * Create a new REST endpoint against which to register, update, delete,
      * and retrieve connections.
@@ -63,8 +62,10 @@ public class ReverseConnectionRegistrar {
      * @param directory 
      *     The directory to use for connections for this endpoint.
      */
-    public ReverseConnectionRegistrar(ReverseConnectionDirectory directory) {
+    public ReverseConnectionRegistrar(ReverseConnectionDirectory directory,
+            String secret) {
         this.directory = directory;
+        this.secret = secret;
     }
     
     /**
@@ -83,7 +84,7 @@ public class ReverseConnectionRegistrar {
     public String registerConnection(RegisteredConnection connection)
             throws GuacamoleException {
         
-        if (!connection.getSecret().equals(confService.getSecretToken()))
+        if (!connection.getSecret().equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified");
         
         GuacamoleConfiguration registerConfig = new GuacamoleConfiguration();
@@ -115,7 +116,7 @@ public class ReverseConnectionRegistrar {
     public String deleteConnection(String secret, String id)
             throws GuacamoleException {
         
-        if(!secret.equals(confService.getSecretToken()))
+        if(!secret.equals(this.secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
         directory.delete(id);
@@ -138,7 +139,7 @@ public class ReverseConnectionRegistrar {
     public String updateConnection(RegisteredConnection connection)
             throws GuacamoleException {
         
-        if(!connection.getSecret().equals(confService.getSecretToken()))
+        if(!connection.getSecret().equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
         String id = connection.getIdentifier();
@@ -175,7 +176,7 @@ public class ReverseConnectionRegistrar {
             @PathParam("id") String id)
             throws GuacamoleException {
         
-        if(!secret.equals(confService.getSecretToken()))
+        if(!secret.equals(this.secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
         return new RegisteredConnection(directory.get(id));
