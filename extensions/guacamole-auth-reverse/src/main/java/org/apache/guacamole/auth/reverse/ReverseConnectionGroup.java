@@ -36,6 +36,8 @@ import org.apache.guacamole.protocol.GuacamoleClientInformation;
  */
 public class ReverseConnectionGroup extends AbstractConnectionGroup {
     
+    public static final String ROOT_IDENTIFIER = "ROOT";
+    
     /**
      * A set that will store the Connection identifiers for this group.
      */
@@ -44,6 +46,8 @@ public class ReverseConnectionGroup extends AbstractConnectionGroup {
     
     public ReverseConnectionGroup() {
         super();
+        super.setName(ROOT_IDENTIFIER);
+        super.setIdentifier(ROOT_IDENTIFIER);
         super.setType(ConnectionGroup.Type.ORGANIZATIONAL);
     }
     
