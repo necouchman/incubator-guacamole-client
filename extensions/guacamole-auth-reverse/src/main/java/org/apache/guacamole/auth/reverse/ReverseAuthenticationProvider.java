@@ -25,7 +25,10 @@ import com.google.inject.Injector;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.auth.reverse.conf.ConfigurationService;
 import org.apache.guacamole.auth.reverse.rest.ReverseConnectionRegistrar;
+import org.apache.guacamole.auth.reverse.user.ReverseUserContext;
 import org.apache.guacamole.net.auth.AbstractAuthenticationProvider;
+import org.apache.guacamole.net.auth.AuthenticatedUser;
+import org.apache.guacamole.net.auth.UserContext;
 
 /**
  * This class provides the necessary hooks into the Guacamole Client authentication
@@ -77,6 +80,17 @@ public class ReverseAuthenticationProvider extends AbstractAuthenticationProvide
     public Object getResource() throws GuacamoleException {
         return new ReverseConnectionRegistrar(directory,
                 confService.getSecretToken());
+    }
+    
+    @Override
+    public UserContext getUserContext(AuthenticatedUser authenticatedUser)
+            throws GuacamoleException {
+        
+        return new ReverseUserContext(
+                authenticatedUser.getAuthenticationProvider(),
+                authenticatedUser.getIdentifier(),
+                directory);
+        
     }
 
 }
