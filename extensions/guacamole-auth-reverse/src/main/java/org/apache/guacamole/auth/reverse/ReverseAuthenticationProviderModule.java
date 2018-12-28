@@ -22,6 +22,7 @@ package org.apache.guacamole.auth.reverse;
 import com.google.inject.AbstractModule;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.auth.reverse.conf.ConfigurationService;
+import org.apache.guacamole.auth.reverse.rest.ReverseConnectionRegistrar;
 import org.apache.guacamole.environment.Environment;
 import org.apache.guacamole.environment.LocalEnvironment;
 import org.apache.guacamole.net.auth.AuthenticationProvider;
@@ -73,6 +74,7 @@ public class ReverseAuthenticationProviderModule extends AbstractModule {
 
         // Bind Reverse registrar-specific services
         bind(ConfigurationService.class);
+        bind(ReverseConnectionRegistrar.class);
 
     }
 
