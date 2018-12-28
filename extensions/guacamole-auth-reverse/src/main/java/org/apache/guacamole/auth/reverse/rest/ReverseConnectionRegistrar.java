@@ -20,7 +20,11 @@
 package org.apache.guacamole.auth.reverse.rest;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -179,10 +183,33 @@ public class ReverseConnectionRegistrar {
             @PathParam("id") String id)
             throws GuacamoleException {
         
-        if(!secret.equals(this.secret))
+        if (!secret.equals(this.secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
         return new RegisteredConnection(directory.get(id));
+        
+    }
+    
+    @GET
+    @Path("{secret}")
+    public Map<String, RegisteredConnection> getAllConnections(
+            @PathParam("secret") String secret)
+            throws GuacamoleException {
+        
+        if (!secret.equals(this.secret))
+            throw new GuacamoleSecurityException("Invalid secret specified.");
+        
+        Set<String> identifiers = directory.getIdentifiers();
+        Map<String, RegisteredConnection> connections = new HashMap<>();
+        identifiers.forEach((String id) -> {
+            try {
+                connections.put(id, new RegisteredConnection(directory.get(id)));
+            }
+            catch (GuacamoleException e) {
+            }
+        });
+        
+        return connections;
         
     }
     
