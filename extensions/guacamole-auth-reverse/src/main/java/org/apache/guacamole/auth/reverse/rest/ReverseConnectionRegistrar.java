@@ -19,10 +19,10 @@
 
 package org.apache.guacamole.auth.reverse.rest;
 
-import com.google.inject.Inject;
+import java.util.Collections;
+import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -33,7 +33,6 @@ import javax.ws.rs.core.MediaType;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleSecurityException;
 import org.apache.guacamole.auth.reverse.ReverseConnectionDirectory;
-import org.apache.guacamole.auth.reverse.conf.ConfigurationService;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
 
 /**
@@ -61,6 +60,9 @@ public class ReverseConnectionRegistrar {
      * 
      * @param directory 
      *     The directory to use for connections for this endpoint.
+     * 
+     * @param secret
+     *     The secret to use to authenticate registrations.
      */
     public ReverseConnectionRegistrar(ReverseConnectionDirectory directory,
             String secret) {
@@ -81,7 +83,7 @@ public class ReverseConnectionRegistrar {
      *     If the secret doesn't match the configured secret.
      */
     @POST
-    public String registerConnection(RegisteredConnection connection)
+    public Map<String,String> registerConnection(RegisteredConnection connection)
             throws GuacamoleException {
         
         if (!connection.getSecret().equals(secret))
@@ -94,7 +96,8 @@ public class ReverseConnectionRegistrar {
             registerConfig.setParameter(param.getKey(), param.getValue());
         });
         
-        return directory.create(connection.getName(), registerConfig);
+        return Collections.<String, String>singletonMap("id",
+                directory.create(connection.getName(), registerConfig));
     }
     
     /**
@@ -113,14 +116,14 @@ public class ReverseConnectionRegistrar {
      *     if an invalid secret is specified.
      */
     @DELETE
-    public String deleteConnection(String secret, String id)
+    public Map<String, String> deleteConnection(String secret, String id)
             throws GuacamoleException {
         
         if(!secret.equals(this.secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
         directory.delete(id);
-        return id;
+        return Collections.<String, String>singletonMap("id", id);
     }
     
     /**
@@ -136,7 +139,7 @@ public class ReverseConnectionRegistrar {
      *     If an error occurs retrieving the existing connection to be updated.
      */
     @PUT
-    public String updateConnection(RegisteredConnection connection)
+    public Map<String, String> updateConnection(RegisteredConnection connection)
             throws GuacamoleException {
         
         if(!connection.getSecret().equals(secret))
@@ -151,7 +154,7 @@ public class ReverseConnectionRegistrar {
             config.setParameter(param.getKey(), param.getValue());
         });
         
-        return id;
+        return Collections.<String, String>singletonMap("id", id);
         
     }
     
