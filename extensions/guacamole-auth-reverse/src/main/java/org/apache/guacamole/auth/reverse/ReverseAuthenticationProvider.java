@@ -60,7 +60,7 @@ public class ReverseAuthenticationProvider extends AbstractAuthenticationProvide
     public ReverseAuthenticationProvider() throws GuacamoleException {
         
         // Set up Guice injector.
-        injector = Guice.createInjector(
+        this.injector = Guice.createInjector(
             new ReverseAuthenticationProviderModule(this)
         );
         

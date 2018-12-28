@@ -124,6 +124,12 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
         return connections.isEmpty();
     }
     
+    /**
+     * Delete the specified connection from the directory.
+     * 
+     * @param id 
+     *     The identifier of the connection to delete.
+     */
     public void delete(String id) {
         connections.remove(id);
     }

@@ -91,7 +91,7 @@ public class ReverseConnectionRegistrar {
      *     If the secret doesn't match the configured secret.
      */
     @POST
-    public Map<String,String> registerConnection(@QueryParam("secret") String secret,
+    public Map<String, String> registerConnection(@QueryParam("secret") String secret,
             RegisteredConnection connection)
             throws GuacamoleException {
         
@@ -129,7 +129,7 @@ public class ReverseConnectionRegistrar {
             @QueryParam("id") String id)
             throws GuacamoleException {
         
-        if(!this.secret.equals(secret))
+        if (!this.secret.equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
         directory.delete(id);
@@ -160,11 +160,15 @@ public class ReverseConnectionRegistrar {
             RegisteredConnection connection)
             throws GuacamoleException {
         
-        if(!this.secret.equals(secret))
+        if (!this.secret.equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
-        GuacamoleConfiguration config =
-                directory.get(id).getConfiguration();
+        Connection oldConnection = directory.get(id);
+        if (oldConnection == null)
+            throw new GuacamoleResourceNotFoundException(
+                    "Connection does not exist in directory.");
+        
+        GuacamoleConfiguration config = oldConnection.getConfiguration();
         config.setProtocol(connection.getProtocol());
         
         connection.getParameters().entrySet().forEach((param) -> {
