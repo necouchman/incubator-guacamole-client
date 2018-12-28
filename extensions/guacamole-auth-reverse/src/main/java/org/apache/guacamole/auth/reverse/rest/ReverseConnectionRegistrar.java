@@ -19,22 +19,34 @@
 
 package org.apache.guacamole.auth.reverse.rest;
 
-import java.util.Map;
+import com.google.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import org.apache.guacamole.GuacamoleException;
+import org.apache.guacamole.GuacamoleSecurityException;
 import org.apache.guacamole.auth.reverse.ReverseConnectionDirectory;
-import org.apache.guacamole.net.auth.Connection;
+import org.apache.guacamole.auth.reverse.conf.ConfigurationService;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
 
 /**
  * This is a class that provides the RESTful endpoints for registering
  * connections dynamically.
  */
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class ReverseConnectionRegistrar {
+    
+    /**
+     * The environment of the server.
+     */
+    @Inject
+    private ConfigurationService confService;
     
     /**
      * The connection directory to use for this REST endpoint.  Connections
@@ -56,55 +68,30 @@ public class ReverseConnectionRegistrar {
     /**
      * Register a connection with the directory with the provided information.
      * 
-     * @param secret
-     *     The secret token that must be provided in order to register a
-     *     connection.  This is required.
-     * 
-     * @param name
-     *     The name of the connection.  This is required.
-     * 
-     * @param protocol
-     *     The protocol to use for the connection.  This is required.
-     * 
-     * @param hostname
-     *     The host name of the system.  This is required.
-     * 
-     * @param port
-     *     The port to use for the connection.  This is required.
-     * 
-     * @param username
-     *     The username to be used in the connection.  This is optional -
-     *     behavior of the connection if this parameter is omitted will depend
-     *     upon the protocol and how the remote system behaves.
-     * 
-     * @param password
-     *     The password to be used for the connection.  This is optional -
-     *     behavior of the connection if this parameter is omitted will depend
-     *     upon the protocol in use and how the remote system handles it.
+     * @param connection
+     *     The connection to register.
      * 
      * @return
      *     The identifier of the registered connection.
+     * 
+     * @throws GuacamoleException
+     *     If the secret doesn't match the configured secret.
      */
     @POST
-    public String registerConnection(@FormParam("secret") String secret,
-            @FormParam("name") String name, @FormParam("protocol") String protocol,
-            @FormParam("hostname") String hostname, @FormParam("port") int port,
-            @FormParam("username") String username,
-            @FormParam("password") String password) {
+    public String registerConnection(RegisteredConnection connection)
+            throws GuacamoleException {
+        
+        if (!connection.getSecret().equals(confService.getSecretToken()))
+            throw new GuacamoleSecurityException("Invalid secret specified");
         
         GuacamoleConfiguration registerConfig = new GuacamoleConfiguration();
-        registerConfig.setConnectionID(name);
-        registerConfig.setProtocol(protocol);
-        registerConfig.setParameter("port", Integer.toString(port));
-        registerConfig.setParameter("hostname", hostname);
-        if (username != null && !username.isEmpty())
-            registerConfig.setParameter("username", username);
-        if (password != null && !password.isEmpty())
-            registerConfig.setParameter("password", password);
+        registerConfig.setConnectionID(connection.getName());
+        registerConfig.setProtocol(connection.getProtocol());
+        connection.getParameters().entrySet().forEach((param) -> {
+            registerConfig.setParameter(param.getKey(), param.getValue());
+        });
         
-        directory.create(name, registerConfig);
-        
-        return name;
+        return directory.create(connection.getName(), registerConfig);
     }
     
     /**
@@ -118,10 +105,17 @@ public class ReverseConnectionRegistrar {
      * 
      * @return
      *     The identifier of the connection removed from the directory.
+     * 
+     * @throws GuacamoleException
+     *     if an invalid secret is specified.
      */
     @DELETE
-    public String deleteConnection(@FormParam("secret") String secret,
-            @FormParam("id") String id) {
+    public String deleteConnection(String secret, String id)
+            throws GuacamoleException {
+        
+        if(!secret.equals(confService.getSecretToken()))
+            throw new GuacamoleSecurityException("Invalid secret specified.");
+        
         directory.delete(id);
         return id;
     }
@@ -129,14 +123,8 @@ public class ReverseConnectionRegistrar {
     /**
      * Update the specified connection with new parameters.
      * 
-     * @param secret
-     *     The secret token required for interacting with this module.
-     * 
-     * @param id
-     *     The identifier of the connection to update.
-     * 
-     * @param parameters
-     *     The parameters to update in the connection.
+     * @param connection
+     *     The connection to update.
      * 
      * @return
      *     The identifier of the connection that has been updated.
@@ -145,16 +133,18 @@ public class ReverseConnectionRegistrar {
      *     If an error occurs retrieving the existing connection to be updated.
      */
     @PUT
-    public String updateConnection(@FormParam("secret") String secret,
-            @FormParam("id") String id,
-            @FormParam("params") Map<String, String> parameters)
+    public String updateConnection(RegisteredConnection connection)
             throws GuacamoleException {
         
-        GuacamoleConfiguration config = directory.get(id).getConfiguration();
-        if (parameters.containsKey("protocol"))
-            config.setProtocol(parameters.remove("protocol"));
+        if(!connection.getSecret().equals(confService.getSecretToken()))
+            throw new GuacamoleSecurityException("Invalid secret specified.");
         
-        parameters.entrySet().forEach((param) -> {
+        String id = connection.getIdentifier();
+        GuacamoleConfiguration config =
+                directory.get(id).getConfiguration();
+        config.setProtocol(connection.getProtocol());
+        
+        connection.getParameters().entrySet().forEach((param) -> {
             config.setParameter(param.getKey(), param.getValue());
         });
         
@@ -178,11 +168,14 @@ public class ReverseConnectionRegistrar {
      *     If the specified connection cannot be found or retrieved.
      */
     @GET
-    public Connection getConnection(@FormParam("secret") String secret,
+    public RegisteredConnection getConnection(@FormParam("secret") String secret,
             @FormParam("id") String id)
             throws GuacamoleException {
         
-        return directory.get(id);
+        if(!secret.equals(confService.getSecretToken()))
+            throw new GuacamoleSecurityException("Invalid secret specified.");
+        
+        return new RegisteredConnection(directory.get(id));
         
     }
     
