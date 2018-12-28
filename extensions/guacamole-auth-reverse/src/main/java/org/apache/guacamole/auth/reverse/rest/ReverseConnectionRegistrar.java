@@ -195,8 +195,9 @@ public class ReverseConnectionRegistrar {
      *     If the specified connection cannot be found or retrieved.
      */
     @GET
+    @Path("{id}")
     public RegisteredConnection getConnection(@QueryParam("secret") String secret,
-            @QueryParam("id") String id)
+            @PathParam("id") String id)
             throws GuacamoleException {
         
         if (!this.secret.equals(secret))
