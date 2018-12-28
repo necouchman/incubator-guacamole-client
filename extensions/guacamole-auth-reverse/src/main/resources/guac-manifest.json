@@ -1,0 +1,11 @@
+{
+    "guacamoleVersion" : "1.0.0",
+
+    "name"             : "Guacamole Connection Registrar",
+    "namespace"        : "reverse",
+
+    "authProviders"    : [
+        "org.apache.guacamole.auth.reverse.ReverseAuthenticationProvider"
+    ]
+
+}
