@@ -30,6 +30,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.apache.guacamole.GuacamoleException;
@@ -77,6 +78,9 @@ public class ReverseConnectionRegistrar {
     /**
      * Register a connection with the directory with the provided information.
      * 
+     * @param secret
+     *     The secret to use when registering connections.
+     * 
      * @param connection
      *     The connection to register.
      * 
@@ -87,10 +91,11 @@ public class ReverseConnectionRegistrar {
      *     If the secret doesn't match the configured secret.
      */
     @POST
-    public Map<String,String> registerConnection(RegisteredConnection connection)
+    public Map<String,String> registerConnection(@QueryParam("secret") String secret,
+            RegisteredConnection connection)
             throws GuacamoleException {
         
-        if (!connection.getSecret().equals(secret))
+        if (!this.secret.equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified");
         
         GuacamoleConfiguration registerConfig = new GuacamoleConfiguration();
@@ -120,10 +125,11 @@ public class ReverseConnectionRegistrar {
      *     if an invalid secret is specified.
      */
     @DELETE
-    public Map<String, String> deleteConnection(String secret, String id)
+    public Map<String, String> deleteConnection(@QueryParam("secret") String secret,
+            @QueryParam("id") String id)
             throws GuacamoleException {
         
-        if(!secret.equals(this.secret))
+        if(!this.secret.equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
         directory.delete(id);
@@ -132,6 +138,12 @@ public class ReverseConnectionRegistrar {
     
     /**
      * Update the specified connection with new parameters.
+     * 
+     * @param secret
+     *     The secret to use to register connections.
+     * 
+     * @param id
+     *     The identifier of the connection to update.
      * 
      * @param connection
      *     The connection to update.
@@ -143,13 +155,14 @@ public class ReverseConnectionRegistrar {
      *     If an error occurs retrieving the existing connection to be updated.
      */
     @PUT
-    public Map<String, String> updateConnection(RegisteredConnection connection)
+    public Map<String, String> updateConnection(@QueryParam("secret") String secret,
+            @QueryParam("id") String id,
+            RegisteredConnection connection)
             throws GuacamoleException {
         
-        if(!connection.getSecret().equals(secret))
+        if(!this.secret.equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
-        String id = connection.getIdentifier();
         GuacamoleConfiguration config =
                 directory.get(id).getConfiguration();
         config.setProtocol(connection.getProtocol());
@@ -178,12 +191,11 @@ public class ReverseConnectionRegistrar {
      *     If the specified connection cannot be found or retrieved.
      */
     @GET
-    @Path("{secret}/{id}")
-    public RegisteredConnection getConnection(@PathParam("secret") String secret,
-            @PathParam("id") String id)
+    public RegisteredConnection getConnection(@QueryParam("secret") String secret,
+            @QueryParam("id") String id)
             throws GuacamoleException {
         
-        if (!secret.equals(this.secret))
+        if (!this.secret.equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
         if (directory.isEmpty())
@@ -198,12 +210,11 @@ public class ReverseConnectionRegistrar {
     }
     
     @GET
-    @Path("{secret}")
     public Map<String, RegisteredConnection> getAllConnections(
-            @PathParam("secret") String secret)
+            @QueryParam("secret") String secret)
             throws GuacamoleException {
         
-        if (!secret.equals(this.secret))
+        if (!this.secret.equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
         if (directory.isEmpty())

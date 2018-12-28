@@ -33,11 +33,6 @@ import org.apache.guacamole.protocol.GuacamoleConfiguration;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class RegisteredConnection {
-
-    /**
-     * The secret token to use when registering the connection.
-     */
-    private String secret;
     
     /**
      * The name of this connection.
@@ -110,26 +105,6 @@ public class RegisteredConnection {
         // Associate any attributes
         this.attributes = connection.getAttributes();
 
-    }
-    
-    /**
-     * Get the secret token.
-     * 
-     * @return
-     *     The secret token.
-     */
-    public String getSecret() {
-        return secret;
-    }
-    
-    /**
-     * Set the secret token.
-     * 
-     * @param secret
-     *     The secret token to set.
-     */
-    public void setSecret(String secret) {
-        this.secret = secret;
     }
 
     /**
