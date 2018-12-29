@@ -20,6 +20,7 @@
 package org.apache.guacamole.auth.reverse;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,7 +52,7 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
     /**
      * Internal connection identifier counter;
      */
-    private AtomicInteger connectionId;
+    private final AtomicInteger connectionId;
     
     /**
      * Create a new connection directory with an empty connection group,
@@ -83,8 +84,8 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
      * @return 
      *     A String of the UUID of the connection to use.
      */
-    private String getConnectionUuid() {
-        return UUID.randomUUID().toString();
+    private UUID getConnectionUuid() {
+        return UUID.randomUUID();
     }
     
     /**
@@ -114,14 +115,15 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
      */
     public String create(String name, GuacamoleConfiguration config) {
 
+        UUID newUuid = getConnectionUuid();
         String newId = getConnectionId();
-        Connection connection = new SimpleConnection(name, newId, config);
+        Connection connection = new RegisteredConnection(name, newId, config, newUuid);
         connection.setParentIdentifier(rootGroup.getIdentifier());
         add(connection);
         
         rootGroup.addConnectionIdentifier(newId);
         
-        return newId;
+        return newUuid.toString();
     }
     
     /**
@@ -155,6 +157,12 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
         connections.remove(id);
     }
     
+    /**
+     * Get the root connection group of this directory.
+     * 
+     * @return 
+     *     The root connection group.
+     */
     public ConnectionGroup getRootConnectionGroup() {
         return rootGroup;
     }
@@ -162,6 +170,25 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
     @Override
     public void add(Connection connection) {
         connections.put(connection.getIdentifier(), connection);
+    }
+    
+    /**
+     * Look through connections and return the one that matches the
+     * provided UUID.
+     * 
+     * @param uuid
+     *     The UUID of the connection to search for.
+     * 
+     * @return 
+     *     The connection that matches the UUID.
+     */
+    public RegisteredConnection getByUUID(UUID uuid) {
+        for(Entry connection : connections.entrySet()) {
+            RegisteredConnection tempConn = (RegisteredConnection)connection.getValue();
+            if (tempConn.getUUID() == uuid)
+                return tempConn;
+        }
+        return null;
     }
     
 }

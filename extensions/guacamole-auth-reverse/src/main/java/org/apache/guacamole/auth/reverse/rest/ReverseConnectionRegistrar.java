@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -114,7 +115,7 @@ public class ReverseConnectionRegistrar {
             registerConfig.setParameter(param.getKey(), param.getValue());
         });
         
-        return Collections.<String, String>singletonMap("id",
+        return Collections.<String, String>singletonMap("uuid",
                 directory.create(connection.getName(), registerConfig));
     }
     
@@ -124,7 +125,7 @@ public class ReverseConnectionRegistrar {
      * @param secret
      *     The secret token required for interacting with this module.
      * 
-     * @param id
+     * @param uuid
      *     The identifier of the connection to remove from the directory.
      * 
      * @return
@@ -135,14 +136,14 @@ public class ReverseConnectionRegistrar {
      */
     @DELETE
     public Map<String, String> deleteConnection(@QueryParam("secret") String secret,
-            @QueryParam("id") String id)
+            @QueryParam("uuid") String uuid)
             throws GuacamoleException {
         
         if (!this.secret.equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
-        directory.delete(id);
-        return Collections.<String, String>singletonMap("id", id);
+        directory.delete(uuid);
+        return Collections.<String, String>singletonMap("uuid", uuid);
     }
     
     /**
@@ -151,7 +152,7 @@ public class ReverseConnectionRegistrar {
      * @param secret
      *     The secret to use to register connections.
      * 
-     * @param id
+     * @param uuid
      *     The identifier of the connection to update.
      * 
      * @param connection
@@ -165,14 +166,14 @@ public class ReverseConnectionRegistrar {
      */
     @PUT
     public Map<String, String> updateConnection(@QueryParam("secret") String secret,
-            @QueryParam("id") String id,
+            @QueryParam("uuid") String uuid,
             APIRegisteredConnection connection)
             throws GuacamoleException {
         
         if (!this.secret.equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
-        Connection oldConnection = directory.get(id);
+        Connection oldConnection = directory.get(uuid);
         if (oldConnection == null)
             throw new GuacamoleResourceNotFoundException(
                     "Connection does not exist in directory.");
@@ -184,7 +185,7 @@ public class ReverseConnectionRegistrar {
             config.setParameter(param.getKey(), param.getValue());
         });
         
-        return Collections.<String, String>singletonMap("id", id);
+        return Collections.<String, String>singletonMap("uuid", uuid);
         
     }
     
@@ -194,7 +195,7 @@ public class ReverseConnectionRegistrar {
      * @param secret
      *     The secret token to use when interacting with this module.
      * 
-     * @param id
+     * @param uuid
      *     The identifier of the connection to be retrieved.
      * 
      * @return
@@ -204,9 +205,9 @@ public class ReverseConnectionRegistrar {
      *     If the specified connection cannot be found or retrieved.
      */
     @GET
-    @Path("{id}")
+    @Path("{uuid}")
     public APIRegisteredConnection getConnection(@QueryParam("secret") String secret,
-            @PathParam("id") String id)
+            @PathParam("uuid") String uuid)
             throws GuacamoleException {
         
         if (!this.secret.equals(secret))
@@ -215,7 +216,7 @@ public class ReverseConnectionRegistrar {
         if (directory.isEmpty())
             throw new GuacamoleResourceNotFoundException("Directory is empty.");
         
-        RegisteredConnection connection = (RegisteredConnection)directory.get(id);
+        RegisteredConnection connection = (RegisteredConnection)directory.getByUUID(uuid);
         if (connection == null)
             throw new GuacamoleResourceNotFoundException("Connection does not exist.");
         
@@ -239,7 +240,8 @@ public class ReverseConnectionRegistrar {
         identifiers.forEach((String id) -> {
             try {
                 RegisteredConnection tempConn = (RegisteredConnection)directory.get(id);
-                connections.put(id, new APIRegisteredConnection(tempConn,tempConn.getUUID()));
+                UUID uuid = tempConn.getUUID();
+                connections.put(uuid.toString(), new APIRegisteredConnection(tempConn, uuid));
             }
             catch (GuacamoleException e) {
             }
