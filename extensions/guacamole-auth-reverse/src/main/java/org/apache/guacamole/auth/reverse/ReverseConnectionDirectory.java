@@ -184,7 +184,7 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
     public RegisteredConnection getByUUID(UUID uuid) {
         for(Entry connection : connections.entrySet()) {
             RegisteredConnection tempConn = (RegisteredConnection)connection.getValue();
-            if (tempConn.getUUID() == uuid)
+            if (tempConn.getUUID().equals(uuid))
                 return tempConn;
         }
         return null;
@@ -193,7 +193,7 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
     public String getIdByUUID(UUID uuid) {
         for(Entry connection : connections.entrySet()) {
             RegisteredConnection tempConn = (RegisteredConnection)connection.getValue();
-            if (tempConn.getUUID() == uuid)
+            if (tempConn.getUUID().equals(uuid))
                 return connection.getKey().toString();
         }
         return null;
