@@ -27,7 +27,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.guacamole.auth.reverse.rest.RegisteredConnection;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.ConnectionGroup;
-import org.apache.guacamole.net.auth.simple.SimpleConnection;
 import org.apache.guacamole.net.auth.simple.SimpleDirectory;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
 
@@ -187,6 +186,15 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
             RegisteredConnection tempConn = (RegisteredConnection)connection.getValue();
             if (tempConn.getUUID() == uuid)
                 return tempConn;
+        }
+        return null;
+    }
+    
+    public String getIdByUUID(UUID uuid) {
+        for(Entry connection : connections.entrySet()) {
+            RegisteredConnection tempConn = (RegisteredConnection)connection.getValue();
+            if (tempConn.getUUID() == uuid)
+                return connection.getKey().toString();
         }
         return null;
     }

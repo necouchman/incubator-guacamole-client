@@ -142,7 +142,8 @@ public class ReverseConnectionRegistrar {
         if (!this.secret.equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
-        directory.delete(uuid);
+        String id = directory.getIdByUUID(UUID.fromString(uuid));
+        directory.delete(id);
         return Collections.<String, String>singletonMap("uuid", uuid);
     }
     
@@ -216,7 +217,7 @@ public class ReverseConnectionRegistrar {
         if (directory.isEmpty())
             throw new GuacamoleResourceNotFoundException("Directory is empty.");
         
-        RegisteredConnection connection = (RegisteredConnection)directory.getByUUID(uuid);
+        RegisteredConnection connection = (RegisteredConnection)directory.getByUUID(UUID.fromString(uuid));
         if (connection == null)
             throw new GuacamoleResourceNotFoundException("Connection does not exist.");
         
