@@ -39,6 +39,8 @@ import org.apache.guacamole.GuacamoleResourceNotFoundException;
 import org.apache.guacamole.auth.reverse.ReverseConnectionDirectory;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a class that provides the RESTful endpoints for registering
@@ -47,6 +49,11 @@ import org.apache.guacamole.protocol.GuacamoleConfiguration;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ReverseConnectionRegistrar {
+    
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(ReverseConnectionRegistrar.class);
     
     /**
      * The connection directory to use for this REST endpoint.  Connections
@@ -92,7 +99,7 @@ public class ReverseConnectionRegistrar {
      */
     @POST
     public Map<String, String> registerConnection(@QueryParam("secret") String secret,
-            RegisteredConnection connection)
+            APIRegisteredConnection connection)
             throws GuacamoleException {
         
         if (!this.secret.equals(secret))
@@ -101,7 +108,9 @@ public class ReverseConnectionRegistrar {
         GuacamoleConfiguration registerConfig = new GuacamoleConfiguration();
         registerConfig.setConnectionID(connection.getName());
         registerConfig.setProtocol(connection.getProtocol());
+        logger.debug("Setting protocol to {}", connection.getProtocol());
         connection.getParameters().entrySet().forEach((param) -> {
+            logger.debug("Setting parameter {} with value {}", param.getKey(), param.getValue());
             registerConfig.setParameter(param.getKey(), param.getValue());
         });
         
@@ -157,7 +166,7 @@ public class ReverseConnectionRegistrar {
     @PUT
     public Map<String, String> updateConnection(@QueryParam("secret") String secret,
             @QueryParam("id") String id,
-            RegisteredConnection connection)
+            APIRegisteredConnection connection)
             throws GuacamoleException {
         
         if (!this.secret.equals(secret))
@@ -196,7 +205,7 @@ public class ReverseConnectionRegistrar {
      */
     @GET
     @Path("{id}")
-    public RegisteredConnection getConnection(@QueryParam("secret") String secret,
+    public APIRegisteredConnection getConnection(@QueryParam("secret") String secret,
             @PathParam("id") String id)
             throws GuacamoleException {
         
@@ -206,16 +215,16 @@ public class ReverseConnectionRegistrar {
         if (directory.isEmpty())
             throw new GuacamoleResourceNotFoundException("Directory is empty.");
         
-        Connection connection = directory.get(id);
+        RegisteredConnection connection = (RegisteredConnection)directory.get(id);
         if (connection == null)
             throw new GuacamoleResourceNotFoundException("Connection does not exist.");
         
-        return new RegisteredConnection(connection);
+        return new APIRegisteredConnection(connection, connection.getUUID());
         
     }
     
     @GET
-    public Map<String, RegisteredConnection> getAllConnections(
+    public Map<String, APIRegisteredConnection> getAllConnections(
             @QueryParam("secret") String secret)
             throws GuacamoleException {
         
@@ -226,10 +235,11 @@ public class ReverseConnectionRegistrar {
             throw new GuacamoleResourceNotFoundException("Directory is empty.");
         
         Set<String> identifiers = directory.getIdentifiers();
-        Map<String, RegisteredConnection> connections = new HashMap<>();
+        Map<String, APIRegisteredConnection> connections = new HashMap<>();
         identifiers.forEach((String id) -> {
             try {
-                connections.put(id, new RegisteredConnection(directory.get(id)));
+                RegisteredConnection tempConn = (RegisteredConnection)directory.get(id);
+                connections.put(id, new APIRegisteredConnection(tempConn,tempConn.getUUID()));
             }
             catch (GuacamoleException e) {
             }

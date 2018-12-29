@@ -40,7 +40,7 @@ public class RegisteredConnectionWrapper implements Connection {
     /**
      * The wrapped APIConnection.
      */
-    private final RegisteredConnection registeredConnection;
+    private final APIRegisteredConnection registeredConnection;
 
     /**
      * Creates a new APIConnectionWrapper which wraps the given APIConnection
@@ -49,7 +49,7 @@ public class RegisteredConnectionWrapper implements Connection {
      * @param registeredConnection
      *     The APIConnection to wrap.
      */
-    public RegisteredConnectionWrapper(RegisteredConnection registeredConnection) {
+    public RegisteredConnectionWrapper(APIRegisteredConnection registeredConnection) {
         this.registeredConnection = registeredConnection;
     }
 

@@ -22,6 +22,8 @@ package org.apache.guacamole.auth.reverse;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.guacamole.auth.reverse.rest.RegisteredConnection;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.ConnectionGroup;
 import org.apache.guacamole.net.auth.simple.SimpleConnection;
@@ -47,11 +49,17 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
     private final ReverseConnectionGroup rootGroup;
     
     /**
+     * Internal connection identifier counter;
+     */
+    private AtomicInteger connectionId;
+    
+    /**
      * Create a new connection directory with an empty connection group,
      * a new connection ID, and an empty set of connections.
      */
     public ReverseConnectionDirectory() {
         this.rootGroup = new ReverseConnectionGroup();
+        this.connectionId = new AtomicInteger();
         super.setObjects(connections);
     }
     
@@ -64,6 +72,7 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
      */
     public ReverseConnectionDirectory(ConnectionGroup rootGroup) {
         this.rootGroup = (ReverseConnectionGroup)rootGroup;
+        this.connectionId = new AtomicInteger();
         super.setObjects(connections);
     }
     
@@ -74,8 +83,18 @@ public class ReverseConnectionDirectory extends SimpleDirectory<Connection> {
      * @return 
      *     A String of the UUID of the connection to use.
      */
-    private String getConnectionId() {
+    private String getConnectionUuid() {
         return UUID.randomUUID().toString();
+    }
+    
+    /**
+     * Get the next connection ID and increment the counter.
+     * 
+     * @return 
+     *     The next available connection identifier.
+     */
+    private String getConnectionId() {
+        return Integer.toString(connectionId.getAndIncrement());
     }
     
     /**
