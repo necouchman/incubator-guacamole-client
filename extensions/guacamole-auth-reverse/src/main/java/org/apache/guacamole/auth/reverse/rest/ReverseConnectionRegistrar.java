@@ -174,7 +174,8 @@ public class ReverseConnectionRegistrar {
         if (!this.secret.equals(secret))
             throw new GuacamoleSecurityException("Invalid secret specified.");
         
-        Connection oldConnection = directory.get(uuid);
+        String id = directory.getIdByUUID(UUID.fromString(uuid));
+        Connection oldConnection = directory.get(id);
         if (oldConnection == null)
             throw new GuacamoleResourceNotFoundException(
                     "Connection does not exist in directory.");
