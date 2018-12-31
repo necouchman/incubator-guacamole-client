@@ -1,0 +1,11 @@
+{
+    "guacamoleVersion" : "1.0.0",
+
+    "name"             : "Guacamole Connection Registrar",
+    "namespace"        : "register",
+
+    "authProviders"    : [
+        "org.apache.guacamole.auth.register.RegistarAuthenticationProvider"
+    ]
+
+}
