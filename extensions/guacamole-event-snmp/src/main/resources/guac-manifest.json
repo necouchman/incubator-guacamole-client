@@ -1,0 +1,10 @@
+{
+    "guacamoleVersion" : "1.0.0",
+    
+    "name" : "Event Listener for SNMP",
+    "namespace" : "guacamole-event-snmp",
+    
+    "listeners" : [
+        "org.apache.guacamole.event.SNMP"
+    ]
+}

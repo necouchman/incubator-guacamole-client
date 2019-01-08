@@ -22,7 +22,6 @@ package org.apache.guacamole.net.event;
 import org.apache.guacamole.net.GuacamoleTunnel;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.Credentials;
-import org.apache.guacamole.net.auth.UserContext;
 
 /**
  * An event which is triggered whenever a tunnel is being connected. The tunnel

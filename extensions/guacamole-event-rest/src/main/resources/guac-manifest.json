@@ -1,0 +1,10 @@
+{
+    "guacamoleVersion" : "1.0.0",
+    
+    "name" : "Event Listener for REST Endpoints",
+    "namespace" : "guacamole-event-rest",
+    
+    "listeners" : [
+        "org.apache.guacamole.event.REST"
+    ]
+}

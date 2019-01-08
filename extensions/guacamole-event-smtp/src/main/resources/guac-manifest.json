@@ -1,0 +1,10 @@
+{
+    "guacamoleVersion" : "1.0.0",
+    
+    "name" : "Event Listener for SMTP",
+    "namespace" : "guacamole-event-smtp",
+    
+    "listeners" : [
+        "org.apache.guacamole.event.SMTP"
+    ]
+}
