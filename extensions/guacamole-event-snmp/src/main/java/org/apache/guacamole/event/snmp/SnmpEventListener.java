@@ -45,6 +45,8 @@ public class SnmpEventListener implements Listener {
         PDU trapPdu = new PDU();
         trapPdu.add(new VariableBinding(SnmpConstants.snmpTrapEnterprise, 
                 new OID(ConfigurationService.GUACAMOLE_OID)));
+        trapPdu.setType(PDU.V1TRAP);
+        
     }
     
     private void sendV1Trap() throws GuacamoleException {
