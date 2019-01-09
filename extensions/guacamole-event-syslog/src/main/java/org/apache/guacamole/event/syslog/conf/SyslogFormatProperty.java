@@ -25,9 +25,8 @@ import org.apache.guacamole.GuacamoleServerException;
 import org.apache.guacamole.properties.GuacamoleProperty;
 
 /**
- * A GuacamoleProperty which is parsed for a SyslogProtocol value.  The
- * String values "tcp" and "udp" are parsed to their corresponding
- * SyslogProtocol enum values.
+ * A GuacamoleProperty which is parsed for a MessageFormat value.  Valid values
+ * are "RFC_3164", "RFC_5424", and "RFC_5425".
  */
 public abstract class SyslogFormatProperty
         implements GuacamoleProperty<MessageFormat> {

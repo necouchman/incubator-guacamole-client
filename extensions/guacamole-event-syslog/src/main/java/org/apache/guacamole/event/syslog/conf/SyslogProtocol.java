@@ -20,17 +20,18 @@
 package org.apache.guacamole.event.syslog.conf;
 
 /**
- * The protocol used by Syslog to communicate.
+ * An enum used to specify the protocol used to communicate with a remote
+ * syslog server.
  */
 public enum SyslogProtocol {
     
     /**
-     * Use TCP to communicate with Syslog.
+     * Use TCP to communicate with syslog.
      */
     TCP,
     
     /**
-     * Use UDP to communicate with Syslog.
+     * Use UDP to communicate with syslog.
      */
     UDP;
     

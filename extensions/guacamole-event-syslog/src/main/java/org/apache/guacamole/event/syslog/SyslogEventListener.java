@@ -22,11 +22,10 @@ package org.apache.guacamole.event.syslog;
 import com.cloudbees.syslog.Severity;
 import com.cloudbees.syslog.SyslogMessage;
 import com.cloudbees.syslog.sender.AbstractSyslogMessageSender;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import java.io.IOException;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleServerException;
+import org.apache.guacamole.environment.LocalEnvironment;
 import org.apache.guacamole.event.syslog.conf.ConfigurationService;
 import org.apache.guacamole.net.event.AuthenticationFailureEvent;
 import org.apache.guacamole.net.event.AuthenticationSuccessEvent;
@@ -38,24 +37,28 @@ import org.apache.guacamole.net.event.listener.Listener;
  * An event listener for sending Guacamole events to a syslog server.
  */
 public class SyslogEventListener implements Listener {
-    
+  
     /**
-     * Injector which will manage the object graph of this event listener.
-     */
-    private final Injector injector;
-    
-    /**
-     * The message sender used to generate Syslog messages.
+     * The message sender used to generate syslog messages.
      */
     private final AbstractSyslogMessageSender syslogSender;
 
+    /**
+     * Construct a new SyslogEventListener that gathers configuration information
+     * and generates a new syslog sender with the configured parameters.
+     * 
+     * @throws GuacamoleException 
+     *     If an error occurs retrieving configuration information.
+     */
     public SyslogEventListener() throws GuacamoleException {
-        this.injector = Guice.createInjector(new SyslogEventListenerModule(this));
         
-        ConfigurationService confService = injector.getInstance(ConfigurationService.class);
+        // Get the configuration service
+        ConfigurationService confService = new ConfigurationService(new LocalEnvironment());
         
+        // Set up the syslog sender
         this.syslogSender = confService.getSyslogMessageSender();
         
+        // Send an initial test message
         try {
             this.syslogSender.sendMessage("Syslog Event Listener loaded.");
         }
@@ -66,17 +69,21 @@ public class SyslogEventListener implements Listener {
     
     @Override
     public void handleEvent(Object event) throws GuacamoleException {
-        StringBuilder sb = new StringBuilder();
+        
         SyslogMessage eventMessage = new SyslogMessage();
         
+        // If for some reason the event is null, bail out.
         if (event == null)
             throw new GuacamoleServerException("Cannot handle non-existent event.");
         
+        // Event is an authentication success
         if (event instanceof AuthenticationSuccessEvent) {
             eventMessage.withMsg("User "
                     + ((AuthenticationSuccessEvent) event).getAuthenticatedUser().getIdentifier()
                     + " has successfully logged on.");
         }
+        
+        // Event is an authentication failure
         else if (event instanceof AuthenticationFailureEvent) {
             eventMessage.withMsg("Failed login for "
                     + ((AuthenticationFailureEvent) event).getCredentials().getUsername()
@@ -85,6 +92,8 @@ public class SyslogEventListener implements Listener {
                     + ".");
             eventMessage.setSeverity(Severity.ALERT);
         }
+        
+        // Event is a tunnel connection
         else if (event instanceof TunnelConnectEvent) {
             eventMessage.withMsg("Tunnel opened for "
                     + ((TunnelConnectEvent) event).getCredentials().getUsername()
@@ -92,6 +101,8 @@ public class SyslogEventListener implements Listener {
                     + ((TunnelConnectEvent) event).getTunnel().getUUID().toString()
                     + ".");
         }
+        
+        // Event is a tunnel close
         else if (event instanceof TunnelCloseEvent) {
             eventMessage.withMsg("Tunnel closed for "
                     + ((TunnelCloseEvent) event).getCredentials().getUsername()
@@ -99,11 +110,14 @@ public class SyslogEventListener implements Listener {
                     + ((TunnelCloseEvent) event).getTunnel().getUUID().toString()
                     + ".");
         }
+        
+        // Shouldn't ever get here, but some other kind of event
         else {
             eventMessage.withMsg("Unknown Guacamole event: "
                     + event.toString());
         }
         
+        // Send the message to the syslog server
         try {
             this.syslogSender.sendMessage(eventMessage);
         }

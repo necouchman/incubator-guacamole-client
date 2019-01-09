@@ -25,9 +25,9 @@ import org.apache.guacamole.GuacamoleServerException;
 import org.apache.guacamole.properties.GuacamoleProperty;
 
 /**
- * A GuacamoleProperty which is parsed for a SyslogProtocol value.  The
- * String values "tcp" and "udp" are parsed to their corresponding
- * SyslogProtocol enum values.
+ * A GuacamoleProperty which is parsed for a syslog Facility value.  The string
+ * value is parsed through the syslog Facility parser, returning the matching
+ * enum value, or throwing an error if the value is invalid.
  */
 public abstract class SyslogFacilityProperty
         implements GuacamoleProperty<Facility> {

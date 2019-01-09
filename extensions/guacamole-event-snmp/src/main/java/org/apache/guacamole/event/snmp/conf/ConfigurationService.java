@@ -103,7 +103,7 @@ public class ConfigurationService {
         );
     }
     
-    private SnmpVersion getSnmpDestinationVersion() throws GuacamoleException {
+    public SnmpVersion getSnmpDestinationVersion() throws GuacamoleException {
         return environment.getProperty(SNMP_DEST_VERSION,
                 SnmpVersion.V3
         );
