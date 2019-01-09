@@ -5,10 +5,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.guacamole</groupId>
-    <artifactId>guacamole-event-rest</artifactId>
+    <artifactId>guacamole-event-webhooks</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
-    <name>guacamole-event-rest</name>
+    <name>guacamole-event-webhooks</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
