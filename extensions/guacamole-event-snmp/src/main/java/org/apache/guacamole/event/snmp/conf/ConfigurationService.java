@@ -34,8 +34,16 @@ public class ConfigurationService {
      */
     private final Environment environment;
     
+    /**
+     * The base OID used for Guacamole-related SNMP MIBs.
+     */
     public static final String GUACAMOLE_OID = "1.3.6.1.4.1.38971";
     
+    /**
+     * The destination host to which SNMP traps will be sent.  This must be
+     * a valid hostname or IP address - if it is invalid an error will be
+     * thrown during Guacamole startup.
+     */
     public static final InetAddressProperty SNMP_DEST_HOST =
             new InetAddressProperty() {
         
@@ -44,6 +52,10 @@ public class ConfigurationService {
                 
     };
     
+    /**
+     * The destination port to which SNMP traps will be sent on the configured
+     * SNMP destination host.
+     */
     public static final IntegerGuacamoleProperty SNMP_DEST_PORT =
             new IntegerGuacamoleProperty() {
     
@@ -52,6 +64,10 @@ public class ConfigurationService {
                 
     };
     
+    /**
+     * The version of traps that will be sent.  Must be one of "V1", "V2C",
+     * or "V3", or an error will be returned.
+     */
     public static final SnmpVersionProperty SNMP_DEST_VERSION =
             new SnmpVersionProperty() {
     
@@ -60,6 +76,9 @@ public class ConfigurationService {
                 
     };
     
+    /**
+     * The community name used to send SNMP traps, if using SNMP V1 or V2C.
+     */
     public static final StringGuacamoleProperty SNMP_DEST_COMMUNITY =
             new StringGuacamoleProperty() {
  
@@ -68,6 +87,9 @@ public class ConfigurationService {
                 
     };
     
+    /**
+     * The user name used to send SNMP V3 traps.
+     */
     public static final StringGuacamoleProperty SNMP_DEST_USER =
             new StringGuacamoleProperty() {
     
@@ -76,6 +98,9 @@ public class ConfigurationService {
                 
     };
     
+    /**
+     * The password used to send SNMP V3 traps.
+     */
     public static final StringGuacamoleProperty SNMP_DEST_PASSWORD =
             new StringGuacamoleProperty() {
 
@@ -84,10 +109,29 @@ public class ConfigurationService {
                 
     };
     
+    /**
+     * Create a new instance of this ConfigurationService using the specified
+     * Guacamole Server environment.
+     * 
+     * @param environment
+     *     The Guacamole Server environment to use to retrieve properties
+     *     from the guacamole.properties file.
+     */
     public ConfigurationService(Environment environment) {
         this.environment = environment;
     }
     
+    /**
+     * Returns the InetAddress value of the SNMP Destination Host for
+     * sending SNMP traps, or localhost by default.
+     * 
+     * @return
+     *     The InetAddress of the destination SNMP host.
+     * 
+     * @throws GuacamoleException
+     *     If guacamole.properties cannot be parsed or the property value
+     *     is not a valid host.
+     */
     private InetAddress getSnmpDestinationHost() throws GuacamoleException {
         try {
             return environment.getProperty(SNMP_DEST_HOST,
@@ -99,18 +143,48 @@ public class ConfigurationService {
         }
     }
     
+    /**
+     * Returns the port to send SNMP traps to on the destination server, which 
+     * is 162 by default.
+     * 
+     * @return
+     *     The port to send SNMP traps to on the destionation server.
+     * 
+     * @throws GuacamoleException
+     *     If guacamole.properties cannot be parsed.
+     */
     private int getSnmpDestinationPort() throws GuacamoleException {
         return environment.getProperty(SNMP_DEST_PORT,
                 162
         );
     }
     
+    /**
+     * Returns the SnmpVersion enum value as parsed from the string in
+     * guacamole.properties.  This is used to determine how traps are sent
+     * to the destination server.
+     * 
+     * @return
+     *     The SnmpVersion matching the value specified in the
+     *     guacamole.properties file, or V3 by default.
+     * 
+     * @throws GuacamoleException
+     *     If guacamole.properties cannot be parsed or an invalid value is
+     *     specified in the file.
+     */
     public SnmpVersion getSnmpDestinationVersion() throws GuacamoleException {
         return environment.getProperty(SNMP_DEST_VERSION,
                 SnmpVersion.V3
         );
     }
     
+    /**
+     * Return the destination community used to send SNMP traps to a remote 
+     * host.
+     * 
+     * @return
+     * @throws GuacamoleException 
+     */
     private String getSnmpDestinationCommunity() throws GuacamoleException {
         return environment.getProperty(SNMP_DEST_COMMUNITY,
                 "public"

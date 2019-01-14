@@ -12,8 +12,10 @@ import org.apache.guacamole.GuacamoleServerException;
 import org.apache.guacamole.properties.GuacamoleProperty;
 
 /**
- *
- * @author nick_couchman
+ * A GuacamoleProperty whose value is an InetAddress.  This class parses
+ * the String value provided in the configuration file and attempts to
+ * translate that to an address, throwing an error if an invalid address is
+ * specified.
  */
 public abstract class InetAddressProperty implements GuacamoleProperty<InetAddress> {
     
