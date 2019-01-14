@@ -34,11 +34,7 @@ public class SnmpEventListener implements Listener {
         Snmp snmp = new Snmp();
         AbstractTarget target = confService.getSnmpTarget();
         SnmpVersion version = confService.getSnmpDestinationVersion();
-        PDU trapPdu;
-        if (version == SnmpVersion.V3)
-            trapPdu = new ScopedPDU();
-        else
-            trapPdu = new PDU();
+        PDU trapPdu = confService.getSnmpPdu();
        
     }
     

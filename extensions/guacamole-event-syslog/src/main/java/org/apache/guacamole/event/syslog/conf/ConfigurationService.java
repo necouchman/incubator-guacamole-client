@@ -308,20 +308,17 @@ public class ConfigurationService {
         // Generate a TCP sender.
         if (getSyslogProtocol() == SyslogProtocol.TCP) {
             syslogSender = new TcpSyslogMessageSender();
-            ((TcpSyslogMessageSender) syslogSender).setSyslogServerHostname(getSyslogServer());
-            ((TcpSyslogMessageSender) syslogSender).setSyslogServerPort(getSyslogPort());
             if(getSyslogSsl())
                 ((TcpSyslogMessageSender) syslogSender).setSsl(true);
         }
         
         // Generate a UDP sender.
-        else {
+        else
             syslogSender = new UdpSyslogMessageSender();
-            ((UdpSyslogMessageSender) syslogSender).setSyslogServerHostname(getSyslogServer());
-            ((UdpSyslogMessageSender) syslogSender).setSyslogServerPort(getSyslogPort());
-        }
         
         // Set up common properties
+        syslogSender.setSyslogServerHostname(getSyslogServer());
+        syslogSender.setSyslogServerPort(getSyslogPort());
         syslogSender.setDefaultAppName(getSyslogSender());
         syslogSender.setDefaultFacility(getSyslogFacility());
         syslogSender.setDefaultAppName(getSyslogApp());

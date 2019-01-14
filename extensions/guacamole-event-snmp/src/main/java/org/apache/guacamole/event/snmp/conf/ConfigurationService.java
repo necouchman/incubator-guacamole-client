@@ -14,6 +14,8 @@ import org.apache.guacamole.properties.IntegerGuacamoleProperty;
 import org.apache.guacamole.properties.StringGuacamoleProperty;
 import org.snmp4j.AbstractTarget;
 import org.snmp4j.CommunityTarget;
+import org.snmp4j.PDU;
+import org.snmp4j.ScopedPDU;
 import org.snmp4j.UserTarget;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.security.SecurityLevel;
@@ -121,7 +123,7 @@ public class ConfigurationService {
         );
     }
     
-    private String getSnmpDestinationPassword() throws GuacamoleException {
+    public String getSnmpDestinationPassword() throws GuacamoleException {
         return environment.getProperty(SNMP_DEST_PASSWORD,
                 "public"
         );
@@ -154,6 +156,23 @@ public class ConfigurationService {
             target.setVersion(SnmpConstants.version3);
         }
         return target;
+    }
+    
+    public PDU getSnmpPdu() throws GuacamoleException {
+        SnmpVersion version = getSnmpDestinationVersion();
+        PDU snmpPdu;
+        if (version == SnmpVersion.V3) {
+            snmpPdu = new ScopedPDU();
+            snmpPdu.setType(ScopedPDU.NOTIFICATION);
+        }
+        else {
+            snmpPdu = new PDU();
+            if (version == SnmpVersion.V1)
+                snmpPdu.setType(PDU.V1TRAP);
+            else
+                snmpPdu.setType(PDU.TRAP);
+        }
+        return snmpPdu;
     }
     
 }
