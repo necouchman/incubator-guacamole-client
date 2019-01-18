@@ -19,6 +19,7 @@
 
 package org.apache.guacamole.net.auth;
 
+import java.util.Collections;
 import java.util.Map;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.GuacamoleTunnel;
@@ -56,6 +57,33 @@ public interface Connectable {
      */
     public GuacamoleTunnel connect(GuacamoleClientInformation info,
             Map<String, String> tokens) throws GuacamoleException;
+    
+    /**
+     * This is a compatibility method for recent changes to the interface
+     * that calls the connect method with an empty set of tokens.  Classes
+     * that use this interface should be updated to implement a connection
+     * method that accepts tokens.
+     * 
+     * @param info
+     *     Information associated with the connection client.
+     * 
+     * @return
+     *     A fully-established GuacamoleTunnel.
+     * 
+     * @throws GuacamoleException
+     *     If an error occurs while connecting to guacd, or if permission to
+     *     connect is denied.
+     * 
+     * @deprecated
+     *     This method is deprecated and is provided for compatibility reasons.
+     *     Implementations and users of this method should switch to the method
+     *     that accepts tokens as a parameter.
+     */
+    @Deprecated
+    default public GuacamoleTunnel connect(GuacamoleClientInformation info)
+            throws GuacamoleException {
+        return connect(info, Collections.emptyMap());
+    }
 
     /**
      * Returns the number of active connections associated with this object.
