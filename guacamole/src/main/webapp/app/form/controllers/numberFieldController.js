@@ -24,14 +24,51 @@
 angular.module('form').controller('numberFieldController', ['$scope',
     function numberFieldController($scope) {
 
+    /**
+     * This is a regular expression which matches the format for parameter
+     * tokens used throughout the client, e.g. ${GUAC_TOKEN}.
+     * 
+     * @type {RegExp}
+     */
+    var tokenRegex = new RegExp('^\\$\\{[A-Z_]+\\}$');
+
+    /**
+     * This is the regular expression used by the number field to validate
+     * that input is either numeric or a token.
+     */
+    $scope.numberPattern = new RegExp('^((\\$\\{[A-Z_]+\\})|(\\d+))*$');
+
     // Update typed value when model is changed
     $scope.$watch('model', function modelChanged(model) {
-        $scope.typedValue = (model ? Number(model) : null);
+        
+        // If we have a token, keep it.
+        if (tokenRegex.test(model))
+            $scope.typedValue = model;
+        
+        // If we have a number, we keep that, too.
+        else if (Number(model) || Number(model) === 0)
+            $scope.typedValue = model;
+        
+        // Anything else gets thrown away
+        else
+            $scope.typedValue = null;
     });
 
     // Update string value in model when typed value is changed
     $scope.$watch('typedValue', function typedValueChanged(typedValue) {
-        $scope.model = ((typedValue || typedValue === 0) ? typedValue.toString() : '');
+        
+        // If we have a token, keep it.
+        if (tokenRegex.test(typedValue))
+            $scope.model = typedValue;
+        
+        // If we have a number, keep that
+        else if (typedValue || typedValue === 0)
+            $scope.model = typedValue.toString();
+        
+        // Throw anything else away
+        else
+            $scope.model = '';
+        
     });
 
 }]);
