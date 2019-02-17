@@ -45,3 +45,13 @@
 .form-field .password-field input[type=text] ~ .icon.toggle-password {
     background-image: url('images/action-icons/guac-hide-pass.png');
 }
+
+/* Numeric form field with invalid input */
+.form-field .number-field input[type=text] .ng-dirty .ng-invalid {
+    background-color: #A43;
+}
+
+/* Numeric form field with invalid input, hover */
+.form-field .number-field input[type=text] .ng-dirty .ng-invalid:hover  {
+    background-color: #C54;
+}
