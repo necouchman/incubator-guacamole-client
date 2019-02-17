@@ -30,13 +30,13 @@ angular.module('form').controller('numberFieldController', ['$scope',
      * 
      * @type {RegExp}
      */
-    var tokenRegex = new RegExp('^\\$\\{[A-Z_]+\\}$');
+    var tokenRegex = /'^\$\{[A-Z_]+\}$'/;
 
     /**
      * This is the regular expression used by the number field to validate
      * that input is either numeric or a token.
      */
-    $scope.numberPattern = new RegExp('^((\\$\\{[A-Z_]+\\})|(\\d+))*$');
+    $scope.numberPattern = /'^((\$\{[A-Z_]+\})|(\d+))*$'/;
 
     // Update typed value when model is changed
     $scope.$watch('model', function modelChanged(model) {
