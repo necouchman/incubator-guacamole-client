@@ -51,6 +51,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
     var guacAudio               = $injector.get('guacAudio');
     var guacHistory             = $injector.get('guacHistory');
     var guacImage               = $injector.get('guacImage');
+    var guacPrompt             = $injector.get('guacPrompt');
     var guacVideo               = $injector.get('guacVideo');
 
     /**
@@ -367,6 +368,9 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
             client : client,
             tunnel : tunnel
         });
+        
+        // Parse connection details from ID
+        var clientIdentifier = ClientIdentifier.fromString(id);
 
         // Fire events for tunnel errors
         tunnel.onerror = function tunnelError(status) {
@@ -577,12 +581,48 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
                 managedClient.filesystems.push(ManagedFilesystem.getInstance(object, name));
             });
         };
+        
+        // Handle any received prompts
+        client.onrequired = function onrequired(parameter) {
+            
+            var dataSource = clientIdentifier.dataSource;
+            var identifier = clientIdentifier.id;
+            var getProtocolInfo = schemaService.getProtocol(dataSource, identifier);
+            
+            getProtocolInfo.then(function gotProtocolInfo(protocolInfo) {
+                
+                var promptField = {
+                    'name' : parameter,
+                    'type' : 'TEXT'
+                };
+                
+                findField:
+                for (i = 0; i < protocolInfo.connectionForms.length; i++) {
+                    var currentForm = protocolInfo.connectionForms[i];
+                    for (j = 0; j < currentForm.fields.length; j++) {
+                        var currentField = currentForm.fields[j];
+                        if (currentField.name === parameter) {
+                            promptField = currentField;
+                            break findField;
+                        }
+                    }
+                }
+                
+                guacPrompt.getUserInput(promptField, protocolInfo.name)
+                        .then(function gotUserInput(data) {
+                                var stream = client.createArgumentValueStream("text/plain", parameter);
+                                var writer = new Guacamole.StringWriter(stream);
+                                writer.sendText(data[parameter]);
+                                writer.sendEnd();
+
+                }, function errorUserInput() {
+                    client.disconnect();
+                });
+            });
+        };
 
         // Manage the client display
         managedClient.managedDisplay = ManagedDisplay.getInstance(client.getDisplay());
-
-        // Parse connection details from ID
-        var clientIdentifier = ClientIdentifier.fromString(id);
 
         // Connect the Guacamole client
         getConnectString(clientIdentifier, connectionParameters)

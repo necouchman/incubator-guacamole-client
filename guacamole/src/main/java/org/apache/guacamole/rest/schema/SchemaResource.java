@@ -24,12 +24,14 @@ import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.environment.Environment;
 import org.apache.guacamole.environment.LocalEnvironment;
 import org.apache.guacamole.form.Form;
+import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.UserContext;
 import org.apache.guacamole.protocols.ProtocolInfo;
 
@@ -174,6 +176,32 @@ public class SchemaResource {
         Environment env = new LocalEnvironment();
         return env.getProtocols();
 
+    }
+    
+    /**
+     * Return the ProtocolInfo associated with the connection identified
+     * by the provided identifier.
+     * 
+     * @param identifier
+     *     The identifier of the connection for which to retrieve protocol
+     *     information.
+     * 
+     * @return
+     *     The ProtocolInfo object associated with the specified connection.
+     * 
+     * @throws GuacamoleException 
+     *     If an error occurs retrieving the local server environment or
+     *     the connection directory from the current user context.
+     */
+    @GET
+    @Path("protocol/{identifier}")
+    public ProtocolInfo getProtocol(@PathParam("identifier") String identifier) 
+            throws GuacamoleException {
+        
+        Map<String, ProtocolInfo> supportedProtocols = new LocalEnvironment().getProtocols();
+        Connection connection = userContext.getConnectionDirectory().get(identifier);
+        return supportedProtocols.get(connection.getConfiguration().getProtocol());
+        
     }
 
 }

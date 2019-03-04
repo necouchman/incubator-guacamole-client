@@ -715,8 +715,8 @@ Guacamole.Client = function(tunnel) {
     this.onpipe = null;
     
     /**
-     * This method is fired when a prompt (required) instruction is received
-     * from the server, which indicates that guacd requires further information
+     * This method is fired when a required instruction is received from the
+     * server, which indicates that guacd requires additional parameters
      * from the client in order to continue the connection.
      * 
      * @event
@@ -724,7 +724,7 @@ Guacamole.Client = function(tunnel) {
      *      to be provided by the client to guacd before the connection can
      *      proceed.
      */
-    this.onprompt = null;
+    this.onrequired = null;
 
     /**
      * Fired whenever a sync instruction is received from the server, indicating
@@ -1350,8 +1350,8 @@ Guacamole.Client = function(tunnel) {
 
         },
                 
-        "required": function receivePrompt(parameters) {
-            if (guac_client.onprompt) guac_client.onprompt(parameters[0]);
+        "required": function required(parameters) {
+            if (guac_client.onrequired) guac_client.onrequired(parameters[0]);
         },
         
         "reset": function(parameters) {

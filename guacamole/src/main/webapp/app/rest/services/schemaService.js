@@ -230,6 +230,36 @@ angular.module('rest').factory('schemaService', ['$injector',
         });
 
     };
+    
+    /**
+     * Return a promise to retrieve the protocol information associated with
+     * the specified data source and connection identifier.
+     * 
+     * @param {String} dataSource
+     *     The data source for which to retrieve protocol schema data.
+     *     
+     * @param {String} identifier
+     *     The connection identifier for wihch to retrieve protocol schema data.
+     *     
+     * @return {Promise.<Protocol>}
+     *     A promise that, when resolved, will contain the protocol data for
+     *     the specified data source and connection identifier.
+     */
+    service.getProtocol = function getProtocol(dataSource, identifier) {
+        
+        // Build HTTP parameter set
+        var httpParameters = {
+            token : authenticationService.getCurrentToken()
+        };
+        
+        // Retrieve protocol associated with this identifier
+        return requestService({
+            cache  : cacheService.schema,
+            method : 'GET',
+            url    : 'api/session/data/' + encodeURIComponent(dataSource) + '/schema/protocol/' + encodeURIComponent(identifier),
+            params : httpParameters
+        });
+    };
 
     return service;
 
