@@ -22,7 +22,7 @@ package org.apache.guacamole.auth.sqlserver;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
-import java.lang.UnsupportedOperationException;
+import java.net.URI;
 import java.util.Properties;
 import org.apache.guacamole.GuacamoleException;
 import org.mybatis.guice.datasource.helper.JdbcHelper;
@@ -45,7 +45,7 @@ public class SQLServerAuthenticationProviderModule implements Module {
     /**
      * Which SQL Server driver should be used.
      */
-    private SQLServerDriver sqlServerDriver;
+    private final SQLServerDriver sqlServerDriver;
 
     /**
      * Creates a new SQLServer authentication provider module that configures
@@ -64,11 +64,19 @@ public class SQLServerAuthenticationProviderModule implements Module {
 
         // Set the SQLServer-specific properties for MyBatis.
         myBatisProperties.setProperty("mybatis.environment.id", "guacamole");
-        myBatisProperties.setProperty("JDBC.host", environment.getSQLServerHostname());
-        myBatisProperties.setProperty("JDBC.port", String.valueOf(environment.getSQLServerPort()));
-        myBatisProperties.setProperty("JDBC.schema", environment.getSQLServerDatabase());
-        myBatisProperties.setProperty("JDBC.username", environment.getSQLServerUsername());
-        myBatisProperties.setProperty("JDBC.password", environment.getSQLServerPassword());
+        
+        URI sqlUri = environment.getSQLServerUri();
+        if (sqlUri != null)
+            myBatisProperties.setProperty("JDBC.url", sqlUri.toString());
+        
+        else {
+            myBatisProperties.setProperty("JDBC.host", environment.getSQLServerHostname());
+            myBatisProperties.setProperty("JDBC.port", String.valueOf(environment.getSQLServerPort()));
+            myBatisProperties.setProperty("JDBC.schema", environment.getSQLServerDatabase());
+            myBatisProperties.setProperty("JDBC.username", environment.getSQLServerUsername());
+            myBatisProperties.setProperty("JDBC.password", environment.getSQLServerPassword());
+        }
+        
         myBatisProperties.setProperty("JDBC.autoCommit", "false");
         myBatisProperties.setProperty("mybatis.pooled.pingEnabled", "true");
         myBatisProperties.setProperty("mybatis.pooled.pingQuery", "SELECT 1");

@@ -19,6 +19,7 @@
 
 package org.apache.guacamole.auth.postgresql;
 
+import java.net.URI;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.auth.jdbc.JDBCEnvironment;
 import org.slf4j.Logger;
@@ -31,11 +32,6 @@ import org.apache.ibatis.session.SqlSession;
  * properties specifically for PostgreSQL.
  */
 public class PostgreSQLEnvironment extends JDBCEnvironment {
-
-    /**
-     * Logger for this class.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(PostgreSQLEnvironment.class);
 
     /**
      * The default host to connect to, if POSTGRESQL_HOSTNAME is not specified.
@@ -162,6 +158,25 @@ public class PostgreSQLEnvironment extends JDBCEnvironment {
     @Override
     public PasswordPolicy getPasswordPolicy() {
         return new PostgreSQLPasswordPolicy(this);
+    }
+    
+    /**
+     * Returns the URI of the PostgreSQL instance hosting the Guacamole
+     * authentication tables, or null if the property is not set.  If this
+     * property is configured, the individual properties for hostname, port,
+     * username, password, and database name are ignored.
+     * 
+     * @return
+     *     The URI of the PostgreSQL instance hosting the Guacamole authentication
+     *     tables.
+     * 
+     * @throws GuacamoleException
+     *     If guacamole.properties cannot be read.
+     */
+    public URI getPostgreSQLUri() throws GuacamoleException {
+        return getProperty(
+            PostgreSQLGuacamoleProperties.POSTGRESQL_URI
+        );
     }
 
     /**

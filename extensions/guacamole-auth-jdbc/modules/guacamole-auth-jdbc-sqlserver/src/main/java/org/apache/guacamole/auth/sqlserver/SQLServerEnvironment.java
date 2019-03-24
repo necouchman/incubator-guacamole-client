@@ -19,6 +19,7 @@
 
 package org.apache.guacamole.auth.sqlserver;
 
+import java.net.URI;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.auth.jdbc.JDBCEnvironment;
 import org.slf4j.Logger;
@@ -31,11 +32,6 @@ import org.apache.ibatis.session.SqlSession;
  * properties specifically for SQLServer.
  */
 public class SQLServerEnvironment extends JDBCEnvironment {
-
-    /**
-     * Logger for this class.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(SQLServerEnvironment.class);
 
     /**
      * The default host to connect to, if SQLSERVER_HOSTNAME is not specified.
@@ -153,6 +149,25 @@ public class SQLServerEnvironment extends JDBCEnvironment {
     @Override
     public PasswordPolicy getPasswordPolicy() {
         return new SQLServerPasswordPolicy(this);
+    }
+    
+    /**
+     * Returns the URI of the SQL Server instance hosting the Guacamole
+     * authentication tables, or null if no URI is specified.  If this property
+     * is specified the individual properties for hostname, [ort, database,
+     * username, and password are ignored.
+     * 
+     * @return
+     *     The URI of the SQL Server instance hosting the Guacamole authentication
+     *     tables.
+     * 
+     * @throws GuacamoleException 
+     *     If guacamole.properties cannot be read.
+     */
+    public URI getSQLServerUri() throws GuacamoleException {
+        return getProperty(
+            SQLServerGuacamoleProperties.SQLSERVER_URI
+        );
     }
 
     /**

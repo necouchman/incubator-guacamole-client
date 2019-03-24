@@ -22,6 +22,7 @@ package org.apache.guacamole.auth.postgresql;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
+import java.net.URI;
 import java.util.Properties;
 import org.apache.guacamole.GuacamoleException;
 import org.mybatis.guice.datasource.helper.JdbcHelper;
@@ -58,11 +59,19 @@ public class PostgreSQLAuthenticationProviderModule implements Module {
 
         // Set the PostgreSQL-specific properties for MyBatis.
         myBatisProperties.setProperty("mybatis.environment.id", "guacamole");
-        myBatisProperties.setProperty("JDBC.host", environment.getPostgreSQLHostname());
-        myBatisProperties.setProperty("JDBC.port", String.valueOf(environment.getPostgreSQLPort()));
-        myBatisProperties.setProperty("JDBC.schema", environment.getPostgreSQLDatabase());
-        myBatisProperties.setProperty("JDBC.username", environment.getPostgreSQLUsername());
-        myBatisProperties.setProperty("JDBC.password", environment.getPostgreSQLPassword());
+        
+        URI pgUri = environment.getPostgreSQLUri();
+        if (pgUri != null)
+            myBatisProperties.setProperty("JDBC.url", pgUri.toString());
+        
+        else {
+            myBatisProperties.setProperty("JDBC.host", environment.getPostgreSQLHostname());
+            myBatisProperties.setProperty("JDBC.port", String.valueOf(environment.getPostgreSQLPort()));
+            myBatisProperties.setProperty("JDBC.schema", environment.getPostgreSQLDatabase());
+            myBatisProperties.setProperty("JDBC.username", environment.getPostgreSQLUsername());
+            myBatisProperties.setProperty("JDBC.password", environment.getPostgreSQLPassword());
+        }
+        
         myBatisProperties.setProperty("JDBC.autoCommit", "false");
         myBatisProperties.setProperty("mybatis.pooled.pingEnabled", "true");
         myBatisProperties.setProperty("mybatis.pooled.pingQuery", "SELECT 1");

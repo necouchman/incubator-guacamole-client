@@ -22,6 +22,7 @@ package org.apache.guacamole.auth.postgresql;
 import org.apache.guacamole.properties.BooleanGuacamoleProperty;
 import org.apache.guacamole.properties.IntegerGuacamoleProperty;
 import org.apache.guacamole.properties.StringGuacamoleProperty;
+import org.apache.guacamole.properties.URIGuacamoleProperty;
 
 /**
  * Properties used by the PostgreSQL Authentication plugin.
@@ -32,9 +33,20 @@ public class PostgreSQLGuacamoleProperties {
      * This class should not be instantiated.
      */
     private PostgreSQLGuacamoleProperties() {}
+    
+    /**
+     * The URI of the PostgreSQL server connection.
+     */
+    public static final URIGuacamoleProperty POSTGRESQL_URI =
+            new URIGuacamoleProperty() {
+
+        @Override
+        public String getName() { return "postgresql-uri"; }
+                
+    };
 
     /**
-     * The URL of the PostgreSQL server hosting the Guacamole authentication tables.
+     * The hostname of the PostgreSQL server hosting the Guacamole authentication tables.
      */
     public static final StringGuacamoleProperty POSTGRESQL_HOSTNAME =
             new StringGuacamoleProperty() {

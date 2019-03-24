@@ -22,6 +22,7 @@ package org.apache.guacamole.auth.sqlserver;
 import org.apache.guacamole.properties.BooleanGuacamoleProperty;
 import org.apache.guacamole.properties.IntegerGuacamoleProperty;
 import org.apache.guacamole.properties.StringGuacamoleProperty;
+import org.apache.guacamole.properties.URIGuacamoleProperty;
 
 /**
  * Properties used by the SQLServer Authentication plugin.
@@ -32,9 +33,20 @@ public class SQLServerGuacamoleProperties {
      * This class should not be instantiated.
      */
     private SQLServerGuacamoleProperties() {}
+    
+    /**
+     * The URI of the SQLServer instance hosting the Guacamole authentication tables.
+     */
+    public static final URIGuacamoleProperty SQLSERVER_URI =
+            new URIGuacamoleProperty() {
+    
+        @Override
+        public String getName() { return "sqlserver-uri"; }
+                
+    };
 
     /**
-     * The URL of the SQLServer server hosting the Guacamole authentication tables.
+     * The hostname of the SQLServer server hosting the Guacamole authentication tables.
      */
     public static final StringGuacamoleProperty SQLSERVER_HOSTNAME =
             new StringGuacamoleProperty() {

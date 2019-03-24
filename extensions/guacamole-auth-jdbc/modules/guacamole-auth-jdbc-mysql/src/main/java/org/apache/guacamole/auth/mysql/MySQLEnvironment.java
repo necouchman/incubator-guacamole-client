@@ -19,6 +19,7 @@
 
 package org.apache.guacamole.auth.mysql;
 
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -162,6 +163,25 @@ public class MySQLEnvironment extends JDBCEnvironment {
     @Override
     public PasswordPolicy getPasswordPolicy() {
         return new MySQLPasswordPolicy(this);
+    }
+    
+    /**
+     * Returns the URI of the MySQL instance hosting the Guacamole authentication
+     * tables, or null if this property is not specified.  If this property is
+     * specified, the individual properties for hostname, port, database, username,
+     * and password are ignored.
+     * 
+     * @return
+     *     The URI of the MySQL instance hosting the Guacamole authentication
+     *     tables.
+     * 
+     * @throws GuacamoleException 
+     *     If guacamole.properties cannot be read.
+     */
+    public URI getMySQLUri() throws GuacamoleException {
+        return getProperty(
+            MySQLGuacamoleProperties.MYSQL_URI
+        );
     }
 
     /**

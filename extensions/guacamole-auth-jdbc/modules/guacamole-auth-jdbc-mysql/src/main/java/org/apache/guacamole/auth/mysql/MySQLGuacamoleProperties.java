@@ -22,6 +22,7 @@ package org.apache.guacamole.auth.mysql;
 import org.apache.guacamole.properties.BooleanGuacamoleProperty;
 import org.apache.guacamole.properties.IntegerGuacamoleProperty;
 import org.apache.guacamole.properties.StringGuacamoleProperty;
+import org.apache.guacamole.properties.URIGuacamoleProperty;
 
 /**
  * Properties used by the MySQL Authentication plugin.
@@ -32,6 +33,16 @@ public class MySQLGuacamoleProperties {
      * This class should not be instantiated.
      */
     private MySQLGuacamoleProperties() {}
+    
+    /**
+     * The URI of the MySQL server connection.
+     */
+    public static final URIGuacamoleProperty MYSQL_URI = new URIGuacamoleProperty() {
+    
+        @Override
+        public String getName() { return "mysql-uri"; }
+        
+    };
 
     /**
      * The hostname of the MySQL server hosting the Guacamole authentication 

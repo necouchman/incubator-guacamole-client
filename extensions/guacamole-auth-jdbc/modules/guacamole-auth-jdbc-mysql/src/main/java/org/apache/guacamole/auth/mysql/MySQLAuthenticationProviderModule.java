@@ -22,6 +22,7 @@ package org.apache.guacamole.auth.mysql;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
+import java.net.URI;
 import java.util.Properties;
 import org.apache.guacamole.GuacamoleException;
 import org.mybatis.guice.datasource.helper.JdbcHelper;
@@ -58,11 +59,20 @@ public class MySQLAuthenticationProviderModule implements Module {
 
         // Set the MySQL-specific properties for MyBatis.
         myBatisProperties.setProperty("mybatis.environment.id", "guacamole");
-        myBatisProperties.setProperty("JDBC.host", environment.getMySQLHostname());
-        myBatisProperties.setProperty("JDBC.port", String.valueOf(environment.getMySQLPort()));
-        myBatisProperties.setProperty("JDBC.schema", environment.getMySQLDatabase());
-        myBatisProperties.setProperty("JDBC.username", environment.getMySQLUsername());
-        myBatisProperties.setProperty("JDBC.password", environment.getMySQLPassword());
+        
+        // Check for URI
+        URI mySQLUri = environment.getMySQLUri();
+        if (mySQLUri != null)
+            myBatisProperties.setProperty("JDBC.url", mySQLUri.toString());
+        
+        else {
+            myBatisProperties.setProperty("JDBC.host", environment.getMySQLHostname());
+            myBatisProperties.setProperty("JDBC.port", String.valueOf(environment.getMySQLPort()));
+            myBatisProperties.setProperty("JDBC.schema", environment.getMySQLDatabase());
+            myBatisProperties.setProperty("JDBC.username", environment.getMySQLUsername());
+            myBatisProperties.setProperty("JDBC.password", environment.getMySQLPassword());
+        }
+        
         myBatisProperties.setProperty("JDBC.autoCommit", "false");
         myBatisProperties.setProperty("mybatis.pooled.pingEnabled", "true");
         myBatisProperties.setProperty("mybatis.pooled.pingQuery", "SELECT 1");
