@@ -32,6 +32,15 @@ angular.module('form').controller('passwordFieldController', ['$scope',
      * @default 'password'
      */
     $scope.passwordInputType = 'password';
+    
+    /**
+     * Whether or not this field should have focus in the browser.  If not
+     * specified, this will be false.
+     * 
+     * @type Boolean
+     * @default false
+     */
+    $scope.isFocused = false;
 
     /**
      * Returns a string which describes the action the next call to

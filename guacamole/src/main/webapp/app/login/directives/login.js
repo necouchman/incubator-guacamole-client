@@ -143,6 +143,10 @@ angular.module('login').directive('guacLogin', [function guacLogin() {
                 if (!$scope.enteredValues[field.name])
                     $scope.enteredValues[field.name] = '';
             });
+            
+            // Focus the first field
+            if (fields[0].name !== null && fields[0].isFocused === false)
+                fields[0].isFocused = true;
 
         });
 

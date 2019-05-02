@@ -32,6 +32,15 @@ angular.module('form').controller('textFieldController', ['$scope', '$injector',
      * @type String
      */
     $scope.dataListId = null;
+    
+    /**
+     * Whether or not the field should be given focus.  If no value is given,
+     * this will be false.
+     * 
+     * @type Boolean
+     * @default false
+     */
+    $scope.isFocused = false;
 
     // Generate unique ID for datalist, if applicable
     if ($scope.field.options && $scope.field.options.length)
