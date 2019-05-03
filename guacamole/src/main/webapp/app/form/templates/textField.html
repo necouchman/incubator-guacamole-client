@@ -6,7 +6,7 @@
            autocomplete="username"
            ng-disabled="disabled"
            ng-attr-list="{{ dataListId }}"
-           focus="{{ isFocused }}"/>
+           ng-focus="isFocused"/>
     <datalist ng-if="dataListId" id="{{ dataListId }}">
         <option ng-repeat="option in field.options | orderBy: option"
                 value="{{ option }}">{{ getFieldOption(option) | translate }}</option>
