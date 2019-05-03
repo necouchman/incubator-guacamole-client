@@ -138,7 +138,7 @@ angular.module('login').directive('guacLogin', [function guacLogin() {
                 return !(field.name in $scope.values);
             });
 
-            // Set default values for all unset fields
+            // Set default values for all unset fields and set auto-complete
             angular.forEach($scope.remainingFields, function setDefault(field) {
                 if (!$scope.enteredValues[field.name])
                     $scope.enteredValues[field.name] = '';
