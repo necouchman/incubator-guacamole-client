@@ -66,6 +66,7 @@ angular.module('login').directive('guacLogin', [function guacLogin() {
         var Field = $injector.get('Field');
 
         // Required services
+        var $log                  = $injector.get('$log');
         var $rootScope            = $injector.get('$rootScope');
         var $route                = $injector.get('$route');
         var authenticationService = $injector.get('authenticationService');
@@ -138,15 +139,18 @@ angular.module('login').directive('guacLogin', [function guacLogin() {
                 return !(field.name in $scope.values);
             });
 
-            // Set default values for all unset fields and set auto-complete
+            // Set default values for all unset fields
             angular.forEach($scope.remainingFields, function setDefault(field) {
                 if (!$scope.enteredValues[field.name])
                     $scope.enteredValues[field.name] = '';
             });
             
             // Focus the first field
-            if (fields[0].name !== null && fields[0].isFocused === false)
-                fields[0].isFocused = true;
+            if ($scope.remainingFields[0].name !== null) {
+                $log.debug('>>>FOCUS<<< Bring focus to field ' + $scope.remainingFields[0].name);
+                $log.debug($scope.remainingFields[0]);
+                $scope.remainingFields[0].isFocused = true;
+            }
 
         });
 
