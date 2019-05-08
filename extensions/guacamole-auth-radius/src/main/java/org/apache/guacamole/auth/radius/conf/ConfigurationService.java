@@ -327,5 +327,24 @@ public class ConfigurationService {
         return authProtocol;
         
     }
+    
+    /**
+     * Return the attribute that should be used to look for a vendor-specific
+     * RADIUS attribute that contains a list of groups of which the user
+     * is a member.  The default is null.
+     * 
+     * @return
+     *     The attribute that should be used to look for a vendor-specific
+     *     RADIUS attribute that contains a list of groups of which the
+     *     user is a member, or null if it is not specified.
+     * 
+     * @throws GuacamoleException 
+     *     If guacamole.properties cannot be parsed.
+     */
+    public String getRadiusGroupAttribute() throws GuacamoleException {
+        return environment.getProperty(
+            RadiusGuacamoleProperties.RADIUS_GROUP_ATTRIBUTE
+        );
+    }
 
 }

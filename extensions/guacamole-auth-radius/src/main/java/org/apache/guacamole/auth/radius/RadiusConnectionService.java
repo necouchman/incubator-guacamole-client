@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
+import org.apache.guacamole.auth.radius.conf.ConfigurationService;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleServerException;
 import org.apache.guacamole.auth.radius.conf.ConfigurationService;

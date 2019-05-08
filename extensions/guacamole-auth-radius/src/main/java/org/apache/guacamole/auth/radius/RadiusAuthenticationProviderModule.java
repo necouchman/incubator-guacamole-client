@@ -23,6 +23,7 @@ import com.google.inject.AbstractModule;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+import org.apache.guacamole.auth.radius.conf.ConfigurationService;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.auth.radius.conf.ConfigurationService;
 import org.apache.guacamole.auth.radius.conf.RadiusAuthenticationProtocol;

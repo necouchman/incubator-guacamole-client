@@ -24,11 +24,13 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.guacamole.auth.radius.conf.ConfigurationService;
 import org.apache.guacamole.auth.radius.user.AuthenticatedUser;
 import org.apache.guacamole.auth.radius.form.GuacamoleRadiusChallenge;
 import org.apache.guacamole.auth.radius.form.RadiusStateField;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.form.Field;
+import org.apache.guacamole.form.PasswordField;
 import org.apache.guacamole.net.auth.Credentials;
 import org.apache.guacamole.net.auth.credentials.CredentialsInfo;
 import org.apache.guacamole.net.auth.credentials.GuacamoleInvalidCredentialsException;
@@ -37,12 +39,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.jradius.dictionary.Attr_State;
 import net.jradius.dictionary.Attr_ReplyMessage;
+import net.jradius.dictionary.Attr_VendorSpecific;
+import net.jradius.exception.UnknownAttributeException;
 import net.jradius.packet.RadiusPacket;
 import net.jradius.packet.AccessAccept;
 import net.jradius.packet.AccessChallenge;
 import net.jradius.packet.AccessReject;
 import net.jradius.packet.attribute.RadiusAttribute;
-import org.apache.guacamole.form.PasswordField;
+import net.jradius.packet.attribute.VSAttribute;
+import net.jradius.packet.attribute.value.AttributeValue;
 
 /**
  * Service providing convenience functions for the RADIUS AuthenticationProvider
@@ -61,6 +66,12 @@ public class AuthenticationProviderService {
      */
     private static final String CHALLENGE_RESPONSE_PARAM = "radiusChallenge";
 
+    /**
+     * The configuration service for this authentication provider.
+     */
+    @Inject
+    private ConfigurationService confService;
+    
     /**
      * Service for creating and managing connections to RADIUS servers.
      */
@@ -213,6 +224,19 @@ public class AuthenticationProviderService {
         else if (radPack instanceof AccessAccept) {
             AuthenticatedUser authenticatedUser = authenticatedUserProvider.get();
             authenticatedUser.init(credentials);
+            
+            VSAttribute vendorAttrs[] = (VSAttribute[])(radPack.findAttributes(Attr_VendorSpecific.TYPE));
+            if (vendorAttrs != null) {
+                for (VSAttribute attr : vendorAttrs) {
+                    logger.debug(">>>RADIUS<<< Vendor Attr: {}", attr.getAttributeName());
+                    logger.debug(">>>RADIUS<<< Vendor ID: {}", Long.toString(attr.getVendorId()));
+                    logger.debug(">>>RADIUS<<< VSA Type: {}", Long.toString(attr.getVsaAttributeType()));
+                    logger.debug(">>>RADIUS<<< VSA Value: {}", attr.getValue().toString());
+                }
+            }
+            else
+                logger.debug(">>>RADIUS<<< No vendor-specific attributes received.");
+            
             return authenticatedUser;
         }
 

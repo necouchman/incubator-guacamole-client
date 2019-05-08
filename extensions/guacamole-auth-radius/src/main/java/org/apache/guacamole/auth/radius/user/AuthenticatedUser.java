@@ -20,6 +20,11 @@
 package org.apache.guacamole.auth.radius.user;
 
 import com.google.inject.Inject;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
 import org.apache.guacamole.net.auth.AbstractAuthenticatedUser;
 import org.apache.guacamole.net.auth.AuthenticationProvider;
 import org.apache.guacamole.net.auth.Credentials;
@@ -41,6 +46,11 @@ public class AuthenticatedUser extends AbstractAuthenticatedUser {
      * The credentials provided when this user was authenticated.
      */
     private Credentials credentials;
+    
+    /**
+     * The user groups the user is a member of.
+     */
+    private Set<String> userGroups;
 
     /**
      * Initializes this AuthenticatedUser using the given credentials.
@@ -51,6 +61,7 @@ public class AuthenticatedUser extends AbstractAuthenticatedUser {
     public void init(Credentials credentials) {
         this.credentials = credentials;
         setIdentifier(credentials.getUsername().toLowerCase());
+        userGroups = Collections.emptySet();
     }
 
     @Override
@@ -61,6 +72,31 @@ public class AuthenticatedUser extends AbstractAuthenticatedUser {
     @Override
     public Credentials getCredentials() {
         return credentials;
+    }
+    
+    @Override
+    public Set<String> getEffectiveUserGroups() {
+        return userGroups;
+    }
+    
+    /**
+     * Using the given string value, parse the string for a comma-separate
+     * list of user groups of which the user is a member and set the value
+     * with the result.
+     * 
+     * @param groupsValue 
+     *     A comma-separate list of groups of which the user is a member
+     */
+    public void setUserGroups(String groupsValue) {
+        
+        if (groupsValue == null || groupsValue.isEmpty())
+            return;
+        
+        Pattern DELIMITER_PATTERN = Pattern.compile(",\\s*");
+        
+        // Split string into a list of individual values
+        userGroups = new HashSet<>(Arrays.asList(DELIMITER_PATTERN.split(groupsValue)));
+        
     }
 
 }
