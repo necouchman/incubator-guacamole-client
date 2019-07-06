@@ -1,0 +1,14 @@
+{
+    "guacamoleVersion" : "1.1.0",
+    
+    "name"      : "AWS VDI Provider",
+    "namespace" : "aws-vdi",
+    
+    "authProviders" : [
+        "org.apache.guacamole.auth.vdi.aws.AWSVDIProvider"
+    ],
+    
+    "translations" : [
+        "en.json"
+    ]
+}
