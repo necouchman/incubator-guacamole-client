@@ -1,0 +1,28 @@
+{
+
+    "guacamoleVersion" : "1.1.0",
+
+    "name"      : "SAML Authentication Extension",
+    "namespace" : "saml",
+
+    "authProviders" : [
+        "org.apache.guacamole.auth.saml.SamlAuthenticationProvider"
+    ],
+
+    "translations" : [
+        "translations/en.json"
+    ],
+
+    "js" : [
+        "saml.min.js"
+    ],
+
+    "css" : [
+        "saml.min.css"
+    ],
+
+    "resources" : {
+        "templates/samlRedirectField.html" : "text/html"
+    }
+
+}
