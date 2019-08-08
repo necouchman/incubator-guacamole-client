@@ -200,7 +200,8 @@ div.section {
 
 .connection .icon.kubernetes,
 .connection .icon.ssh,
-.connection .icon.telnet {
+.connection .icon.telnet,
+.connection .icon.tn5250 {
     background-image: url('images/protocol-icons/guac-text.png');
 }
 
