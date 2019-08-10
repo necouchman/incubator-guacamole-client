@@ -584,9 +584,9 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
         };
         
         // Handle any received prompts
-        client.onrequired = function onrequired(const parameters) {
+        client.onrequired = function onrequired(parameters) {
             
-            var requiredParams = parameters;
+            const requiredParams = parameters;
             
             $log.debug('Received following prompts: ' + JSON.stringify(parameters));
             
