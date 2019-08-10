@@ -37,6 +37,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
 
     // Required services
     var $document               = $injector.get('$document');
+    var $log                    = $injector.get('$log');
     var $q                      = $injector.get('$q');
     var $rootScope              = $injector.get('$rootScope');
     var $window                 = $injector.get('$window');
@@ -51,7 +52,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
     var guacAudio               = $injector.get('guacAudio');
     var guacHistory             = $injector.get('guacHistory');
     var guacImage               = $injector.get('guacImage');
-    var guacPrompt             = $injector.get('guacPrompt');
+    var guacPrompt              = $injector.get('guacPrompt');
     var guacVideo               = $injector.get('guacVideo');
 
     /**
@@ -583,7 +584,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
         };
         
         // Handle any received prompts
-        client.onrequired = function onrequired(parameter) {
+        client.onrequired = function onrequired(parameters) {
             
             var dataSource = clientIdentifier.dataSource;
             var identifier = clientIdentifier.id;
@@ -591,29 +592,38 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
             
             getProtocolInfo.then(function gotProtocolInfo(protocolInfo) {
                 
-                var promptField = {
-                    'name' : parameter,
-                    'type' : 'TEXT'
-                };
+                var fields = [];
                 
-                findField:
-                for (i = 0; i < protocolInfo.connectionForms.length; i++) {
-                    var currentForm = protocolInfo.connectionForms[i];
-                    for (j = 0; j < currentForm.fields.length; j++) {
-                        var currentField = currentForm.fields[j];
-                        if (currentField.name === parameter) {
-                            promptField = currentField;
-                            break findField;
+                for (i = 0; i < parameters.length; i++) {
+                
+                    var promptField = {
+                        'name' : parameter,
+                        'type' : 'TEXT'
+                    };
+
+                    findField:
+                    for (j = 0; j < protocolInfo.connectionForms.length; j++) {
+                        var currentForm = protocolInfo.connectionForms[j];
+                        for (k = 0; k < currentForm.fields.length; k++) {
+                            var currentField = currentForm.fields[k];
+                            if (currentField.name === parameters[i]) {
+                                promptField = currentField;
+                                break findField;
+                            }
                         }
                     }
+                    fields.push(promptField);
                 }
                 
-                guacPrompt.getUserInput(promptField, protocolInfo.name)
+                guacPrompt.getUserInput(fields, protocolInfo.name)
                         .then(function gotUserInput(data) {
-                                var stream = client.createArgumentValueStream("text/plain", parameter);
+                                $log.debug('Received data ' + JSON.stringify(data));
+                        /*
+                                var stream = client.createArgumentValueStream("text/plain", parameters);
                                 var writer = new Guacamole.StringWriter(stream);
-                                writer.sendText(data[parameter]);
+                                writer.sendText(data);
                                 writer.sendEnd();
+                        */
 
                 }, function errorUserInput() {
                     client.disconnect();

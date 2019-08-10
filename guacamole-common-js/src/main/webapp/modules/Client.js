@@ -720,7 +720,7 @@ Guacamole.Client = function(tunnel) {
      * from the client in order to continue the connection.
      * 
      * @event
-     * @param {String} parameter The name of a connection parameter that needs
+     * @param {String} parameters The names of connection parameters that need
      *      to be provided by the client to guacd before the connection can
      *      proceed.
      */
@@ -1351,7 +1351,7 @@ Guacamole.Client = function(tunnel) {
         },
                 
         "required": function required(parameters) {
-            if (guac_client.onrequired) guac_client.onrequired(parameters[0]);
+            if (guac_client.onrequired) guac_client.onrequired(parameters);
         },
         
         "reset": function(parameters) {
