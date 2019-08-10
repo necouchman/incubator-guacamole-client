@@ -75,7 +75,7 @@ angular.module('prompt').factory('guacPrompt', ['$injector',
             storedPrompt(prompt);
     };
     
-    service.getUserInput = function getUserInput(promptField, protocol) {
+    service.getUserInput = function getUserInput(promptFields, protocol) {
         
         var deferred = $q.defer();
         var responses = {};
@@ -90,9 +90,7 @@ angular.module('prompt').factory('guacPrompt', ['$injector',
                     'key': 'Please provide the following required information.'
                 },
                 'protocol': protocol,
-                'parameters': [
-                    promptField
-                ],
+                'parameters': promptFields,
                 'actions': [
                     {
                         'name': 'Connect',

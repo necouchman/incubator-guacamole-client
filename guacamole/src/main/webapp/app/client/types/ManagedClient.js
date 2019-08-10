@@ -586,6 +586,8 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
         // Handle any received prompts
         client.onrequired = function onrequired(parameters) {
             
+            $log.debug('Received following prompts: ' + JSON.stringify(parameters));
+            
             var dataSource = clientIdentifier.dataSource;
             var identifier = clientIdentifier.id;
             var getProtocolInfo = schemaService.getProtocol(dataSource, identifier);
