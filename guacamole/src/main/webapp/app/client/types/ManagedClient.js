@@ -617,6 +617,8 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
                     fields.push(promptField);
                 }
                 
+                $log.debug('Sending the following fields for input: ' + JSON.stringify(fields));
+                
                 guacPrompt.getUserInput(fields, protocolInfo.name)
                         .then(function gotUserInput(data) {
                                 $log.debug('Received data ' + JSON.stringify(data));
