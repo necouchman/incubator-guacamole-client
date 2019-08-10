@@ -588,8 +588,6 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
             
             Object.freeze(parameters);
             
-            let requiredParams = parameters;
-            
             $log.debug('Received following prompts: ' + JSON.stringify(parameters));
             
             var dataSource = clientIdentifier.dataSource;
@@ -598,12 +596,8 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
             
             getProtocolInfo.then(function gotProtocolInfo(protocolInfo) {
                 
-                $log.debug('Parameters: ' + parameters);
-                $log.debug('requiredParams: ' + requiredParams);
-                
                 var fields = [];
                 
-                $log.debug('Looping through ' + parameters.length + ' fields...');
                 for (i = 0; i < parameters.length; i++) {
                 
                     $log.debug('Iteration ' + i);
@@ -618,13 +612,11 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
                         for (k = 0; k < currentForm.fields.length; k++) {
                             var currentField = currentForm.fields[k];
                             if (currentField.name === parameters[i]) {
-                                $log.debug('Adding field ' + JSON.stringify(currentField));
-                                fields.push(currentField);
+                                promptField = currentField;
                                 break findField;
                             }
                         }
                     }
-                    $log.debug('Adding default field ' + JSON.stringify(promptField));
                     fields.push(promptField);
                 }
                 
