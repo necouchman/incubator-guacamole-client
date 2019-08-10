@@ -596,10 +596,12 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
                 
                 var fields = [];
                 
+                $log.debug('Looping through fields...');
                 for (i = 0; i < parameters.length; i++) {
                 
+                    $log.debug('Iteration ' + i);
                     var promptField = {
-                        'name' : parameter,
+                        'name' : parameters[i],
                         'type' : 'TEXT'
                     };
 
