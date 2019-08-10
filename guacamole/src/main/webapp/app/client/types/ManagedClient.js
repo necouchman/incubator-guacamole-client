@@ -609,11 +609,13 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
                         for (k = 0; k < currentForm.fields.length; k++) {
                             var currentField = currentForm.fields[k];
                             if (currentField.name === parameters[i]) {
-                                promptField = currentField;
+                                $log.debug('Adding field ' + JSON.stringify(currentField));
+                                fields.push(currentField);
                                 break findField;
                             }
                         }
                     }
+                    $log.debug('Adding default field ' + JSON.stringify(promptField));
                     fields.push(promptField);
                 }
                 
