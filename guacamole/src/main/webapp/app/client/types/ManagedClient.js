@@ -625,12 +625,13 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
                 guacPrompt.getUserInput(fields, protocolInfo.name)
                         .then(function gotUserInput(data) {
                                 $log.debug('Received data ' + JSON.stringify(data));
-                        /*
-                                var stream = client.createArgumentValueStream("text/plain", parameters);
-                                var writer = new Guacamole.StringWriter(stream);
-                                writer.sendText(data);
-                                writer.sendEnd();
-                        */
+                                for (var parameter in data) {
+                                    $log.debug('Processing parameter ' + parameter);
+                                    var stream = client.createArgumentValueStream("text/plain", parameter);
+                                    var writer = new Guacamole.StringWriter(stream);
+                                    writer.sendText(data[parameter]);
+                                    writer.sendEnd();
+                                }
 
                 }, function errorUserInput() {
                     client.disconnect();
