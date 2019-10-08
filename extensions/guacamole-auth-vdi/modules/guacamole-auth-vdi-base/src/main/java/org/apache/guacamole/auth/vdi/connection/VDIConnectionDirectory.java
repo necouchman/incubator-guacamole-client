@@ -25,8 +25,8 @@ import org.apache.guacamole.net.auth.DecoratingDirectory;
 import org.apache.guacamole.net.auth.Directory;
 
 /**
- *
- * @author nick_couchman
+ * A Directory that decorates another directory for the purposes of hosting
+ * VDI workloads in Guacamole.
  */
 public class VDIConnectionDirectory extends DecoratingDirectory<Connection> {
     

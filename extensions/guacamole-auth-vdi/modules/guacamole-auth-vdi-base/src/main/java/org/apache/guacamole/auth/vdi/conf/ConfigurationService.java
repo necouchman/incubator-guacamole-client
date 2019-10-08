@@ -20,8 +20,8 @@
 package org.apache.guacamole.auth.vdi.conf;
 
 /**
- *
- * @author nick_couchman
+ * Provides standard interface methods for each of the Hypervisor modules to
+ * pull configuration information.
  */
 public interface ConfigurationService {
     

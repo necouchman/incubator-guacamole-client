@@ -28,8 +28,8 @@ import org.apache.guacamole.net.auth.TokenInjectingConnection;
 import org.apache.guacamole.protocol.GuacamoleClientInformation;
 
 /**
- *
- * @author nick_couchman
+ * A Connection that extends the TokenInjectingConnection and provides methods
+ * relevant to using Guacamole Connections to host VDI workloads.
  */
 public class VDIConnection extends TokenInjectingConnection {
     

@@ -32,8 +32,8 @@ import org.apache.guacamole.auth.vdi.connection.VDIConnectionDirectory;
 import org.apache.guacamole.auth.vdi.connectiongroup.VDIConnectionGroupDirectory;
 
 /**
- *
- * @author nick_couchman
+ * A UserContext that delegates functionality to a base object, for the purposes
+ * of hosting VDI workloads.
  */
 public class VDIUserContext extends DelegatingUserContext {
     

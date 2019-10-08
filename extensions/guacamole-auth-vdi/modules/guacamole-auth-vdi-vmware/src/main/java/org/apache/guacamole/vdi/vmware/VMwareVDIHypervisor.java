@@ -24,8 +24,9 @@ import java.util.Map;
 import org.apache.guacamole.vdi.VDIHypervisor;
 
 /**
- *
- * @author nick_couchman
+ * An implementation of the VDIHypervisor interface specific to the VMware
+ * hypervisor, which contains methods for managing the hypervisor that enable
+ * its use as a VDI target.
  */
 public class VMwareVDIHypervisor implements VDIHypervisor {
 

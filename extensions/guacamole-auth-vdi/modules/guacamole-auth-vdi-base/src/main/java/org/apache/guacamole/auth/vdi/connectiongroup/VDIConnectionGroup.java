@@ -38,8 +38,8 @@ import org.apache.guacamole.net.auth.TokenInjectingConnectionGroup;
 import org.apache.guacamole.protocol.GuacamoleClientInformation;
 
 /**
- *
- * @author nick_couchman
+ * A ConnectionGroup that decorates base connection groups, and contains
+ * attributes requires to host VDI workloads in Guacamole.
  */
 public class VDIConnectionGroup extends TokenInjectingConnectionGroup {
     

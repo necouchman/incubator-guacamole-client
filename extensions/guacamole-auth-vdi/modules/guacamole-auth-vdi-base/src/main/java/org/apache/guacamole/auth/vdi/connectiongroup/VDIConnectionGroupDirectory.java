@@ -24,8 +24,8 @@ import org.apache.guacamole.net.auth.DecoratingDirectory;
 import org.apache.guacamole.net.auth.Directory;
 
 /**
- *
- * @author nick_couchman
+ * A directory of ConnectionGroups that contains groups that decorate base
+ * ConnectionGroup objects from another directory, hosting VDI workloads.
  */
 public class VDIConnectionGroupDirectory extends DecoratingDirectory<ConnectionGroup> {
     

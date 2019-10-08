@@ -20,8 +20,7 @@
 package org.apache.guacamole.auth.vdi.user;
 
 /**
- *
- * @author nick_couchman
+ * 
  */
 public class VDIUser {
     
