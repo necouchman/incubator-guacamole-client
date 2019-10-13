@@ -13,19 +13,12 @@
            translate-values="{{prompt.text.variables}}"></p>
         
         <!-- Parameters -->
-        <div ng-repeat="parameter in prompt.parameters" class="prompt parameters">
+        <div class="prompt connection-parameters">
             <guac-form
-                namespace="getNamespace(prompt.protocol)"
+                namespace="getProtocolNamespace(prompt.protocol)"
                 content="prompt.forms"
-                model="prompt.response"
-                model-only="true" />
-                />
-            <div class="prompt fields">
-                <guac-form-field
-                    field="parameter"
-                    namespace="getNamespace(prompt.protocol)"
-                    model="prompt.responses[parameter.name]"/>
-            </div>
+                model="prompt.responses"
+                model-only="true"></guac-form>
         </div>
     </div>
 

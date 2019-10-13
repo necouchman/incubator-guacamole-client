@@ -40,6 +40,7 @@ angular.module('prompt').directive('guacPrompt', [function guacPrompt() {
         templateUrl: 'app/prompt/templates/guacPrompt.html',
         controller: ['$scope', '$injector', function guacPromptController($scope, $injector) {
 
+            var Protocol                 = $injector.get('Protocol');
             var translationStringService = $injector.get('translationStringService');
                 
             /**
@@ -58,14 +59,7 @@ angular.module('prompt').directive('guacPrompt', [function guacPrompt() {
              * @return The canonicalized name of the protocol, or null if
              *     no protocol is provided.
              */
-            $scope.getNamespace = function getNamespace(protocolName) {
-                
-                if (!protocolName)
-                    return null;
-                
-                return translationStringService.canonicalize('PROTOCOL_' + protocolName);
-                
-            };
+            $scope.getProtocolNamespace = Protocol.getNamespace;
             
             // Update responses as model changes
             $scope.$watch('responses', function setModel(model) {

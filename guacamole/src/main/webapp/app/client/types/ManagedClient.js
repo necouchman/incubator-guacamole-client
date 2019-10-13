@@ -589,6 +589,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
             Object.freeze(parameters);
             
             $log.debug('Received following prompts: ' + JSON.stringify(parameters));
+            $log.debug('Protocol is ' + client.protocol);
             
             var dataSource = clientIdentifier.dataSource;
             var identifier = clientIdentifier.id;
