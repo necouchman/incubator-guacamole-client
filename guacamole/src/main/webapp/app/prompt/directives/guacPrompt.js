@@ -33,7 +33,14 @@ angular.module('prompt').directive('guacPrompt', [function guacPrompt() {
              *
              * @type Prompt|Object 
              */
-            prompt : '='
+            prompt : '=',
+            
+            /**
+             * The client this prompt is linked to.
+             * 
+             * @type Client|Object
+             */
+            client : '<'
 
         },
 
