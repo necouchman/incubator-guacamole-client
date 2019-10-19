@@ -57,36 +57,11 @@ public class VMwareVDIMachine implements VDIMachine {
      *     If either zero or more than one virtual machine are located.
      */
     public VMwareVDIMachine(String name) throws GuacamoleException {
-        this(getVMUUID(name));
-    }
-    
-    /**
-     * Get the UUID of the virtual machine with the given name, if one is found.
-     * If either zero or more than one UUIDs are located, an exception will be
-     * thrown.
-     * 
-     * @param name
-     *     The name of the virtual machine.
-     * 
-     * @return
-     *     The UUID of the virtual machine.
-     * 
-     * @throws GuacamoleException 
-     *     If either zero or more than one virtual machine with the given name
-     *     are located.
-     */
-    private static UUID getVMUUID(String name) throws GuacamoleException {
-        
-        /* ToDo:
-         * 0 Connect to VMware Hypervisor
-         * - Search for VMs with the given name
-         * - Return exactly one (1) UUID.
-         */
-        
+        this(UUID.randomUUID());
     }
     
     @Override
-    public String getUUID() {
+    public String getIdentifier() {
         return uuid.toString();
     }
 
@@ -106,6 +81,11 @@ public class VMwareVDIMachine implements VDIMachine {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void reset() {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
+    
     @Override
     public void restartGuest() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

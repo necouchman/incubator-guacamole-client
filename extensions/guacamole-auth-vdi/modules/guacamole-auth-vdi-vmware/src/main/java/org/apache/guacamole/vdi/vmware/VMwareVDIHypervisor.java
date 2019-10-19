@@ -19,9 +19,12 @@
 
 package org.apache.guacamole.vdi.vmware;
 
+import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
 import org.apache.guacamole.vdi.VDIHypervisor;
+import org.apache.guacamole.vdi.VDIMachine;
+import org.apache.guacamole.vdi.VDITemplate;
 
 /**
  * An implementation of the VDIHypervisor interface specific to the VMware
@@ -31,17 +34,42 @@ import org.apache.guacamole.vdi.VDIHypervisor;
 public class VMwareVDIHypervisor implements VDIHypervisor {
 
     @Override
-    public List<String> getVDIMachines() {
+    public List<String> getMachines(String[] strings) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String getVDIMachine(String uuid) {
+    public VDIMachine getMachine(String string) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Map<String, String> getTemplates() {
+    public List<VDITemplate> getTemplates(String string) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String createMachine(String string, VDITemplate vdit, String string1, String string2) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String createMachine(String string, VDITemplate vdit, String string1, String string2, String string3, String string4, String string5, String string6) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String createMachine(String string, VDITemplate vdit, String string1, String string2, InetAddress ia, InetAddress ia1, InetAddress ia2, InetAddress[] ias, String string3, Boolean bln, String string4, String string5, String string6, String[] strings) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Boolean destroyMachine(String string) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<VDITemplate> getTemplates() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -56,27 +84,22 @@ public class VMwareVDIHypervisor implements VDIHypervisor {
     }
 
     @Override
-    public void createMachine() {
+    public Boolean startMachine(String string) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void startMachine(String string) {
+    public Boolean stopMachine(String string, Boolean bln) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void stopMachine(String string, Boolean bln) {
+    public Boolean restartMachine(String string, Boolean bln) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void restartMachine(String string, Boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void rebuildMachine(String string) {
+    public Boolean rebuildMachine(String string) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

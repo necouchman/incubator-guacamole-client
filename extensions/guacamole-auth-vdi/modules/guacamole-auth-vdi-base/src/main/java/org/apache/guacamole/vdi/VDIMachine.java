@@ -20,21 +20,54 @@
 package org.apache.guacamole.vdi;
 
 /**
- *
- * @author nick_couchman
+ * A representation of a machine provided by the hypervisor.
  */
 public interface VDIMachine {
     
-    public String getUUID();
+    /**
+     * Return a string representation of the identifier of the virtual machine.
+     * 
+     * @return 
+     *     The identifier of the virtual machine as a string.
+     */
+    public String getIdentifier();
     
+    /**
+     * Return the identifier of the VDI pool of which the machine is part.
+     * 
+     * @return 
+     *     The identifier of the VDI pool.
+     */
+    public String getPool();
+    
+    /**
+     * Power the virtual machine on.
+     */
     public void powerOn();
     
+    /**
+     * Power the virtual machine off.
+     */
     public void powerOff();
     
+    /**
+     * Restart the guest O/S of the virtual machine.
+     */
     public void restartGuest();
     
+    /**
+     * Reset the virtual machine.
+     */
+    public void reset();
+    
+    /**
+     * Shut down the guest O/S of the virtual machine.
+     */
     public void shutdownGuest();
     
+    /**
+     * Destroy the virtual machine.
+     */
     public void destroy();
     
 }
