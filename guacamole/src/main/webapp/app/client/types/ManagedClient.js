@@ -634,6 +634,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
                                 }
 
                 }, function errorUserInput() {
+                    $log.debug('Error on user input.');
                     client.disconnect();
                 });
             });
