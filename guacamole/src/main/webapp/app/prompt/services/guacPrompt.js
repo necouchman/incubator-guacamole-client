@@ -24,7 +24,6 @@ angular.module('prompt').factory('guacPrompt', ['$injector',
         function guacPrompt($injector) {
 
     // Required services
-    var $log                  = $injector.get('$log');
     var $q                    = $injector.get('$q');
     var $rootScope            = $injector.get('$rootScope');
     var $window               = $injector.get('$window');
@@ -78,8 +77,6 @@ angular.module('prompt').factory('guacPrompt', ['$injector',
     
     service.getUserInput = function getUserInput(responses) {
         
-        $log.debug('Received ' + JSON.stringify(responses));
-        
         var deferred = $q.defer();
         
         if (prompt === null || prompt === '')
@@ -87,10 +84,6 @@ angular.module('prompt').factory('guacPrompt', ['$injector',
         
         else {
             service.showPrompt({
-                'title': 'Missing required fields',
-                'text': {
-                    'key': 'Please provide the following required information.'
-                },
                 'actions': [
                     {
                         'name': 'Connect',

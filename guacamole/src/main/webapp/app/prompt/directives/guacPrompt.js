@@ -47,8 +47,8 @@ angular.module('prompt').directive('guacPrompt', [function guacPrompt() {
         templateUrl: 'app/prompt/templates/guacPrompt.html',
         controller: ['$scope', '$injector', function guacPromptController($scope, $injector) {
 
+            // Required services
             var Protocol                 = $injector.get('Protocol');
-            var translationStringService = $injector.get('translationStringService');
                 
             /**
              * Responses to provided prompts.

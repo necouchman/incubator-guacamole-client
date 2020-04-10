@@ -42,27 +42,13 @@ angular.module('prompt').factory('Prompt', [function definePrompt() {
          * @type String
          */
         this.className = template.className;
-
-        /**
-         * The title of the prompt.
-         *
-         * @type String
-         */
-        this.title = template.title;
-
-        /**
-         * The body text of the prompt.
-         *
-         * @type TranslatableMessage
-         */
-        this.text = template.text;
         
         /**
-         * The parameters to prompt for.
+         * The object that stores response to the prompts.
          * 
-         * @type Field[]
+         * @type Object{String, String}
          */
-        this.parameters = template.parameters;
+        this.responses = template.responses;
 
         /**
          * An array of all actions available to the user in response to this

@@ -586,13 +586,9 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
         // Handle any received prompts
         client.onrequired = function onrequired(parameters) {
             
-            $log.debug('Received following prompts: ' + JSON.stringify(parameters));
-            
             guacPrompt.getUserInput(parameters.reduce((a,b)=> (a[b]='',a),{}))
                     .then(function gotUserInput(data) {
-                        $log.debug('Received data ' + JSON.stringify(data));
                         for (var parameter in data) {
-                            $log.debug('Processing parameter ' + parameter);
                             var stream = client.createArgumentValueStream("text/plain", parameter);
                             var writer = new Guacamole.StringWriter(stream);
                             writer.sendText(data[parameter]);
@@ -600,7 +596,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
                         }
 
                 }, function errorUserInput() {
-                    $log.debug('Error on user input.');
+                    $log.error('Error gathering user input.');
                     client.disconnect();
                 });
         };
