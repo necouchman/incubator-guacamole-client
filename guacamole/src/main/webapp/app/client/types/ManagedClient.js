@@ -588,54 +588,21 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
             
             $log.debug('Received following prompts: ' + JSON.stringify(parameters));
             
-            var dataSource = clientIdentifier.dataSource;
-            var identifier = clientIdentifier.id;
-            var getProtocolInfo = schemaService.getProtocol(dataSource, identifier);
-            
-            getProtocolInfo.then(function gotProtocolInfo(protocolInfo) {
-                
-                var fields = [];
-                
-                for (i = 0; i < parameters.length; i++) {
-                
-                    $log.debug('Iteration ' + i);
-                    var promptField = {
-                        'name' : parameters[i],
-                        'type' : 'TEXT'
-                    };
-
-                    findField:
-                    for (j = 0; j < protocolInfo.connectionForms.length; j++) {
-                        var currentForm = protocolInfo.connectionForms[j];
-                        for (k = 0; k < currentForm.fields.length; k++) {
-                            var currentField = currentForm.fields[k];
-                            if (currentField.name === parameters[i]) {
-                                promptField = currentField;
-                                break findField;
-                            }
+            guacPrompt.getUserInput(parameters.reduce((a,b)=> (a[b]='',a),{}))
+                    .then(function gotUserInput(data) {
+                        $log.debug('Received data ' + JSON.stringify(data));
+                        for (var parameter in data) {
+                            $log.debug('Processing parameter ' + parameter);
+                            var stream = client.createArgumentValueStream("text/plain", parameter);
+                            var writer = new Guacamole.StringWriter(stream);
+                            writer.sendText(data[parameter]);
+                            writer.sendEnd();
                         }
-                    }
-                    fields.push(promptField);
-                }
-                
-                $log.debug('Sending the following fields for input: ' + JSON.stringify(fields));
-                
-                guacPrompt.getUserInput(fields, protocolInfo.name)
-                        .then(function gotUserInput(data) {
-                                $log.debug('Received data ' + JSON.stringify(data));
-                                for (var parameter in data) {
-                                    $log.debug('Processing parameter ' + parameter);
-                                    var stream = client.createArgumentValueStream("text/plain", parameter);
-                                    var writer = new Guacamole.StringWriter(stream);
-                                    writer.sendText(data[parameter]);
-                                    writer.sendEnd();
-                                }
 
                 }, function errorUserInput() {
                     $log.debug('Error on user input.');
                     client.disconnect();
                 });
-            });
         };
 
         // Manage the client display

@@ -15,9 +15,10 @@
         <!-- Parameters -->
         <div class="prompt connection-parameters">
             <guac-form
-                namespace="getProtocolNamespace(prompt.protocol)"
-                content="prompt.forms"
-                model="prompt.responses"></guac-form>
+                namespace="getProtocolNamespace(prompt.client.protocol)"
+                content="prompt.client.forms"
+                model="prompt.responses"
+                model-only="true"></guac-form>
         </div>
     </div>
 
