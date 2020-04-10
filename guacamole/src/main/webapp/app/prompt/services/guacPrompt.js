@@ -24,6 +24,7 @@ angular.module('prompt').factory('guacPrompt', ['$injector',
         function guacPrompt($injector) {
 
     // Required services
+    var $log                  = $injector.get('$log');
     var $q                    = $injector.get('$q');
     var $rootScope            = $injector.get('$rootScope');
     var $window               = $injector.get('$window');
@@ -76,6 +77,8 @@ angular.module('prompt').factory('guacPrompt', ['$injector',
     };
     
     service.getUserInput = function getUserInput(promptForms, protocol) {
+        
+        $log.debug('Received ' + JSON.stringify(promptForms) + ' for protocol ' + protocol);
         
         var deferred = $q.defer();
         var responses = {};

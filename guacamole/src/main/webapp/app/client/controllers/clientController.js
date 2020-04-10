@@ -33,6 +33,7 @@ angular.module('client').controller('clientController', ['$scope', '$routeParams
 
     // Required services
     var $location              = $injector.get('$location');
+    var $log                   = $injector.get('$log');
     var authenticationService  = $injector.get('authenticationService');
     var connectionGroupService = $injector.get('connectionGroupService');
     var clipboardService       = $injector.get('clipboardService');
@@ -988,9 +989,13 @@ angular.module('client').controller('clientController', ['$scope', '$routeParams
      *     or the Prompt object.
      */
     $scope.getPrompt = function getPrompt() {
-        if (!$scope.client)
+        $log.debug('Looking for available prompts.');
+        if (!$scope.client) {
+            $log.debug('Currently no client, so no prompts.');
             return false;
+        }
 
+        $log.debug('Returning available prompts.');
         return guacPrompt.getPrompt();
     };
 
