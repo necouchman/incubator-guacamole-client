@@ -47,10 +47,8 @@
     </div>
     
     <!-- Connection prompt dialog -->
-    <div id="connection-prompt" ng-show="getPrompt()" class="status-outer">
-        <div class="status-middle connection-parameters">
-            <guac-prompt prompt="getPrompt()" client="client"></guac-prompt>
-        </div>
+    <div id="connection-prompt" ng-show="getPrompt()" class="connection-parameters">
+        <guac-prompt prompt="getPrompt()" client="client"></guac-prompt>
     </div>
 
     <!-- Menu -->
