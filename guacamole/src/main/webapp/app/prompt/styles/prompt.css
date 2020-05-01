@@ -70,6 +70,13 @@
     width: 100%;
 }
 
+.prompt .connection-parameters .form .fields {
+    padding-left: 0;
+    border-left: none;
+    width: unset;
+    margin: auto;
+}
+
 .prompt .title-bar {
     font-size: 1.25em;
     font-weight: bold;
