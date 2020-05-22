@@ -1,6 +1,7 @@
 <a class="home-connection"
-   ng-href="{{ item.getClientURL() }}"
-   ng-class="{active: item.getActiveConnections()}">
+    ng-href="{{ item.getClientURL() }}"
+    ng-class="{active: item.getActiveConnections()}"
+    guac-context contextVisible="item.showContextMenu">
 
     <!-- Connection icon -->
     <div class="icon type" ng-class="item.protocol"></div>
@@ -12,5 +13,21 @@
     <span class="activeUserCount" ng-show="item.getActiveConnections()"
         translate="HOME.INFO_ACTIVE_USER_COUNT"
         translate-values="{USERS: item.getActiveConnections()}"></span>
+    
+    <!-- Context menu -->
+    <div class="context-menu" ng-show="item.showContextMenu">
+        <guac-menu menu-title="item.name">
+        
+            <!-- Context actions -->
+            <ul class="action-list">
+                <li ng-repeat="action in item.contextActions">
+                    <a ng-class="action.className" ng-click="action.callback()">
+                        {{action.name | translate}}
+                    </a>
+                </li>
+            </ul>
+            
+        </guac-menu>
+    </div>
 
 </a>

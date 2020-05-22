@@ -110,6 +110,21 @@ angular.module('groupList').factory('GroupListItem', ['$injector', function defi
          * @type Boolean
          */
         this.expanded = template.expanded;
+        
+        /**
+         * Whether or not the context menu should be shown - always hidden by
+         * default.
+         * 
+         * @type Boolean
+         */
+        this.showContextMenu = false;
+        
+        /**
+         * An array of possible context menu actions.
+         * 
+         * @type MenuAction[]
+         */
+        this.contextMenuActions = template.contextMenuActions || [];
 
         /**
          * Returns the number of currently active users for this connection,
@@ -264,6 +279,30 @@ angular.module('groupList').factory('GroupListItem', ['$injector', function defi
                 return connection.activeConnections;
 
             },
+            
+            contextMenuActions: [
+                {
+                    name: 'Test Action 1',
+                    className: 'test-actions',
+                    callback: function callback1() {
+                        console.log('Testing 1 2 3');
+                    }
+                },
+                {
+                    name: 'Test Action 2',
+                    className: 'test-actions',
+                    callback: function callback2() {
+                        console.log('Testing 3 2 1');
+                    }
+                },
+                {
+                    name: 'Test Action 3',
+                    className: 'test-actions',
+                    callback: function callback3() {
+                        alert('Pop-up!');
+                    }
+                }
+            ],
 
             // Wrapped item
             wrappedItem : connection
@@ -360,7 +399,30 @@ angular.module('groupList').factory('GroupListItem', ['$injector', function defi
 
             },
 
-
+            contextMenuActions: [
+                {
+                    name: 'Test Action 1',
+                    className: 'test-actions',
+                    callback: function callback1() {
+                        console.log('Testing 1 2 3');
+                    }
+                },
+                {
+                    name: 'Test Action 2',
+                    className: 'test-actions',
+                    callback: function callback2() {
+                        console.log('Testing 3 2 1');
+                    }
+                },
+                {
+                    name: 'Test Action 3',
+                    className: 'test-actions',
+                    callback: function callback3() {
+                        alert('Pop-up!');
+                    }
+                }
+            ],
+            
             // Wrapped item
             wrappedItem : connectionGroup
 

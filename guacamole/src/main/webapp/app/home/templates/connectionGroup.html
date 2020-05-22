@@ -1,5 +1,6 @@
 <a class="home-connection-group"
-   ng-href="{{ item.getClientURL() }}">
+    ng-href="{{ item.getClientURL() }}"
+    guac-context contextVisible="item.showContextMenu">
 
     <!-- Connection group icon -->
     <div ng-show="item.balancing" class="icon type balancer"></div>
@@ -7,4 +8,20 @@
     <!-- Connection group name -->
     <span class="name">{{item.name}}</span>
 
+    <!-- Context menu -->
+    <div class="context-menu" ng-show="item.showContextMenu">
+        <guac-menu menu-title="item.name">
+        
+            <!-- Context actions -->
+            <ul class="action-list">
+                <li ng-repeat="action in item.contextActions">
+                    <a ng-class="action.className" ng-click="action.callback()">
+                        {{action.name | translate}}
+                    </a>
+                </li>
+            </ul>
+            
+        </guac-menu>
+    </div>
+    
 </a>
