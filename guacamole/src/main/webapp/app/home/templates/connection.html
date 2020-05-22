@@ -1,7 +1,7 @@
 <a class="home-connection"
     ng-href="{{ item.getClientURL() }}"
     ng-class="{active: item.getActiveConnections()}"
-    guac-context contextVisible="item.showContextMenu">
+    guac-context context-visible="item.showContextMenu">
 
     <!-- Connection icon -->
     <div class="icon type" ng-class="item.protocol"></div>
