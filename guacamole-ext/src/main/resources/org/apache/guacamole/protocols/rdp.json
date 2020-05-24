@@ -399,8 +399,40 @@
                     "type"  : "NUMERIC"
                 }
             ]
+        },
+        {
+            "name" : "tunneling",
+            "fields" : [
+                {
+                    "name" : "ssh-tunnel-host",
+                    "type" : "TEXT"
+                },
+                {
+                    "name" : "ssh-tunnel-port",
+                    "type" : "NUMERIC"
+                },
+                {
+                    "name" : "ssh-tunnel-host-key",
+                    "type" : "MULTILINE"
+                },
+                {
+                    "name" : "ssh-tunnel-username",
+                    "type" : "TEXT"
+                },
+                {
+                    "name" : "ssh-tunnel-password",
+                    "type" : "PASSWORD"
+                },
+                {
+                    "name" : "ssh-tunnel-privatekey",
+                    "type" : "MULTILINE"
+                },
+                {
+                    "name" : "ssh-tunnel-passphrase",
+                    "type" : "PASSWORD"
+                }
+            ]
         }
-
     ],
     "sharingProfileForms" : [
 
