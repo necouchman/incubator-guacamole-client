@@ -19,4 +19,5 @@
 
 .context-menu {
     position: absolute;
+    z-index: 10;
 }
