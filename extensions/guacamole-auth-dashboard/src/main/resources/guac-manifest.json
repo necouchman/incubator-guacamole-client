@@ -1,0 +1,32 @@
+{
+
+    "guacamoleVersion" : "*",
+
+    "name"      : "Guacamole Dashboard Extension",
+    "namespace" : "dashboard",
+
+    "authProviders" : [
+        "org.apache.guacamole.dashboard.GuacamoleDashboardProvider"
+    ],
+
+    "translations" : [
+        "translations/en.json"
+    ],
+
+    "js" : [
+        "dashboard.min.js"
+    ],
+
+    "css" : [
+        "dashboard.min.css"
+    ],
+    
+    "html" : [
+        "templates/dashboard.html"
+    ],
+
+    "resources" : {
+        "templates/dashboard.html" : "text/html"
+    }
+
+}
