@@ -155,6 +155,18 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
     public List<APIConnectionRecord> getConnectionHistory()
             throws GuacamoleException {
 
+        // Pull effective permissions
+        Permissions effective = userContext.self().getEffectivePermissions();
+
+        // Retrieve permission sets
+        SystemPermissionSet systemPermissions = effective.getSystemPermissions();
+        ObjectPermissionSet connectionPermissions = effective.getConnectionPermissions();
+        
+        // Deny access if adminstrative permission is missing
+        String identifier = connection.getIdentifier();
+        if (!systemPermissions.hasPermission(SystemPermission.Type.ADMINISTER))
+            throw new GuacamoleSecurityException("Permission to read connection parameters denied.");
+        
         // Retrieve the requested connection's history
         List<APIConnectionRecord> apiRecords = new ArrayList<APIConnectionRecord>();
         for (ConnectionRecord record : connection.getHistory())
