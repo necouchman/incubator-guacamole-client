@@ -55,15 +55,20 @@ public interface ConnectionRecordMapper {
      *     The number of rows inserted.
      */
     int insert(@Param("record") ConnectionRecordModel record);
-
+    
     /**
      * Searches for up to <code>limit</code> connection records that contain
-     * the given terms, sorted by the given predicates, regardless of whether
-     * the data they are associated with is is readable by any particular user.
-     * This should only be called on behalf of a system administrator. If
-     * records are needed by a non-administrative user who must have explicit
-     * read rights, use searchReadable() instead.
+     * the given terms, optionally limiting results to a specific connection,
+     * and sorted by the given predicates, regardless of whether the data they
+     * are associated with is is readable by any particular user. This should
+     * only be called on behalf of a system administrator. If records are needed
+     * by a non-administrative user who must have explicit read rights, use
+     * searchReadable() instead.
      *
+     * @param identifier
+     *     Limit the search to the connection having the given identifier, or
+     *     NULL if connections should not be limited to a specific identifier.
+     * 
      * @param terms
      *     The search terms that must match the returned records.
      *
@@ -77,17 +82,24 @@ public interface ConnectionRecordMapper {
      * @return
      *     The results of the search performed with the given parameters.
      */
-    List<ConnectionRecordModel> search(@Param("terms") Collection<ActivityRecordSearchTerm> terms,
+    List<ConnectionRecordModel> search(@Param("identifier") String identifier,
+            @Param("terms") Collection<ActivityRecordSearchTerm> terms,
             @Param("sortPredicates") List<ActivityRecordSortPredicate> sortPredicates,
             @Param("limit") int limit);
-
+    
     /**
      * Searches for up to <code>limit</code> connection records that contain
-     * the given terms, sorted by the given predicates. Only records that are
-     * associated with data explicitly readable by the given user will be
-     * returned. If records are needed by a system administrator (who, by
-     * definition, does not need explicit read rights), use search() instead.
+     * the given terms, optionally limited to the specified connection, and
+     * sorted by the given predicates. Only records that are associated with
+     * data explicitly readable by the given user will be returned. If records
+     * are needed by a system administrator (who, by definition, does not need
+     * explicit read rights), use search() instead.
      *
+     * @param identifier
+     *     Limit search results to the connection with the given identifier, or
+     *     NULL if results should not be limited to a specific connection
+     *     identifier.
+     * 
      * @param user
      *    The user whose permissions should determine whether a record is
      *    returned.
@@ -111,7 +123,8 @@ public interface ConnectionRecordMapper {
      * @return
      *     The results of the search performed with the given parameters.
      */
-    List<ConnectionRecordModel> searchReadable(@Param("user") UserModel user,
+    List<ConnectionRecordModel> searchReadable(@Param("identifier") String identifier,
+            @Param("user") UserModel user,
             @Param("terms") Collection<ActivityRecordSearchTerm> terms,
             @Param("sortPredicates") List<ActivityRecordSortPredicate> sortPredicates,
             @Param("limit") int limit,

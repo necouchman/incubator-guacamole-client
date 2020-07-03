@@ -104,26 +104,34 @@
             [guacamole_user_history].end_date
         FROM [guacamole_user_history]
 
-        <!-- Search terms -->
-        <foreach collection="terms" item="term"
-                 open="WHERE " separator=" AND ">
-            (
+        <where>
+        
+            <if test="identifier != null">
+                [guacamole_user_history].userid = #{identifier,jdbcType=INTEGER}
+            </if>
+            
+            <!-- Search terms -->
+            <foreach collection="terms" item="term"
+                     separator=" AND ">
+                (
 
-                [guacamole_user_history].user_id IN (
-                    SELECT user_id
-                    FROM [guacamole_user]
-                    JOIN [guacamole_entity] ON [guacamole_user].entity_id = [guacamole_entity].entity_id
-                    WHERE
-                            CHARINDEX(#{term.term,jdbcType=VARCHAR}, [guacamole_entity].name) > 0
-                        AND [guacamole_entity].type = 'USER'),
+                    [guacamole_user_history].user_id IN (
+                        SELECT user_id
+                        FROM [guacamole_user]
+                        JOIN [guacamole_entity] ON [guacamole_user].entity_id = [guacamole_entity].entity_id
+                        WHERE
+                                CHARINDEX(#{term.term,jdbcType=VARCHAR}, [guacamole_entity].name) > 0
+                            AND [guacamole_entity].type = 'USER'),
+                    )
+
+                    <if test="term.startDate != null and term.endDate != null">
+                        OR start_date BETWEEN #{term.startDate,jdbcType=TIMESTAMP} AND #{term.endDate,jdbcType=TIMESTAMP}
+                    </if>
+
                 )
-
-                <if test="term.startDate != null and term.endDate != null">
-                    OR start_date BETWEEN #{term.startDate,jdbcType=TIMESTAMP} AND #{term.endDate,jdbcType=TIMESTAMP}
-                </if>
-
-            )
-        </foreach>
+            </foreach>
+        
+        </where>
 
         <!-- Bind sort property enum values for sake of readability -->
         <bind name="START_DATE" value="@org.apache.guacamole.net.auth.ActivityRecordSet$SortableProperty@START_DATE"/>
@@ -161,26 +169,34 @@
             </include>
             AND [guacamole_user_permission].permission = 'READ'
 
-        <!-- Search terms -->
-        <foreach collection="terms" item="term"
-                 open="WHERE " separator=" AND ">
-            (
+        <where>
+            
+            <if test="identifier != null">
+                [guacamole_user_history].user_id = #{identifier,jdbcType=INTEGER}
+            </if>
+            
+            <!-- Search terms -->
+            <foreach collection="terms" item="term"
+                     separator=" AND ">
+                (
 
-                [guacamole_user_history].user_id IN (
-                    SELECT user_id
-                    FROM [guacamole_user]
-                    JOIN [guacamole_entity] ON [guacamole_user].entity_id = [guacamole_entity].entity_id
-                    WHERE
-                            CHARINDEX(#{term.term,jdbcType=VARCHAR}, [guacamole_entity].name) > 0
-                        AND [guacamole_entity].type = 'USER'
+                    [guacamole_user_history].user_id IN (
+                        SELECT user_id
+                        FROM [guacamole_user]
+                        JOIN [guacamole_entity] ON [guacamole_user].entity_id = [guacamole_entity].entity_id
+                        WHERE
+                                CHARINDEX(#{term.term,jdbcType=VARCHAR}, [guacamole_entity].name) > 0
+                            AND [guacamole_entity].type = 'USER'
+                    )
+
+                    <if test="term.startDate != null and term.endDate != null">
+                        OR start_date BETWEEN #{term.startDate,jdbcType=TIMESTAMP} AND #{term.endDate,jdbcType=TIMESTAMP}
+                    </if>
+
                 )
-
-                <if test="term.startDate != null and term.endDate != null">
-                    OR start_date BETWEEN #{term.startDate,jdbcType=TIMESTAMP} AND #{term.endDate,jdbcType=TIMESTAMP}
-                </if>
-
-            )
-        </foreach>
+            </foreach>
+        
+        </where>
 
         <!-- Bind sort property enum values for sake of readability -->
         <bind name="START_DATE" value="@org.apache.guacamole.net.auth.ActivityRecordSet$SortableProperty@START_DATE"/>
