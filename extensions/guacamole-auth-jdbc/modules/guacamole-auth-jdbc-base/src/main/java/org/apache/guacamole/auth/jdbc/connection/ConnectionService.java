@@ -441,7 +441,7 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
      * Retrieves up to <code>limit</code> connection history records matching
      * the given terms and sorted by the given predicates. Only history records
      * associated with data that the given user can read are returned.
-     *
+     * 
      * @param user
      *     The user retrieving the connection history.
      *
@@ -463,7 +463,50 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
      * @throws GuacamoleException
      *     If permission to read the connection history is denied.
      */
-    public List<ConnectionRecord> retrieveHistory(ModeledAuthenticatedUser user,
+    public List<ConnectionRecord> retrieveHistory(
+            ModeledAuthenticatedUser user,
+            Collection<ActivityRecordSearchTerm> requiredContents,
+            List<ActivityRecordSortPredicate> sortPredicates, int limit)
+            throws GuacamoleException {
+        
+        return retrieveHistory(null, user, requiredContents, sortPredicates, limit);
+        
+    }
+    
+    /**
+     * Retrieves the connection history records matching the given criteria.
+     * Retrieves up to <code>limit</code> connection history records matching
+     * the given terms and sorted by the given predicates. Only history records
+     * associated with data that the given user can read are returned.
+     *
+     * @param identifier
+     *     The identifier of the connection for which records should be
+     *     retrieved, or null if records for all connections visible to the
+     *     given user should be retrieved.
+     * 
+     * @param user
+     *     The user retrieving the connection history.
+     *
+     * @param requiredContents
+     *     The search terms that must be contained somewhere within each of the
+     *     returned records.
+     *
+     * @param sortPredicates
+     *     A list of predicates to sort the returned records by, in order of
+     *     priority.
+     *
+     * @param limit
+     *     The maximum number of records that should be returned.
+     *
+     * @return
+     *     The connection history of the given connection, including any
+     *     active connections.
+     *
+     * @throws GuacamoleException
+     *     If permission to read the connection history is denied.
+     */
+    public List<ConnectionRecord> retrieveHistory(String identifier,
+            ModeledAuthenticatedUser user,
             Collection<ActivityRecordSearchTerm> requiredContents,
             List<ActivityRecordSortPredicate> sortPredicates, int limit)
             throws GuacamoleException {
@@ -472,12 +515,12 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
 
         // Bypass permission checks if the user is privileged
         if (user.isPrivileged())
-            searchResults = connectionRecordMapper.search(null,
+            searchResults = connectionRecordMapper.search(identifier,
                     requiredContents, sortPredicates, limit);
 
         // Otherwise only return explicitly readable history records
         else
-            searchResults = connectionRecordMapper.searchReadable(null,
+            searchResults = connectionRecordMapper.searchReadable(identifier,
                     user.getUser().getModel(), requiredContents, sortPredicates,
                     limit, user.getEffectiveUserGroups());
 

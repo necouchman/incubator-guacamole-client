@@ -55,5 +55,17 @@ public class UserRecordSet extends ModeledActivityRecordSet<ActivityRecord> {
                 requiredContents, sortPredicates, limit);
 
     }
+    
+    @Override
+    protected Collection<ActivityRecord> retrieveHistory(String identifier,
+            AuthenticatedUser user, Set<ActivityRecordSearchTerm> requiredContents,
+            List<ActivityRecordSortPredicate> sortPredicates, int limit)
+            throws GuacamoleException {
+
+        // Retrieve history from database
+        return userService.retrieveHistory(identifier, getCurrentUser(),
+                requiredContents, sortPredicates, limit);
+
+    }
 
 }
