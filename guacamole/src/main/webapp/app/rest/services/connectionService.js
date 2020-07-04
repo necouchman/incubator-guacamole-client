@@ -63,34 +63,6 @@ angular.module('rest').factory('connectionService', ['$injector',
     };
 
     /**
-     * Makes a request to the REST API to get the usage history of a single
-     * connection, returning a promise that provides the corresponding
-     * array of @link{ConnectionHistoryEntry} objects if successful.
-     * 
-     * @param {String} id
-     *     The identifier of the connection.
-     * 
-     * @returns {Promise.<ConnectionHistoryEntry[]>}
-     *     A promise which will resolve with an array of
-     *     @link{ConnectionHistoryEntry} objects upon success.
-     */
-    service.getConnectionHistory = function getConnectionHistory(dataSource, id) {
-
-        // Build HTTP parameters set
-        var httpParameters = {
-            token : authenticationService.getCurrentToken()
-        };
-
-        // Retrieve connection history
-        return requestService({
-            method  : 'GET',
-            url     : 'api/session/data/' + encodeURIComponent(dataSource) + '/connections/' + encodeURIComponent(id) + '/history',
-            params  : httpParameters
-        });
- 
-    };
-
-    /**
      * Makes a request to the REST API to get the parameters of a single
      * connection, returning a promise that provides the corresponding
      * map of parameter name/value pairs if successful.

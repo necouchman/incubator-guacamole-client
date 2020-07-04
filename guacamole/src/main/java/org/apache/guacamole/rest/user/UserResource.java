@@ -21,8 +21,6 @@ package org.apache.guacamole.rest.user;
 
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -33,7 +31,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleSecurityException;
-import org.apache.guacamole.net.auth.ActivityRecord;
 import org.apache.guacamole.net.auth.AuthenticationProvider;
 import org.apache.guacamole.net.auth.Credentials;
 import org.apache.guacamole.net.auth.User;
@@ -42,7 +39,6 @@ import org.apache.guacamole.net.auth.UserContext;
 import org.apache.guacamole.net.auth.credentials.GuacamoleCredentialsException;
 import org.apache.guacamole.rest.directory.DirectoryObjectResource;
 import org.apache.guacamole.rest.directory.DirectoryObjectTranslator;
-import org.apache.guacamole.rest.history.APIActivityRecord;
 import org.apache.guacamole.rest.identifier.RelatedObjectSetResource;
 import org.apache.guacamole.rest.permission.APIPermissionSet;
 import org.apache.guacamole.rest.permission.PermissionSetResource;
@@ -98,31 +94,6 @@ public class UserResource
         this.userContext = userContext;
         this.directory = directory;
         this.user = user;
-    }
-
-    /**
-     * Retrieves the login (session) history of a single user.
-     *
-     * @return
-     *     A list of activity records, describing the start and end times of
-     *     this user's sessions.
-     *
-     * @throws GuacamoleException
-     *     If an error occurs while retrieving the user history.
-     */
-    @GET
-    @Path("history")
-    public List<APIActivityRecord> getUserHistory()
-            throws GuacamoleException {
-
-        // Retrieve the requested user's history
-        List<APIActivityRecord> apiRecords = new ArrayList<APIActivityRecord>();
-        for (ActivityRecord record : user.getHistory())
-            apiRecords.add(new APIActivityRecord(record));
-
-        // Return the converted history
-        return apiRecords;
-
     }
 
     @Override

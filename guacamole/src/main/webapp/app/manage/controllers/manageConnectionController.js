@@ -39,6 +39,7 @@ angular.module('manage').controller('manageConnectionController', ['$scope', '$i
     var authenticationService    = $injector.get('authenticationService');
     var connectionService        = $injector.get('connectionService');
     var connectionGroupService   = $injector.get('connectionGroupService');
+    var historyService           = $injector.get('historyService');
     var permissionService        = $injector.get('permissionService');
     var requestService           = $injector.get('requestService');
     var schemaService            = $injector.get('schemaService');
@@ -167,7 +168,7 @@ angular.module('manage').controller('manageConnectionController', ['$scope', '$i
     var loadExistingConnection = function loadExistingConnection(dataSource, identifier) {
         return $q.all({
             connection     : connectionService.getConnection(dataSource, identifier),
-            historyEntries : connectionService.getConnectionHistory(dataSource, identifier),
+            historyEntries : historyService.getConnectionHistory(dataSource, identifier, null, null),
             parameters     : connectionService.getConnectionParameters(dataSource, identifier)
         })
         .then(function connectionDataRetrieved(values) {

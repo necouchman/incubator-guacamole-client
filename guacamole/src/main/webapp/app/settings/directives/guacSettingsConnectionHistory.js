@@ -163,7 +163,7 @@ angular.module('settings').directive('guacSettingsConnectionHistory', [function 
                 });
 
                 // Fetch history records
-                historyService.getConnectionHistory(
+                historyService.getAllConnectionHistory(
                     $scope.dataSource,
                     requiredContents,
                     $scope.order.predicate.filter(function isSupportedPredicate(predicate) {
