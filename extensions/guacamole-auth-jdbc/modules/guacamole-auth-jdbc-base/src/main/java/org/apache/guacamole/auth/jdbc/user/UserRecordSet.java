@@ -29,6 +29,7 @@ import org.apache.guacamole.auth.jdbc.base.ActivityRecordSortPredicate;
 import org.apache.guacamole.auth.jdbc.base.ModeledActivityRecordSet;
 import org.apache.guacamole.net.auth.ActivityRecord;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
+import org.apache.guacamole.net.auth.User;
 
 /**
  * A JDBC implementation of ActivityRecordSet for retrieving user login history.
@@ -44,26 +45,39 @@ public class UserRecordSet extends ModeledActivityRecordSet<ActivityRecord> {
     @Inject
     private UserService userService;
     
-    @Override
-    protected Collection<ActivityRecord> retrieveHistory(
-            AuthenticatedUser user, Set<ActivityRecordSearchTerm> requiredContents,
-            List<ActivityRecordSortPredicate> sortPredicates, int limit)
-            throws GuacamoleException {
-
-        // Retrieve history from database
-        return userService.retrieveHistory(getCurrentUser(),
-                requiredContents, sortPredicates, limit);
-
+    /**
+     * The User to which to limit ActivityRecords.
+     */
+    private ModeledUser user;
+    
+    /**
+     * Initializes this UserRecordSet with the User who requested this record
+     * set and the User to which the records should be limited.
+     * 
+     * @param currentUser
+     *     The user requesting this record set.
+     * 
+     * @param user 
+     *     The user for which history records should be retrieved.
+     */
+    public void init(ModeledAuthenticatedUser currentUser, ModeledUser user) {
+        super.init(currentUser);
+        this.user = user;
     }
     
     @Override
-    protected Collection<ActivityRecord> retrieveHistory(String identifier,
-            AuthenticatedUser user, Set<ActivityRecordSearchTerm> requiredContents,
+    protected Collection<ActivityRecord> retrieveHistory(
+            AuthenticatedUser currentUser, Set<ActivityRecordSearchTerm> requiredContents,
             List<ActivityRecordSortPredicate> sortPredicates, int limit)
             throws GuacamoleException {
 
+        // Retrieve history for specific user
+        if (user != null)
+            return userService.retrieveHistory(getCurrentUser(), 
+                    user.getModel(), requiredContents, sortPredicates, limit);
+
         // Retrieve history from database
-        return userService.retrieveHistory(identifier, getCurrentUser(),
+        return userService.retrieveHistory(getCurrentUser(), null,
                 requiredContents, sortPredicates, limit);
 
     }

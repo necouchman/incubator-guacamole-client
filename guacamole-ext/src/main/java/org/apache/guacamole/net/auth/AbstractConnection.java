@@ -22,6 +22,7 @@ package org.apache.guacamole.net.auth;
 import java.util.Collections;
 import java.util.Set;
 import org.apache.guacamole.GuacamoleException;
+import org.apache.guacamole.GuacamoleUnsupportedException;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
 
 /**
@@ -81,6 +82,19 @@ public abstract class AbstractConnection extends AbstractIdentifiable
     public Set<String> getSharingProfileIdentifiers()
             throws GuacamoleException {
         return Collections.<String>emptySet();
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * <p>This Connection implementation does not provide support for
+     * connection history. Implementations that wish to provide these records
+     * should override this method.
+     */
+    @Override
+    public ActivityRecordSet<ConnectionRecord> getConnectionHistory()
+            throws GuacamoleException {
+        throw new GuacamoleUnsupportedException("This Connection implementation does not provide connection history.");
     }
 
 }

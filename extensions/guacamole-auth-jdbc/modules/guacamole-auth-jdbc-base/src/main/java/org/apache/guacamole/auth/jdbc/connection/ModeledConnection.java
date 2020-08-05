@@ -40,6 +40,7 @@ import org.apache.guacamole.form.Form;
 import org.apache.guacamole.form.NumericField;
 import org.apache.guacamole.form.TextField;
 import org.apache.guacamole.net.GuacamoleTunnel;
+import org.apache.guacamole.net.auth.ActivityRecordSet;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.ConnectionRecord;
 import org.apache.guacamole.net.auth.GuacamoleProxyConfiguration;
@@ -189,6 +190,12 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
      */
     @Inject
     private GuacamoleTunnelService tunnelService;
+    
+    /**
+     * Service for retrieving connection history.
+     */
+    @Inject
+    private Provider<ConnectionRecordSet> connectionRecordSetProvider;
 
     /**
      * Provider for lazy-loaded, permission-controlled configurations.
@@ -253,9 +260,18 @@ public class ModeledConnection extends ModeledChildDirectoryObject<ConnectionMod
         return getModel().getLastActive();
     }
 
+    @Deprecated
     @Override
     public List<? extends ConnectionRecord> getHistory() throws GuacamoleException {
         return connectionService.retrieveHistory(getCurrentUser(), this);
+    }
+    
+    @Override
+    public ActivityRecordSet<ConnectionRecord> getConnectionHistory()
+            throws GuacamoleException {
+        ConnectionRecordSet connectionRecordSet = connectionRecordSetProvider.get();
+        connectionRecordSet.init(getCurrentUser(), this);
+        return connectionRecordSet;
     }
 
     @Override

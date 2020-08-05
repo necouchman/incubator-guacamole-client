@@ -109,8 +109,8 @@
 
         <where>
         
-            <if test="identifier != null">
-                guacamole_connection_history.connection_id = #{identifier,jdbcType=VARCHAR}
+            <if test="connection != null">
+                guacamole_connection_history.connection_id = #{connection.identifier,jdbcType=VARCHAR}
             </if>
             
             <!-- Search terms -->
@@ -195,8 +195,8 @@
 
         <where>
             
-            <if test="identifier != null">
-                guacamole_connection_history.connection_id = #{identifier,jdbcType=VARCHAR}
+            <if test="connection != null">
+                guacamole_connection_history.connection_id = #{connection.identifier,jdbcType=VARCHAR}
             </if>
             
             <!-- Search terms -->

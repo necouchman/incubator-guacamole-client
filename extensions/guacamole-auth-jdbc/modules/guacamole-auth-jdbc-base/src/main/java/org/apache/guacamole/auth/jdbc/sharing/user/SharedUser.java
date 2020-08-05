@@ -24,8 +24,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.apache.guacamole.GuacamoleException;
+import org.apache.guacamole.GuacamoleUnsupportedException;
 import org.apache.guacamole.auth.jdbc.sharing.permission.SharedObjectPermissionSet;
 import org.apache.guacamole.net.auth.ActivityRecord;
+import org.apache.guacamole.net.auth.ActivityRecordSet;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.ConnectionGroup;
@@ -99,12 +101,19 @@ public class SharedUser implements User {
 
     }
 
+    @Deprecated
     @Override
     public List<ActivityRecord> getHistory() throws GuacamoleException {
 
         // History is not recorded for shared users
         return Collections.<ActivityRecord>emptyList();
 
+    }
+    
+    @Override
+    public ActivityRecordSet<ActivityRecord> getUserHistory()
+            throws GuacamoleException {
+        throw new GuacamoleUnsupportedException("Not yet implemented.");
     }
 
     @Override

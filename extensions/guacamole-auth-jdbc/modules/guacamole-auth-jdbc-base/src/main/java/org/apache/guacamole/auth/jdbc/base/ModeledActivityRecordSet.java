@@ -95,54 +95,11 @@ public abstract class ModeledActivityRecordSet<RecordType extends ActivityRecord
             Set<ActivityRecordSearchTerm> requiredContents,
             List<ActivityRecordSortPredicate> sortPredicates,
             int limit) throws GuacamoleException;
-    
-    /**
-     * Retrieves the history records matching the given identifer and search
-     * criteria. Retrieves up to <code>limit</code> history records matching
-     * the given terms and sorted by the given predicates. Only history records
-     * associated with data that the given user can read are returned.
-     *
-     * @param identifier
-     *     The identifier of the item to which results should be limited.
-     * 
-     * @param user
-     *     The user retrieving the history.
-     *
-     * @param requiredContents
-     *     The search terms that must be contained somewhere within each of the
-     *     returned records.
-     *
-     * @param sortPredicates
-     *     A list of predicates to sort the returned records by, in order of
-     *     priority.
-     *
-     * @param limit
-     *     The maximum number of records that should be returned.
-     *
-     * @return
-     *     A collection of all history records matching the given criteria.
-     *
-     * @throws GuacamoleException
-     *     If permission to read the history records is denied.
-     */
-    protected abstract Collection<RecordType> retrieveHistory(
-            String identifier,
-            AuthenticatedUser user,
-            Set<ActivityRecordSearchTerm> requiredContents,
-            List<ActivityRecordSortPredicate> sortPredicates,
-            int limit) throws GuacamoleException;
 
     @Override
     public Collection<RecordType> asCollection()
             throws GuacamoleException {
         return retrieveHistory(getCurrentUser(), requiredContents,
-                sortPredicates, limit);
-    }
-    
-    @Override
-    public Collection<RecordType> asCollection(String identifier)
-            throws GuacamoleException {
-        return retrieveHistory(identifier, getCurrentUser(), requiredContents,
                 sortPredicates, limit);
     }
 

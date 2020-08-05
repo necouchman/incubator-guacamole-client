@@ -45,6 +45,7 @@ import org.apache.guacamole.rest.directory.DirectoryObjectResource;
 import org.apache.guacamole.rest.directory.DirectoryObjectTranslator;
 import org.apache.guacamole.rest.directory.DirectoryResource;
 import org.apache.guacamole.rest.directory.DirectoryResourceFactory;
+import org.apache.guacamole.rest.history.ConnectionHistoryResource;
 import org.apache.guacamole.rest.sharingprofile.APISharingProfile;
 
 /**
@@ -133,6 +134,25 @@ public class ConnectionResource extends DirectoryObjectResource<Connection, APIC
 
         // Return parameter map
         return config.getParameters();
+
+    }
+
+    /**
+     * Retrieves the usage history of a single connection.
+     * 
+     * @return
+     *     A list of connection records, describing the start and end times of
+     *     various usages of this connection.
+     *
+     * @throws GuacamoleException
+     *     If an error occurs while retrieving the connection history.
+     */
+    @GET
+    @Path("history")
+    public ConnectionHistoryResource getConnectionHistory()
+            throws GuacamoleException {
+
+        return new ConnectionHistoryResource(connection.getConnectionHistory());
 
     }
 

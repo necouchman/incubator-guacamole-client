@@ -37,7 +37,9 @@ import java.util.TimeZone;
 import org.apache.guacamole.auth.jdbc.security.PasswordEncryptionService;
 import org.apache.guacamole.auth.jdbc.security.SaltService;
 import org.apache.guacamole.GuacamoleException;
+import org.apache.guacamole.GuacamoleUnsupportedException;
 import org.apache.guacamole.auth.jdbc.base.ModeledPermissions;
+import org.apache.guacamole.auth.jdbc.connection.ConnectionRecordSet;
 import org.apache.guacamole.form.BooleanField;
 import org.apache.guacamole.form.DateField;
 import org.apache.guacamole.form.EmailField;
@@ -47,6 +49,7 @@ import org.apache.guacamole.form.TextField;
 import org.apache.guacamole.form.TimeField;
 import org.apache.guacamole.form.TimeZoneField;
 import org.apache.guacamole.net.auth.ActivityRecord;
+import org.apache.guacamole.net.auth.ActivityRecordSet;
 import org.apache.guacamole.net.auth.Permissions;
 import org.apache.guacamole.net.auth.RelatedObjectSet;
 import org.apache.guacamole.net.auth.User;
@@ -176,6 +179,12 @@ public class ModeledUser extends ModeledPermissions<UserModel> implements User {
     @Inject
     private SaltService saltService;
 
+    /**
+     * Provider for creating user record sets.
+     */
+    @Inject
+    private Provider<UserRecordSet> userRecordSetProvider;
+    
     /**
      * Provider for RelatedObjectSets containing the user groups of which this
      * user is a member.
@@ -747,9 +756,17 @@ public class ModeledUser extends ModeledPermissions<UserModel> implements User {
         return getModel().getLastActive();
     }
 
+    @Deprecated
     @Override
     public List<ActivityRecord> getHistory() throws GuacamoleException {
         return userService.retrieveHistory(getCurrentUser(), this);
+    }
+    
+    @Override
+    public ActivityRecordSet<ActivityRecord> getUserHistory() throws GuacamoleException {
+        UserRecordSet userRecordSet = userRecordSetProvider.get();
+        userRecordSet.init(getCurrentUser(), this);
+        return userRecordSet;
     }
 
     @Override

@@ -39,12 +39,6 @@ public class SimpleConnectionRecordSet implements org.apache.guacamole.net.auth.
             throws GuacamoleException {
         return Collections.<ConnectionRecord>emptyList();
     }
-    
-    @Override
-    public Collection<ConnectionRecord> asCollection(String identifier)
-            throws GuacamoleException {
-        return Collections.<ConnectionRecord>emptyList();
-    }
 
     @Override
     public org.apache.guacamole.net.auth.ConnectionRecordSet contains(String value)

@@ -27,6 +27,7 @@ import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordSearchTerm;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordSortPredicate;
 import org.apache.guacamole.auth.jdbc.base.ModeledActivityRecordSet;
+import org.apache.guacamole.auth.jdbc.user.ModeledAuthenticatedUser;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.ConnectionRecord;
 
@@ -43,26 +44,40 @@ public class ConnectionRecordSet extends ModeledActivityRecordSet<ConnectionReco
     @Inject
     private ConnectionService connectionService;
     
+    /**
+     * The ModeledConnection that this ConnectionRecordSet should be limited
+     * to, if any.
+     */
+    private ModeledConnection connection = null;
+    
+    /**
+     * Initialize this ConnectionRecordSet associating it with the given
+     * authenticated user and connection.
+     * 
+     * @param currentUser
+     *     The user that created or retrieved this record set.
+     *     
+     * @param connection 
+     *     The Connection to which to limit history records.
+     */
+    public void init(ModeledAuthenticatedUser currentUser,
+            ModeledConnection connection) {
+        super.init(currentUser);
+        this.connection = connection;
+    }
+    
     @Override
     protected Collection<ConnectionRecord> retrieveHistory(
             AuthenticatedUser user, Set<ActivityRecordSearchTerm> requiredContents,
             List<ActivityRecordSortPredicate> sortPredicates, int limit)
             throws GuacamoleException {
 
+        if (this.connection != null)
+            return connectionService.retrieveHistory(getCurrentUser(),
+                    connection.getModel(), requiredContents, sortPredicates, limit);
+
         // Retrieve history from database
         return connectionService.retrieveHistory(getCurrentUser(),
-                requiredContents, sortPredicates, limit);
-
-    }
-    
-    @Override
-    protected Collection<ConnectionRecord> retrieveHistory(String identifier,
-            AuthenticatedUser user, Set<ActivityRecordSearchTerm> requiredContents,
-            List<ActivityRecordSortPredicate> sortPredicates, int limit)
-            throws GuacamoleException {
-
-        // Retrieve history from database
-        return connectionService.retrieveHistory(identifier, getCurrentUser(),
                 requiredContents, sortPredicates, limit);
 
     }

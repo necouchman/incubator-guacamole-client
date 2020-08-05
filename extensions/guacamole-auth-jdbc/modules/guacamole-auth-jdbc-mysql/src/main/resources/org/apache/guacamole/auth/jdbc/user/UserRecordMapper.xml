@@ -106,8 +106,8 @@
 
         <where>
         
-            <if test="identifier != null">
-                guacamole_user_history.user_id = #{identifier,jdbcType=VARCHAR}
+            <if test="searchUser != null">
+                guacamole_user_history.user_id = #{searchUser.identifier,jdbcType=VARCHAR}
             </if>
             
             <!-- Search terms -->
@@ -174,7 +174,7 @@
         <where>
         
             <if test="identifier != null">
-                guacamole_user_history.user_id = #{identifier,jdbcType=VARCHAR}
+                guacamole_user_history.user_id = #{searchUser.identifier,jdbcType=VARCHAR}
             </if>
             
             <!-- Search terms -->

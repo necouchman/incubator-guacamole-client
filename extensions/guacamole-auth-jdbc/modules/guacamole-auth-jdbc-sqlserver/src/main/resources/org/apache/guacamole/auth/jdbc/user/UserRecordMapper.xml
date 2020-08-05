@@ -107,7 +107,7 @@
         <where>
         
             <if test="identifier != null">
-                [guacamole_user_history].userid = #{identifier,jdbcType=INTEGER}
+                [guacamole_user_history].userid = #{searchUser.identifier,jdbcType=INTEGER}
             </if>
             
             <!-- Search terms -->
@@ -172,7 +172,7 @@
         <where>
             
             <if test="identifier != null">
-                [guacamole_user_history].user_id = #{identifier,jdbcType=INTEGER}
+                [guacamole_user_history].user_id = #{searchUser.identifier,jdbcType=INTEGER}
             </if>
             
             <!-- Search terms -->

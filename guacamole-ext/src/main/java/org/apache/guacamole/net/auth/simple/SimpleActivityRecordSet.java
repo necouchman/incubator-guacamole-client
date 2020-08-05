@@ -40,12 +40,6 @@ public class SimpleActivityRecordSet<RecordType extends ActivityRecord>
             throws GuacamoleException {
         return Collections.<RecordType>emptyList();
     }
-    
-    @Override
-    public Collection<RecordType> asCollection(String identifier)
-            throws GuacamoleException {
-        return Collections.<RecordType>emptyList();
-    }
 
     @Override
     public ActivityRecordSet<RecordType> contains(String value)

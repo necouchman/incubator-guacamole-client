@@ -76,9 +76,9 @@ public interface UserRecordMapper {
      * non-administrative user who must have explicit read rights, use
      * searchReadable() instead.
      *
-     * @param identifier
-     *     The identifier of the user whose login records should be retrieved,
-     *     or null if the records should not be limited to a specific user.
+     * @param searchUser
+     *     The user whose login records should be retrieved, or null if the
+     *     records should not be limited to a specific user.
      * 
      * @param terms
      *     The search terms that must match the returned records.
@@ -93,7 +93,7 @@ public interface UserRecordMapper {
      * @return
      *     The results of the search performed with the given parameters.
      */
-    List<ActivityRecordModel> search(@Param("identifier") String identifier,
+    List<ActivityRecordModel> search(@Param("user") UserModel searchUser,
             @Param("terms") Collection<ActivityRecordSearchTerm> terms,
             @Param("sortPredicates") List<ActivityRecordSortPredicate> sortPredicates,
             @Param("limit") int limit);
@@ -105,10 +105,9 @@ public interface UserRecordMapper {
      * returned. If records are needed by a system administrator (who, by
      * definition, does not need explicit read rights), use search() instead.
      *
-     * @param identifier
-     *     The identifier of the user whose activity records should be
-     *     retrieved, or null if the search should not be limited to a
-     *     specific user.
+     * @param searchUser
+     *     The user whose activity records should be retrieved, or null if
+     *     records should be retrieved for all users.
      * 
      * @param user
      *     The user whose permissions should determine whether a record is
@@ -133,7 +132,7 @@ public interface UserRecordMapper {
      * @return
      *     The results of the search performed with the given parameters.
      */
-    List<ActivityRecordModel> searchReadable(@Param("identifier") String identifier,
+    List<ActivityRecordModel> searchReadable(@Param("searchUser") UserModel searchUser,
             @Param("user") UserModel user,
             @Param("terms") Collection<ActivityRecordSearchTerm> terms,
             @Param("sortPredicates") List<ActivityRecordSortPredicate> sortPredicates,

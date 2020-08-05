@@ -106,8 +106,8 @@
 
         <where>
         
-            <if test="identifier != null">
-                guacamole_user_history.user_id = #{identifier,jdbcType=INTEGER}::integer
+            <if test="searchUser != null">
+                guacamole_user_history.user_id = #{searchUser.identifier,jdbcType=INTEGER}::integer
             </if>
             
             <!-- Search terms -->
@@ -173,8 +173,8 @@
 
         <where>
             
-            <if test="identifier != null">
-                guacamole_user_history.user_id = #{identifier,jdbcType=INTEGER}::integer
+            <if test="searchUser != null">
+                guacamole_user_history.user_id = #{searchUser.identifier,jdbcType=INTEGER}::integer
             </if>
             
             <!-- Search terms -->

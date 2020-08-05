@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.apache.guacamole.GuacamoleException;
+import org.apache.guacamole.GuacamoleUnsupportedException;
 import org.apache.guacamole.net.auth.permission.ObjectPermissionSet;
 import org.apache.guacamole.net.auth.permission.SystemPermissionSet;
 
@@ -89,12 +90,27 @@ public abstract class AbstractUser extends AbstractIdentifiable
     /**
      * {@inheritDoc}
      *
-     * <p>This implementation simply an immutable, empty list. Implementations
-     * that wish to expose user login history should override this function.
+     * <p>This implementation simply provides an immutable, empty list.
+     * Implementations that wish to expose user login history should override
+     * this function.
      */
+    @Deprecated
     @Override
     public List<ActivityRecord> getHistory() throws GuacamoleException {
         return Collections.emptyList();
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * <p>This implementation does not provide support for login history.
+     * Implementations that wish to expose user login history should override
+     * this method.
+     */
+    @Override
+    public ActivityRecordSet<ActivityRecord> getUserHistory()
+            throws GuacamoleException {
+        throw new GuacamoleUnsupportedException("This User implementation does not provide user activity records.");
     }
 
     /**

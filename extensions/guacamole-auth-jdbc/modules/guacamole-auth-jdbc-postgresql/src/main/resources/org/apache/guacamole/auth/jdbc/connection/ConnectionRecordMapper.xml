@@ -106,8 +106,8 @@
         FROM guacamole_connection_history
         <where>
 
-            <if test="identifier != null">
-                guacamole_connection_history.connection_id = #{identifier,jdbcType=INTEGER}::integer
+            <if test="connection != null">
+                guacamole_connection_history.connection_id = #{connection.identifier,jdbcType=INTEGER}::integer
             </if>
             
             <!-- Search terms -->
@@ -192,8 +192,8 @@
 
         <where>
             
-            <if test="identifer != null">
-                guacamole_connection_history.connection_id = #{identifier,jdbcType=INTEGER}::integer
+            <if test="connection != null">
+                guacamole_connection_history.connection_id = #{connection.identifier,jdbcType=INTEGER}::integer
             </if>
             
             <!-- Search terms -->

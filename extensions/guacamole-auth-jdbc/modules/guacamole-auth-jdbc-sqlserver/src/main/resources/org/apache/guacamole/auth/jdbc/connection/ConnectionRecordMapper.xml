@@ -107,8 +107,8 @@
 
         <where>
         
-            <if test="identifier != null">
-                [guacamole_connection_history].connection_id = #{identifier,jdbcType=INTEGER}
+            <if test="connection != null">
+                [guacamole_connection_history].connection_id = #{connection.identifier,jdbcType=INTEGER}
             </if>
             
             <!-- Search terms -->
@@ -191,8 +191,8 @@
 
         <where>
             
-            <if test="identifier != null">
-                [guacamole_connection_history].connection_id = #{identifier,jdbcType=INTEGER}
+            <if test="connection != null">
+                [guacamole_connection_history].connection_id = #{connection.identifier,jdbcType=INTEGER}
             </if>
             
             <!-- Search terms -->

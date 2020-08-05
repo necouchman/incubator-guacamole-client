@@ -65,9 +65,9 @@ public interface ConnectionRecordMapper {
      * by a non-administrative user who must have explicit read rights, use
      * searchReadable() instead.
      *
-     * @param identifier
-     *     Limit the search to the connection having the given identifier, or
-     *     NULL if connections should not be limited to a specific identifier.
+     * @param connection
+     *     Limit the search to the connection, or null if connections should not
+     *     be limited to a specific connection.
      * 
      * @param terms
      *     The search terms that must match the returned records.
@@ -82,7 +82,7 @@ public interface ConnectionRecordMapper {
      * @return
      *     The results of the search performed with the given parameters.
      */
-    List<ConnectionRecordModel> search(@Param("identifier") String identifier,
+    List<ConnectionRecordModel> search(@Param("connection") ConnectionModel connection,
             @Param("terms") Collection<ActivityRecordSearchTerm> terms,
             @Param("sortPredicates") List<ActivityRecordSortPredicate> sortPredicates,
             @Param("limit") int limit);
@@ -95,10 +95,9 @@ public interface ConnectionRecordMapper {
      * are needed by a system administrator (who, by definition, does not need
      * explicit read rights), use search() instead.
      *
-     * @param identifier
-     *     Limit search results to the connection with the given identifier, or
-     *     NULL if results should not be limited to a specific connection
-     *     identifier.
+     * @param connection
+     *     Limit search results to the given connection, or null if all visible
+     *     records should be returned.
      * 
      * @param user
      *    The user whose permissions should determine whether a record is
@@ -123,7 +122,7 @@ public interface ConnectionRecordMapper {
      * @return
      *     The results of the search performed with the given parameters.
      */
-    List<ConnectionRecordModel> searchReadable(@Param("identifier") String identifier,
+    List<ConnectionRecordModel> searchReadable(@Param("connection") ConnectionModel connection,
             @Param("user") UserModel user,
             @Param("terms") Collection<ActivityRecordSearchTerm> terms,
             @Param("sortPredicates") List<ActivityRecordSortPredicate> sortPredicates,

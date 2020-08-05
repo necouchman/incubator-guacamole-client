@@ -56,24 +56,6 @@ public interface ActivityRecordSet<RecordType extends ActivityRecord> {
      *      If an error occurs while retrieving the records within this set.
      */
     Collection<RecordType> asCollection() throws GuacamoleException;
-    
-    /**
-     * Returns records within this set for the item having the specified
-     * identifier as a standard Collection.
-     *
-     * @param identifier
-     *     The identifier of the underlying item that the collection
-     *     should be limited to.
-     * 
-     * @return
-     *     A collection containing records within this set for the specified
-     *     identifier.
-     *
-     * @throws GuacamoleException
-     *     If an error occurs while retrieving the records within this set.
-     */
-    Collection<RecordType> asCollection(String identifier)
-            throws GuacamoleException;
 
     /**
      * Returns the subset of records which contain the given value. The

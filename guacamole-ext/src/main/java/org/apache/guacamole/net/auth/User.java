@@ -19,6 +19,7 @@
 
 package org.apache.guacamole.net.auth;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.apache.guacamole.GuacamoleException;
@@ -103,8 +104,27 @@ public interface User extends Identifiable, Attributes, Permissions {
      *     If an error occurs while reading the history of this user, or if
      *     permission is denied.
      */
+    @Deprecated
     List<? extends ActivityRecord> getHistory() throws GuacamoleException;
 
+    /**
+     * Returns an ActivityRecordSet of ActivityRecords representing the login
+     * history of this user, including any active sessions. ActivityRecords
+     * in this list will be sorted in descending order of end time (active
+     * sessions are first), and then in descending order of start time
+     * (newer sessions are first).
+     *
+     * @return
+     *     An ActivityRecordSet of ActivityRecords representing the login
+     *     history of this User.
+     *
+     * @throws GuacamoleException
+     *     If an error occurs while reading the history of this user, or if
+     *     permission is denied.
+     */
+    public ActivityRecordSet<ActivityRecord> getUserHistory()
+            throws GuacamoleException;
+    
     /**
      * Returns a set of all readable user groups of which this user is a member.
      * If permission is granted for the current user to modify the membership of

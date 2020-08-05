@@ -213,7 +213,7 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
         Map<String, String> parameters = connection.getConfiguration().getParameters();
         
         // Convert parameters to model objects
-        Collection<ConnectionParameterModel> parameterModels = new ArrayList<ConnectionParameterModel>(parameters.size());
+        Collection<ConnectionParameterModel> parameterModels = new ArrayList<>(parameters.size());
         for (Map.Entry<String, String> parameterEntry : parameters.entrySet()) {
 
             // Get parameter name and value
@@ -329,7 +329,7 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
     public Map<String, String> retrieveParameters(ModeledAuthenticatedUser user,
             String identifier) {
 
-        Map<String, String> parameterMap = new HashMap<String, String>();
+        Map<String, String> parameterMap = new HashMap<>();
 
         // Determine whether we have permission to read parameters
         boolean canRetrieveParameters;
@@ -382,7 +382,7 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
     protected List<ConnectionRecord> getObjectInstances(List<ConnectionRecordModel> models) {
 
         // Create new list of records by manually converting each model
-        List<ConnectionRecord> objects = new ArrayList<ConnectionRecord>(models.size());
+        List<ConnectionRecord> objects = new ArrayList<>(models.size());
         for (ConnectionRecordModel model : models)
             objects.add(getObjectInstance(model));
 
@@ -419,7 +419,7 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
             List<ConnectionRecordModel> models = connectionRecordMapper.select(identifier);
 
             // Get currently-active connections
-            List<ConnectionRecord> records = new ArrayList<ConnectionRecord>(tunnelService.getActiveConnections(connection));
+            List<ConnectionRecord> records = new ArrayList<>(tunnelService.getActiveConnections(connection));
             Collections.reverse(records);
 
             // Add past connections from model objects
@@ -469,23 +469,22 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
             List<ActivityRecordSortPredicate> sortPredicates, int limit)
             throws GuacamoleException {
         
-        return retrieveHistory(null, user, requiredContents, sortPredicates, limit);
+        return retrieveHistory(user, null, requiredContents, sortPredicates, limit);
         
     }
     
     /**
-     * Retrieves the connection history records matching the given criteria.
-     * Retrieves up to <code>limit</code> connection history records matching
-     * the given terms and sorted by the given predicates. Only history records
-     * associated with data that the given user can read are returned.
-     *
-     * @param identifier
-     *     The identifier of the connection for which records should be
-     *     retrieved, or null if records for all connections visible to the
-     *     given user should be retrieved.
+     * Retrieves the connection history records for the given Connection, and
+     * matching the given search criteria. Retrieves up to <code>limit</code>
+     * connection history records matching the given terms and sorted by the
+     * given predicates. Only history records associated with data that the
+     * given user can read are returned.
      * 
      * @param user
      *     The user retrieving the connection history.
+     * 
+     * @param connection
+     *     The ModeledConnection for which to retrieve the history.
      *
      * @param requiredContents
      *     The search terms that must be contained somewhere within each of the
@@ -505,8 +504,9 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
      * @throws GuacamoleException
      *     If permission to read the connection history is denied.
      */
-    public List<ConnectionRecord> retrieveHistory(String identifier,
+    public List<ConnectionRecord> retrieveHistory(
             ModeledAuthenticatedUser user,
+            ConnectionModel connection,
             Collection<ActivityRecordSearchTerm> requiredContents,
             List<ActivityRecordSortPredicate> sortPredicates, int limit)
             throws GuacamoleException {
@@ -515,12 +515,12 @@ public class ConnectionService extends ModeledChildDirectoryObjectService<Modele
 
         // Bypass permission checks if the user is privileged
         if (user.isPrivileged())
-            searchResults = connectionRecordMapper.search(identifier,
+            searchResults = connectionRecordMapper.search(connection,
                     requiredContents, sortPredicates, limit);
 
         // Otherwise only return explicitly readable history records
         else
-            searchResults = connectionRecordMapper.searchReadable(identifier,
+            searchResults = connectionRecordMapper.searchReadable(connection,
                     user.getUser().getModel(), requiredContents, sortPredicates,
                     limit, user.getEffectiveUserGroups());
 
