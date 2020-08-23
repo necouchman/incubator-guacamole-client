@@ -103,6 +103,7 @@ public interface User extends Identifiable, Attributes, Permissions {
      *     If an error occurs while reading the history of this user, or if
      *     permission is denied.
      */
+    @Deprecated
     List<? extends ActivityRecord> getHistory() throws GuacamoleException;
     
     /**
