@@ -48,6 +48,7 @@ import org.apache.guacamole.form.PasswordField;
 import org.apache.guacamole.language.TranslatableGuacamoleClientException;
 import org.apache.guacamole.language.TranslatableGuacamoleInsufficientCredentialsException;
 import org.apache.guacamole.net.auth.ActivityRecord;
+import org.apache.guacamole.net.auth.ActivityRecordSet;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.AuthenticationProvider;
 import org.apache.guacamole.net.auth.User;
