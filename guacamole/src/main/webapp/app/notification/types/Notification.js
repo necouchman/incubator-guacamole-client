@@ -56,6 +56,14 @@ angular.module('notification').factory('Notification', [function defineNotificat
          * @type TranslatableMessage
          */
         this.text = template.text;
+        
+        /**
+         * A prompt to display to the user containing a Form that the user
+         * should complete in respones to the notification.
+         * 
+         * @type NotificationPrompt
+         */
+        this.parameters = template.parameters || [];
 
         /**
          * An array of all actions available to the user in response to this

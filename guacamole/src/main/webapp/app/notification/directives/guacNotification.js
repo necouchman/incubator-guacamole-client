@@ -71,6 +71,19 @@ angular.module('notification').directive('guacNotification', [function guacNotif
                 }
 
             });
+            
+            // Update responses as model changes
+            $scope.$watch('responses', function setResponses(model) {
+
+                // If model is defined, use it.
+                if (model)
+                    $scope.responses = model;
+
+                // Otherwise use a blank object
+                else
+                    $scope.responses = {};
+
+            });
 
             // Clean up interval upon destruction
             $scope.$on("$destroy", function destroyNotification() {

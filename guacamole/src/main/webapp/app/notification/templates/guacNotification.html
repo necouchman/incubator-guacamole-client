@@ -11,12 +11,22 @@
         <p ng-show="notification.text" class="text"
            translate="{{notification.text.key}}"
            translate-values="{{notification.text.variables}}"></p>
+        
+        <div class="notification connection-parameters" ng-show="notification.parameters">
+            <guac-form namespace="getProtocolNamespace(client.protocol)"
+                       content="notification.client.forms"
+                       model="notification.parameters"
+                       model-only="true"></guac-form>
+        </div>
 
         <!-- Current progress -->
-        <div class="progress" ng-show="notification.progress"><div class="bar" ng-show="progressPercent" ng-style="{'width': progressPercent + '%'}"></div><div
-                ng-show="notification.progress.text"
+        <div class="progress" ng-show="notification.progress">
+            <div class="bar" ng-show="progressPercent"
+                ng-style="{'width': progressPercent + '%'}"></div>
+            <div ng-show="notification.progress.text"
                 translate="{{notification.progress.text}}"
-                translate-values="{PROGRESS: notification.progress.value, UNIT: notification.progress.unit}"></div></div>
+                translate-values="{PROGRESS: notification.progress.value, UNIT: notification.progress.unit}"></div>
+        </div>
 
         <!-- Default action countdown text -->
         <p class="countdown-text"

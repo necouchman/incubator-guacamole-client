@@ -37,6 +37,8 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
 
     // Required services
     var $document               = $injector.get('$document');
+    var $log                    = $injector.get('$log');
+    var $location               = $injector.get('$location');
     var $q                      = $injector.get('$q');
     var $rootScope              = $injector.get('$rootScope');
     var $window                 = $injector.get('$window');
@@ -48,9 +50,11 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
     var requestService          = $injector.get('requestService');
     var schemaService           = $injector.get('schemaService');
     var tunnelService           = $injector.get('tunnelService');
+    var userPageService         = $injector.get('userPageService');
     var guacAudio               = $injector.get('guacAudio');
     var guacHistory             = $injector.get('guacHistory');
     var guacImage               = $injector.get('guacImage');
+    var guacNotification        = $injector.get('guacNotification');
     var guacVideo               = $injector.get('guacVideo');
 
     /**
@@ -60,6 +64,44 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
      * @type Number
      */
     var THUMBNAIL_UPDATE_FREQUENCY = 5000;
+    
+    /**
+     * Action which logs out from Guacamole entirely.
+     */
+    var LOGOUT_ACTION = {
+        name      : "CLIENT.ACTION_LOGOUT",
+        className : "logout button",
+        callback  : function logoutCallback() {
+            authenticationService.logout()
+            ['catch'](requestService.IGNORE)
+            ['finally'](function logoutComplete() {
+                $location.url('/');
+            });
+        }
+    };
+    
+    /**
+     * Action which returns the user to the home screen. If the home page has
+     * not yet been determined, this will be null.
+     */
+    var NAVIGATE_HOME_ACTION = null;
+
+    // Assign home page action once user's home page has been determined
+    userPageService.getHomePage()
+    .then(function homePageRetrieved(homePage) {
+
+        // Define home action only if different from current location
+        if ($location.path() !== homePage.url) {
+            NAVIGATE_HOME_ACTION = {
+                name      : "CLIENT.ACTION_NAVIGATE_HOME",
+                className : "home button",
+                callback  : function navigateHomeCallback() {
+                    $location.url(homePage.url);
+                }
+            };
+        }
+
+    }, requestService.WARN);
 
     /**
      * Object which serves as a surrogate interface, encapsulating a Guacamole
@@ -367,6 +409,9 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
             client : client,
             tunnel : tunnel
         });
+        
+        // Parse connection details from ID
+        var clientIdentifier = ClientIdentifier.fromString(id);
 
         // Fire events for tunnel errors
         tunnel.onerror = function tunnelError(status) {
@@ -577,12 +622,49 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
                 managedClient.filesystems.push(ManagedFilesystem.getInstance(object, name));
             });
         };
+        
+        // Handle any "required" instructions
+        client.onrequired = function requiredReceived(parameters) {
+            $log.debug('Received request for following parameters: \n');
+            $log.debug(JSON.stringify(parameters));
+            var origStatus = guacNotification.getStatus();
+            if (origStatus)
+                guacNotification.showStatus(false);
+            guacNotification.showStatus({
+                className  : 'prompt',
+                title      : 'APP.DIALOG_HEADER_REQUIRED',
+                text       : 'APP.DIALOG_TEXT_REQUIRED',
+                client     : client,
+                parameters : parameters,
+                actions    : [
+                    {
+                        name : 'APP.ACTION_CONTINUE',
+                        callback : function continueConnection(parameters) {
+                            $log.debug('Sending parameters...');
+                            for (var parameter in parameters) {
+                                $log.debug('Sending parameter ' + parameter);
+                                var stream = client.createArgumentValueStream("text/plain", parameter);
+                                var writer = new Guacamole.StringWriter(stream);
+                                writer.sendText(parameters[parameter]);
+                                writer.sendEnd();
+                                $log.debug('Done with ' + parameter);
+                            }
+                            guacNotification.showStatus(false);
+                            $log.debug('Done sending parameters.');
+                        }
+                    },
+                    NAVIGATE_HOME_ACTION,
+                    LOGOUT_ACTION
+                ]
+            });
+            
+            if (origStatus)
+                guacNotification.showStatus(origStatus);
+            
+        };
 
         // Manage the client display
         managedClient.managedDisplay = ManagedDisplay.getInstance(client.getDisplay());
-
-        // Parse connection details from ID
-        var clientIdentifier = ClientIdentifier.fromString(id);
 
         // Connect the Guacamole client
         getConnectString(clientIdentifier, connectionParameters)

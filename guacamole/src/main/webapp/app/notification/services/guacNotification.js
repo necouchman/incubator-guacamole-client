@@ -24,6 +24,7 @@ angular.module('notification').factory('guacNotification', ['$injector',
         function guacNotification($injector) {
 
     // Required services
+    var $q                    = $injector.get('$q');
     var $rootScope            = $injector.get('$rootScope');
     var requestService        = $injector.get('requestService');
     var sessionStorageFactory = $injector.get('sessionStorageFactory');
@@ -77,6 +78,7 @@ angular.module('notification').factory('guacNotification', ['$injector',
      *     'text'       : {
      *         'key' : 'NAMESPACE.SOME_TRANSLATION_KEY'
      *     },
+     *     'parameters'     : [],
      *     'actions'    : {
      *         'name'       : 'reconnect',
      *         'callback'   : function () {
@@ -89,8 +91,13 @@ angular.module('notification').factory('guacNotification', ['$injector',
      * guacNotification.showStatus(false);
      */
     service.showStatus = function showStatus(status) {
-        if (!storedStatus() || !status)
+        
+        if (!storedStatus() || !status) {
+            deferred = $q.defer();
             storedStatus(status);
+            return deferred;
+        }
+        
     };
 
     /**

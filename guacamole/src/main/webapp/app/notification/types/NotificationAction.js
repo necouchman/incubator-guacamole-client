@@ -65,6 +65,13 @@ angular.module('notification').factory('NotificationAction', [function defineNot
          * @type Function
          */
         this.callback = callback;
+        
+        /**
+         * Any data that should be sent back with this action.
+         * 
+         * @type {}
+         */
+        this.data = data;
 
     };
 
