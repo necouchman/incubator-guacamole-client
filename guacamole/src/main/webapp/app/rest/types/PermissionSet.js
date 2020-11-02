@@ -119,9 +119,14 @@ angular.module('rest').factory('PermissionSet', [function definePermissionSet() 
          * Permission to delete the specified object.
          */
         DELETE : "DELETE",
+        
+        /**
+         * Permission to view active and historical records for the object.
+         */
+        AUDIT : "AUDIT",
 
         /**
-         * Permission to administer the specified object
+         * Permission to administer the specified object.
          */
         ADMINISTER : "ADMINISTER"
 
@@ -136,6 +141,12 @@ angular.module('rest').factory('PermissionSet', [function definePermissionSet() 
          * Permission to administer the entire system.
          */
         ADMINISTER : "ADMINISTER",
+        
+        /**
+         * Permission to view active and historical records for the entire
+         * system.
+         */
+        AUDIT : "AUDIT",
 
         /**
          * Permission to create new users.

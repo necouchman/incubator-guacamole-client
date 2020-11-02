@@ -65,6 +65,7 @@ angular.module('rest').factory('PermissionFlagSet', ['PermissionSet',
             'READ'       : {},
             'UPDATE'     : {},
             'DELETE'     : {},
+            'AUDIT'      : {},
             'ADMINISTER' : {}
         };
 
@@ -84,6 +85,7 @@ angular.module('rest').factory('PermissionFlagSet', ['PermissionSet',
             'READ'       : {},
             'UPDATE'     : {},
             'DELETE'     : {},
+            'AUDIT'      : {},
             'ADMINISTER' : {}
         };
 
@@ -103,6 +105,7 @@ angular.module('rest').factory('PermissionFlagSet', ['PermissionSet',
             'READ'       : {},
             'UPDATE'     : {},
             'DELETE'     : {},
+            'AUDIT'      : {},
             'ADMINISTER' : {}
         };
 
@@ -122,6 +125,7 @@ angular.module('rest').factory('PermissionFlagSet', ['PermissionSet',
             'READ'       : {},
             'UPDATE'     : {},
             'DELETE'     : {},
+            'AUDIT'      : {},
             'ADMINISTER' : {}
         };
 
@@ -140,6 +144,7 @@ angular.module('rest').factory('PermissionFlagSet', ['PermissionSet',
             'READ'       : {},
             'UPDATE'     : {},
             'DELETE'     : {},
+            'AUDIT'      : {},
             'ADMINISTER' : {}
         };
 
@@ -158,6 +163,7 @@ angular.module('rest').factory('PermissionFlagSet', ['PermissionSet',
             'READ'       : {},
             'UPDATE'     : {},
             'DELETE'     : {},
+            'AUDIT'      : {},
             'ADMINISTER' : {}
         };
 
