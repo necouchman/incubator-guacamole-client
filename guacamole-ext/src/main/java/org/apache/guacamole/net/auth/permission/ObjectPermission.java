@@ -46,6 +46,11 @@ public class ObjectPermission implements Permission<ObjectPermission.Type> {
          * Delete an object.
          */
         DELETE,
+        
+        /**
+         * View records for active and/or historical data.
+         */
+        AUDIT,
 
         /**
          * Change who has access to an object.

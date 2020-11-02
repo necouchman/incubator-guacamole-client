@@ -56,6 +56,13 @@ public class SystemPermission implements Permission<SystemPermission.Type> {
          * Create sharing profiles.
          */
         CREATE_SHARING_PROFILE,
+        
+        /**
+         * System auditor permission, which includes permissions to view
+         * system-wide history, including user login records and connection
+         * history records.
+         */
+        AUDIT,
 
         /**
          * Administer the system in general, including adding permissions
