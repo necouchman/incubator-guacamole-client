@@ -61,6 +61,7 @@ import org.apache.guacamole.auth.jdbc.sharingprofile.SharingProfileParameterMapp
 import org.apache.guacamole.auth.jdbc.sharingprofile.SharingProfileParameterModel;
 import org.apache.guacamole.auth.jdbc.user.RemoteAuthenticatedUser;
 import org.apache.guacamole.net.auth.GuacamoleProxyConfiguration;
+import org.apache.guacamole.net.auth.permission.SystemPermission;
 import org.apache.guacamole.protocol.FailoverGuacamoleSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -624,9 +625,13 @@ public abstract class AbstractGuacamoleTunnelService implements GuacamoleTunnelS
         throws GuacamoleException {
 
         // Privileged users (such as system administrators) can view all
-        // connections; no need to filter
+        // connections, as can system auditors.
         Collection<ActiveConnectionRecord> records = activeTunnels.values();
-        if (user.isPrivileged())
+        if (user.isPrivileged()
+                || user.getUser()
+                        .getEffectivePermissions()
+                        .getSystemPermissions()
+                        .hasPermission(SystemPermission.Type.AUDIT))
             return records;
 
         // Build set of all connection identifiers associated with active tunnels

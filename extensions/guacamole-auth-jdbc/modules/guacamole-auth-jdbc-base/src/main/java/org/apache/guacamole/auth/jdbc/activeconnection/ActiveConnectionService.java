@@ -36,6 +36,7 @@ import org.apache.guacamole.net.GuacamoleTunnel;
 import org.apache.guacamole.net.auth.ActiveConnection;
 import org.apache.guacamole.net.auth.permission.ObjectPermission;
 import org.apache.guacamole.net.auth.permission.ObjectPermissionSet;
+import org.apache.guacamole.net.auth.permission.SystemPermission;
 
 /**
  * Service which provides convenience methods for creating, retrieving, and
@@ -81,21 +82,37 @@ public class ActiveConnectionService
             Collection<String> identifiers) throws GuacamoleException {
 
         String username = user.getIdentifier();
-        boolean isPrivileged = user.isPrivileged();
-        Set<String> identifierSet = new HashSet<String>(identifiers);
+        
+        // User can get active connection information if they are Privileged or
+        // have system audit permissions.
+        boolean isPrivileged =
+                user.isPrivileged() || 
+                user.getUser()
+                        .getEffectivePermissions()
+                        .getSystemPermissions()
+                        .hasPermission(SystemPermission.Type.AUDIT);
+        
+        ObjectPermissionSet objPermissions =
+                user.getUser()
+                        .getEffectivePermissions()
+                        .getConnectionPermissions();
+        
+        Set<String> identifierSet = new HashSet<>(identifiers);
 
         // Retrieve all visible connections (permissions enforced by tunnel service)
         Collection<ActiveConnectionRecord> records = tunnelService.getActiveConnections(user);
 
         // Restrict to subset of records which match given identifiers
-        Collection<TrackedActiveConnection> activeConnections = new ArrayList<TrackedActiveConnection>(identifiers.size());
+        Collection<TrackedActiveConnection> activeConnections =
+                new ArrayList<>(identifiers.size());
         for (ActiveConnectionRecord record : records) {
 
             // The current user should have access to sensitive information and
             // be able to connect to (join) the active connection if they are
             // the user that started the connection OR the user is an admin
             boolean hasPrivilegedAccess =
-                    isPrivileged || username.equals(record.getUsername());
+                    isPrivileged || username.equals(record.getUsername())
+                    || objPermissions.hasPermission(ObjectPermission.Type.AUDIT, record.getConnectionIdentifier());
 
             // Add connection if within requested identifiers
             if (identifierSet.contains(record.getUUID().toString())) {
