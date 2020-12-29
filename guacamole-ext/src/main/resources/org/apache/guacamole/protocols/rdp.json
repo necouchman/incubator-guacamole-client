@@ -61,6 +61,11 @@
                     "type"  : "NUMERIC"
                 },
                 {
+                    "name"    : "gateway-type",
+                    "type"    : "ENUM",
+                    "options" : [ "", "rpc", "http", "auto" ]
+                },
+                {
                     "name"  : "gateway-username",
                     "type"  : "USERNAME"
                 },
