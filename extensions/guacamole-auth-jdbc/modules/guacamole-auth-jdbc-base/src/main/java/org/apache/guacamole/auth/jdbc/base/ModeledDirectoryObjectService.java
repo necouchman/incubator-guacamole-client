@@ -33,6 +33,8 @@ import org.apache.guacamole.net.auth.Identifiable;
 import org.apache.guacamole.net.auth.permission.ObjectPermission;
 import org.apache.guacamole.net.auth.permission.ObjectPermissionSet;
 import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service which provides convenience methods for creating, retrieving, and
@@ -55,6 +57,8 @@ public abstract class ModeledDirectoryObjectService<InternalType extends Modeled
         ExternalType extends Identifiable, ModelType extends ObjectModel>
     implements DirectoryObjectService<InternalType, ExternalType> {
 
+    private static final Logger logger = LoggerFactory.getLogger(ModeledDirectoryObjectService.class);
+    
     /**
      * All object permissions which are implicitly granted upon creation to the
      * creator of the object.
@@ -350,7 +354,7 @@ public abstract class ModeledDirectoryObjectService<InternalType extends Modeled
     protected Collection<String> filterIdentifiers(Collection<String> identifiers) {
 
         // Obtain enough space for a full copy of the given identifiers
-        Collection<String> validIdentifiers = new ArrayList<String>(identifiers.size());
+        Collection<String> validIdentifiers = new ArrayList<>(identifiers.size());
 
         // Add only valid identifiers to the copy
         for (String identifier : identifiers) {
@@ -505,9 +509,12 @@ public abstract class ModeledDirectoryObjectService<InternalType extends Modeled
         getObjectMapper().update(model);
 
         // Replace any existing arbitrary attributes
-        getObjectMapper().deleteAttributes(model);
-        if (model.hasArbitraryAttributes())
-            getObjectMapper().insertAttributes(model);
+        int deleted = getObjectMapper().deleteAttributes(model);
+        logger.debug(">>>DB<<< Deleted {} attributes.", deleted);
+        if (model.hasArbitraryAttributes()) {
+            int added = getObjectMapper().insertAttributes(model);
+            logger.debug(">>>DB<<< Added {} attributes.", added);
+        }
 
     }
 
