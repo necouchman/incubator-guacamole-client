@@ -383,6 +383,12 @@
         "TEXT_CONFIRM_DELETE" : "Groups cannot be restored after they have been deleted. Are you sure you want to delete this group?"
 
     },
+    
+    "PROTOCOL_BALL" : {
+        
+        "NAME" : "Bouncing Ball"
+        
+    },
 
     "PROTOCOL_KUBERNETES" : {
 

@@ -53,7 +53,7 @@ public class LocalEnvironment implements Environment {
      * Array of all known protocol names.
      */
     private static final String[] KNOWN_PROTOCOLS = new String[]{
-        "vnc", "rdp", "ssh", "telnet", "kubernetes"};
+        "ball", "vnc", "rdp", "ssh", "telnet", "kubernetes"};
 
     /**
      * The hostname to use when connecting to guacd if no hostname is provided
